@@ -84,6 +84,7 @@ try {
     const menu = menusData.reduce((s, v) => s.concat(v, v.children), []).find(v => v.path === lastPathnameCache);
     if (menu) {
       openKeys = defaultSelectedKeys = [menu.mpid, menu.id].filter(v => !!v).map(v => String(v));
+      console.log('☞☞☞ Menus onChangeLastPathname 87', openKeys, defaultSelectedKeys);
     }
   }
   // console.log('☞☞☞ Menus  85', );
@@ -114,6 +115,7 @@ export const withMenus = createWith({
       const menu = menusData.reduce((s, v) => s.concat(v, v.children), []).find(v => v.path === pathname);
       if (menu) {
         openKeys = defaultSelectedKeys = [menu.mpid, menu.id].filter(v => !!v).map(v => String(v));
+        console.log('☞☞☞ Menus onChangeLastPathname 117', openKeys, defaultSelectedKeys);
       }
       // console.log('☞☞☞ Menus onChangeLastPathname 120', pathname, openKeys);
       yield put(this.actions.onChangeOpenKeys({ openKeys, defaultSelectedKeys, lastPathname: pathname }));

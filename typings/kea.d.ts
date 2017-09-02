@@ -76,7 +76,9 @@ declare module 'kea' {
   }
 
   // 装饰器
-  interface CanFalseComponent<T> extends React.ComponentClass<T> {
+  interface CanFalseComponent<P> extends React.ComponentClass<P> {
+    States?: any;
+    Actions?: any;
     new (props?: P, context?: any): any;
   }
   interface ComponentDecorator<A, S>  {

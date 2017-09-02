@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Menus, { withMenus } from '../components/menu/Menus';
-import { History } from 'history';
 import environment from '../../utils/environment';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
@@ -32,11 +31,10 @@ class States {
     hasLoginBefore: withLogin,
   },
 })
-export default class Home extends React.PureComponent<HomeProps, {}> {
+export default class Home extends React.PureComponent<KeaProps<Actions, States>, {}> {
   state = {};
 
   public render() {
-    const pathname = this.props.history.location.pathname;
     const { isNavbar, fullSize, hasLoginBefore } = this.props;
     const fold = !isNavbar && fullSize ? 'fold' : '';
     const navbar = isNavbar ? 'withnavbar' : '';
@@ -85,9 +83,4 @@ export default class Home extends React.PureComponent<HomeProps, {}> {
       </div>
     );
   }
-}
-
-export interface HomeProps extends KeaProps<Actions, States> {
-  pathname?: string;
-  history?: History;
 }
