@@ -1,0 +1,198 @@
+.layout {
+  position: relative;
+  height: 100vh; }
+  .layout.withnavbar .main {
+    margin-left: 0; }
+  .layout.fold .sider {
+    width: 42px;
+    transition: all 0.3s ease-out; }
+    .layout.fold .sider .logo img {
+      display: inline-block;
+      vertical-align: middle;
+      height: 47px;
+      margin-left: 10px; }
+    .layout.fold .sider .ant-menu-root {
+      width: 100%;
+      overflow: visible; }
+      .layout.fold .sider .ant-menu-root > .ant-menu-item {
+        padding: 0;
+        text-align: center; }
+        .layout.fold .sider .ant-menu-root > .ant-menu-item .anticon {
+          font-size: 33px;
+          margin-right: 0;
+          transform: scale(0.6); }
+          .layout.fold .sider .ant-menu-root > .ant-menu-item .anticon:hover {
+            animation: pulse-j 5s ease-in-out; }
+      .layout.fold .sider .ant-menu-root > .ant-menu-item {
+        padding: 0 !important; }
+      .layout.fold .sider .ant-menu-root > .ant-menu-submenu > .ant-menu-submenu-title {
+        padding: 0 !important;
+        text-align: center; }
+        .layout.fold .sider .ant-menu-root > .ant-menu-submenu > .ant-menu-submenu-title .anticon {
+          font-size: 33px;
+          margin-right: 0;
+          transform: scale(0.6);
+          transition: all 0.3s ease-out; }
+          .layout.fold .sider .ant-menu-root > .ant-menu-submenu > .ant-menu-submenu-title .anticon:hover {
+            animation: pulse-j 5s ease-in-out; }
+        .layout.fold .sider .ant-menu-root > .ant-menu-submenu > .ant-menu-submenu-title::after {
+          display: none; }
+  .layout.fold .main {
+    margin-left: 42px; }
+  .layout .sider {
+    width: 224px;
+    background: #3e3e3e;
+    position: absolute;
+    overflow: visible;
+    padding-bottom: 24px;
+    height: 100vh;
+    transition: all 0.3s ease-out;
+    box-shadow: 4px 4px 20px 0 rgba(0, 0, 0, 0.01);
+    color: #999; }
+    .layout .sider.light {
+      background: #fff; }
+      .layout .sider.light .switchtheme {
+        background: #fff;
+        border-top: solid 1px #f8f8f8; }
+    .layout .sider .logo {
+      text-align: center;
+      height: 40px;
+      line-height: 40px;
+      cursor: pointer;
+      transition: all 0.3s ease-out;
+      overflow: hidden; }
+      .layout .sider .logo img {
+        display: inline-block;
+        vertical-align: middle;
+        height: 47px;
+        margin-right: 8px;
+        transition: all 0.3s ease-out; }
+      .layout .sider .logo span {
+        font-weight: 700;
+        transition: 0.2s;
+        vertical-align: text-bottom;
+        font-size: 16px;
+        text-transform: uppercase;
+        display: inline-block; }
+      .layout .sider .logo .anticon {
+        transition: all 0.3s ease-out; }
+    .layout .sider .switchtheme {
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      height: 48px;
+      background-color: #494949;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px 0 24px;
+      overflow: hidden;
+      z-index: 1000; }
+      .layout .sider .switchtheme span {
+        white-space: nowrap;
+        overflow: hidden; }
+      .layout .sider .switchtheme .anticon {
+        min-width: 14px;
+        margin-right: 8px;
+        font-size: 14px; }
+    .layout .sider .ant-menu-dark,
+    .layout .sider .ant-menu-dark .ant-menu-sub {
+      color: #999; }
+    .layout .sider .ant-menu-root {
+      height: calc(100vh - 0px);
+      overflow-x: hidden;
+      border-right: none; }
+      .layout .sider .ant-menu-root::-webkit-scrollbar-thumb {
+        background-color: transparent; }
+      .layout .sider .ant-menu-root:hover::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2); }
+      .layout .sider .ant-menu-root.ant-menu-vertical .ant-menu-sub {
+        height: 0;
+        opacity: 0;
+        transition: none; }
+      .layout .sider .ant-menu-root.ant-menu-vertical .ant-menu-submenu-active .ant-menu-sub {
+        height: auto;
+        opacity: 1; }
+    .layout .sider .ant-menu {
+      transition: all 0.3s ease-out; }
+      .layout .sider .ant-menu .ant-menu-item,
+      .layout .sider .ant-menu .ant-menu-submenu-title {
+        overflow: hidden;
+        white-space: normal; }
+  .layout .main {
+    margin-left: 224px;
+    overflow: auto;
+    height: 100vh;
+    transition: all 0.3s ease-out; }
+    .layout .main .content-inner {
+      background: #fff;
+      padding: 24px;
+      box-shadow: 4px 4px 20px 0 rgba(0, 0, 0, 0.01);
+      min-height: calc(100vh - 110px); }
+    .layout .main .container {
+      margin: 15px; }
+    .layout .main .content {
+      min-height: calc(100vh - 110px);
+      position: relative; }
+
+.ant-menu-dark {
+  color: #999;
+  background-color: #3e3e3e; }
+  .ant-menu-dark .ant-menu-submenu-title:hover,
+  .ant-menu-dark .ant-menu-submenu:hover {
+    color: #1141ab; }
+  .ant-menu-dark .ant-menu-sub {
+    color: #999; }
+  .ant-menu-dark .ant-menu-submenu-selected {
+    color: #1141ab; }
+    .ant-menu-dark .ant-menu-submenu-selected:not(.ant-menu-submenu-open) {
+      background-color: #494949; }
+  .ant-menu-dark .ant-menu-item > a,
+  .ant-menu-dark .ant-menu-submenu-title > a {
+    color: #999; }
+  .ant-menu-dark .ant-menu-item:hover > a,
+  .ant-menu-dark .ant-menu-submenu-title:hover > a {
+    color: #1141ab; }
+  .ant-menu-dark.ant-menu-inline .ant-menu-item-selected {
+    background-color: #494949; }
+  .ant-menu-dark .ant-menu-item-selected {
+    color: #1141ab;
+    background-color: #494949; }
+    .ant-menu-dark .ant-menu-item-selected > a {
+      color: #1141ab; }
+    .ant-menu-dark .ant-menu-item-selected:hover {
+      background-color: #494949; }
+
+.spin .ant-spin-container {
+  height: 100vh; }
+
+@media (max-width: 767px) {
+  .layout .main .container {
+    margin: 12px; }
+  .layout .main .bread {
+    padding: 0 12px; }
+  .layout .main .content {
+    min-height: calc(100vh - 160px); }
+  .layout .main .content-inner {
+    padding: 12px;
+    min-height: calc(100vh - 160px); } }
+
+@keyframes pulse-j {
+  from {
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0); }
+  1%,
+  8% {
+    -webkit-transform: translate3d(0, -2px, 0);
+    -moz-transform: translate3d(0, -2px, 0);
+    transform: translate3d(0, -2px, 0); }
+  11%,
+  4%,
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0); } }
+
+[class*='fold'] [class*='logo'] span {
+  display: none; }

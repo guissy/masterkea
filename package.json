@@ -1,0 +1,67 @@
+{
+  "name": "masterkea",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@types/enzyme": "^2.8.6",
+    "@types/isomorphic-fetch": "^0.0.34",
+    "@types/jest": "^20.0.8",
+    "@types/lodash": "^4.14.74",
+    "@types/moment": "^2.13.0",
+    "@types/node": "^8.0.25",
+    "@types/nprogress": "^0.0.29",
+    "@types/react": "next",
+    "@types/react-dom": "^15.5.4",
+    "@types/react-redux": "^5.0.5",
+    "@types/react-router-redux": "^5.0.7",
+    "@types/uuid": "^3.4.1",
+    "antd": "^2.12.7",
+    "enzyme": "^2.9.1",
+    "husky": "^0.14.3",
+    "kea": "^0.23.2",
+    "lint-staged": "^4.0.4",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "node-sass-chokidar": "^0.0.3",
+    "npm-run-all": "^4.1.1",
+    "nprogress": "^0.2.0",
+    "prettier": "^1.6.1",
+    "prop-types": "^15.5.10",
+    "qrcode.react": "^0.7.1",
+    "react": "next",
+    "react-dom": "next",
+    "react-redux": "next",
+    "react-router": "^4.2.0",
+    "react-router-dom": ".2.2",
+    "react-router-redux": "next",
+    "react-scripts-ts": "2.6.0",
+    "redux": "^3.7.2",
+    "redux-saga": "^0.15.6",
+    "reselect": "^3.0.1",
+    "typescript": "next"
+  },
+  "scripts": {
+    "build-css": "node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/",
+    "watch-css": "npm run build-css && node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/ --watch --recursive",
+    "start-js": "react-scripts-ts start",
+    "start": "npm-run-all -p watch-css start-js",
+    "build": "npm run build-css && react-scripts-ts build",
+    "test": "react-scripts-ts test --env=jsdom",
+    "precommit": "tslint --fix src && lint-staged",
+    "eject": "react-scripts-ts eject"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,scss}": [
+      "prettier --print-width 120 --single-quote --trailing-comma es5 --write --eofline",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "@types/prop-types": "^15.5.1",
+    "@types/qrcode.react": "^0.6.2",
+    "@types/react-router": "^4.0.15",
+    "@types/react-router-dom": "^4.0.7",
+    "@types/redux": "^3.6.0",
+    "@types/redux-saga": "^0.10.5"
+  }
+}

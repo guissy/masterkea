@@ -1,0 +1,52 @@
+#Login {
+  height: 100%;
+  .ant-layout {
+    display: flex;
+  }
+  .ant-layout-header {
+    color: #ffffff;
+    text-align: center;
+    font-size: 1.5rem;
+  }
+  .ant-layout-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  // 登录表单
+  .ant-card {
+    box-shadow: 0 0 100px rgba(0, 0, 0, .08);
+    background: initial;
+    width: 300px;
+  }
+
+  .ant-card-head {
+    background: initial;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  .ant-card-body {
+    padding-top: 10px;
+  }
+
+  // 登录按钮
+  .ant-form-item:last-child {
+    text-align: center;
+    button {
+      width: 100%;
+    }
+  }
+}
+.loginModal {
+  .dynamic {
+    .ant-form-item-control {
+      text-align: center;
+      input {
+        text-align: center;
+      }
+    }
+  }
+}

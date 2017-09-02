@@ -1,0 +1,32 @@
+#Login {
+  height: 100%; }
+  #Login .ant-layout {
+    display: flex; }
+  #Login .ant-layout-header {
+    color: #ffffff;
+    text-align: center;
+    font-size: 1.5rem; }
+  #Login .ant-layout-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center; }
+  #Login .ant-card {
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.08);
+    background: initial;
+    width: 300px; }
+  #Login .ant-card-head {
+    background: initial;
+    text-align: center;
+    font-size: 1rem; }
+  #Login .ant-card-body {
+    padding-top: 10px; }
+  #Login .ant-form-item:last-child {
+    text-align: center; }
+    #Login .ant-form-item:last-child button {
+      width: 100%; }
+
+.loginModal .dynamic .ant-form-item-control {
+  text-align: center; }
+  .loginModal .dynamic .ant-form-item-control input {
+    text-align: center; }

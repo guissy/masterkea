@@ -1,0 +1,55 @@
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg); }
+  to {
+    transform: rotate(360deg); } }
+
+.ant-table table tr th,
+.ant-table table tr td {
+  border-top: 0;
+  border-right: 0;
+  border-left: 0; }
+
+#nprogress {
+  pointer-events: none; }
+  #nprogress .bar {
+    background: #1141ab;
+    position: fixed;
+    z-index: 1024;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 2px; }
+  #nprogress .peg {
+    display: block;
+    position: absolute;
+    right: 0;
+    width: 100px;
+    height: 100%;
+    box-shadow: 0 0 10px #1141ab, 0 0 5px #1141ab;
+    opacity: 1;
+    transform: rotate(3deg) translate(0px, -4px); }
+  #nprogress .spinner {
+    display: block;
+    position: fixed;
+    z-index: 1031;
+    top: 15px;
+    right: 15px; }
+  #nprogress .spinner-icon {
+    width: 18px;
+    height: 18px;
+    box-sizing: border-box;
+    border: solid 2px transparent;
+    border-top-color: #1141ab;
+    border-left-color: #1141ab;
+    border-radius: 50%; }
+    #nprogress .spinner-icon :local {
+      animation: nprogress-spinner 400ms linear infinite; }
+
+.nprogress-custom-parent {
+  overflow: hidden;
+  position: relative; }
+  .nprogress-custom-parent #nprogress .bar,
+  .nprogress-custom-parent #nprogress .spinner {
+    position: absolute; }
