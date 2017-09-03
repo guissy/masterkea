@@ -17,7 +17,7 @@ class Actions {
   onChangeOpenKeys: (p: any) => Action;
 }
 class States {
-  fullSize = true;
+  collapsed = true; // 折叠
   isNavbar = false;
   openKeys = [] as any[];
 
@@ -38,8 +38,8 @@ export default class Home extends React.PureComponent<HomeProps, {}> {
 
   public render() {
     const pathname = this.props.history.location.pathname;
-    const { isNavbar, fullSize, hasLoginBefore } = this.props;
-    const fold = !isNavbar && fullSize ? 'fold' : '';
+    const { isNavbar, collapsed, hasLoginBefore } = this.props;
+    const fold = !isNavbar && collapsed ? 'fold' : '';
     const navbar = isNavbar ? 'withnavbar' : '';
     const classnames = ['layout', fold, navbar].join(' ');
     window.defaultSelectedKeys = ['1'];
@@ -53,7 +53,7 @@ export default class Home extends React.PureComponent<HomeProps, {}> {
                   <div className={'logo'}>
                     <img alt="logo" src={environment.logo} />
                   </div>
-                  <Menus fullSize={fullSize} />
+                  <Menus collapsed={collapsed} />
                 </div>
               </aside>
             ) : (
@@ -63,10 +63,9 @@ export default class Home extends React.PureComponent<HomeProps, {}> {
               <Header
                 location={location}
                 isNavbar={isNavbar}
-                fullSize={fullSize}
+                collapsed={collapsed}
                 onChangeFullSize={(e: any) => {
-                  this.props.actions.onChangeFullSize({ fullSize: !fullSize });
-                  this.props.actions.onChangeOpenKeys({ openKeys: [] });
+                  this.props.actions.onChangeFullSize({ collapsed: !collapsed });
                 }}
               />
               <div className={'container'}>

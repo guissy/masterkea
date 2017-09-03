@@ -18,7 +18,7 @@ const Header = ({
   site,
   onChangeEditPwd,
   onChangeProfile,
-  fullSize,
+  collapsed,
   isNavbar,
   menuPopoverVisible,
   switchMenuPopover,
@@ -67,7 +67,7 @@ const Header = ({
             visible={menuPopoverVisible}
             overlayClassName="popovermenu"
             trigger="click"
-            content={<Menus fullSize={fullSize} />}
+            content={<Menus collapsed={collapsed} />}
           >
             <div className="button">
               <Icon type="bars" />
@@ -75,7 +75,7 @@ const Header = ({
           </Popover>
         ) : (
           <span className="button" onClick={onChangeFullSize}>
-            <Icon type={fullSize ? 'menu-unfold' : 'menu-fold'} />
+            <Icon type={collapsed ? 'menu-unfold' : 'menu-fold'} />
           </span>
         )}
         <Select
@@ -143,7 +143,7 @@ export default createWith({
 })(Header as any);
 
 interface HeaderProps extends KeaProps<Actions, States> {
-  fullSize?: boolean;
+  collapsed?: boolean;
   onChangeFullSize: () => void;
   onChangeOpenKeys: () => void;
   onClickNavMenu: (event: any) => void;

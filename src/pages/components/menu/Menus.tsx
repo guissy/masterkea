@@ -10,7 +10,7 @@ import { push } from 'react-router-redux';
 import { Action, createAction } from 'kea';
 
 // tslint:disable-next-line variable-name
-const Menus = ({ dispatch, menusData, actions, fullSize, openKeys, defaultSelectedKeys }: MenusProps) => {
+const Menus = ({ dispatch, menusData, actions, collapsed, openKeys, defaultSelectedKeys }: MenusProps) => {
   const onOpenChange = (openKeys: string[]) => {
     actions.onChangeOpenKeys({ openKeys: openKeys.slice(-1) });
   };
@@ -26,8 +26,9 @@ const Menus = ({ dispatch, menusData, actions, fullSize, openKeys, defaultSelect
     <div>
       <Menu
         onOpenChange={onOpenChange}
-        openKeys={fullSize ? [] : openKeys}
-        mode={fullSize ? 'vertical' : 'inline'}
+        openKeys={openKeys}
+        mode={'inline'}
+        inlineCollapsed={collapsed}
         onClick={onClickNavMenu}
         defaultSelectedKeys={defaultSelectedKeys}
         key={String(defaultSelectedKeys)}
@@ -74,7 +75,7 @@ const Menus = ({ dispatch, menusData, actions, fullSize, openKeys, defaultSelect
   );
 };
 export interface MenusProps extends KeaProps<Actions, States> {
-  fullSize: boolean;
+  collapsed: boolean;
 }
 
 // 默认首页
