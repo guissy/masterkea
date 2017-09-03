@@ -15,7 +15,7 @@ import PasswordEdit from '../../subaccount/PasswordEdit';
 const Header = ({
   dispatch,
   actions,
-  login,
+  admin,
   site,
   collapsed,
   isNavbar,
@@ -101,7 +101,7 @@ const Header = ({
             title={
               <span>
                 <Icon type="user" />
-                {login.username}
+                {admin.username}
               </span>
             }
           >
@@ -119,7 +119,7 @@ const Header = ({
         footer={null}
       >
         <PasswordEdit
-          editingItem={login}
+          editingItem={admin}
           saving={false}
           onSuccess={() => dispatch(actions.onChangeEditPwdVisible({ editPwdVisible: false }))}
         />
@@ -142,6 +142,7 @@ class States {
   profileVisible = false;
 
   login: any;
+  admin: any;
   site: any;
   menusData: any;
 }
@@ -151,6 +152,7 @@ export default createWith({
   state: new States(),
   props: {
     login: withLogin,
+    admin: withLogin,
     logout: withLogin,
     site: withLang,
     menusData: withMenus,

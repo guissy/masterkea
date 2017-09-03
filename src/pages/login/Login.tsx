@@ -20,6 +20,7 @@ class Login extends React.PureComponent<LoginProps, any> {
   public static States? = class {
     loading = false;
     login = {};
+    admin = {};
     loginForm = {};
     loginTwoLoading = false;
     hasLoginBefore = false;
@@ -139,7 +140,7 @@ export const withLogin = createWith({
         // dispatch({ type: 'my/querySuccess', payload: adminInfo });
         yield put(
           this.actions.onChangeLogin({
-            ...adminInfo,
+            admin: adminInfo,
             hasLogin: true,
             needLogin: false,
             hasLoginBefore: true,
@@ -148,10 +149,6 @@ export const withLogin = createWith({
 
         // 有权限的菜单
         if (adminInfo.route) {
-          const menu = Array.isArray(adminInfo.route) && adminInfo.route.map((v: MenuItem) => v.id);
-          const subs = adminInfo.route
-            .map((v: MenuItem) => v.children.map(w => w.id))
-            .reduce((s: MenuItem[], w: MenuItem[]) => s.concat(w));
           // yield put({ type: 'menus/update', payload: { menu: menu.concat(subs) } });
         }
 
@@ -217,10 +214,6 @@ export const withLogin = createWith({
 
         const admin = result.data.list;
         admin.route = result.data.route;
-        // 缓存 token，请求时放在 Header 中
-        window.sessionStorage.setItem(environment.tokenName, result.data.token);
-        window.sessionStorage.setItem(environment.expiration, String(result.data.expire));
-        window.sessionStorage.setItem(environment.adminInfo, String(JSON.stringify(admin)));
 
         // 有权限的菜单
         if (admin.route) {
@@ -231,9 +224,12 @@ export const withLogin = createWith({
           // yield put({ type: 'menus/update', payload: { menu: menu.concat(subs) } });
         }
 
-        yield put(
-          this.actions.onChangeLogin({ login: result.data, hasLogin: true, needLogin: false, hasLoginBefore: true })
-        );
+        // 缓存 token，请求时放在 Header 中
+        window.sessionStorage.setItem(environment.tokenName, result.data.token);
+        window.sessionStorage.setItem(environment.expiration, String(result.data.expire));
+        window.sessionStorage.setItem(environment.adminInfo, String(JSON.stringify(admin)));
+
+        yield put(this.actions.onChangeLogin({ admin, hasLogin: true, needLogin: false, hasLoginBefore: true }));
         yield put(push(this.props.lastPathname));
       } else {
         message.error(result.message);
