@@ -12,6 +12,7 @@ import router from '../../router';
 import { withLogin } from '../login/Login';
 import { Action } from 'kea';
 import PasswordEdit from '../subaccount/PasswordEdit';
+import Stage from '../lottery/Stage';
 
 class Actions {
   onChangeFullSize = (p: any) => ({} as Action);
@@ -73,7 +74,7 @@ export default class Home extends React.PureComponent<HomeProps, {}> {
                 <div className={'content'}>
                   {/*<Route path="lottery/result" />*/}
                   <Switch>
-                    <Route path="/lottery/stage" component={router.stage} />
+                    <Route path="/lottery/stage" component={Stage} />
                     <Route path="/lottery/result" component={router.result} />
                     <Route path="/thirdgame" component={router.thirdgame} />
                     <Route path="/*" component={router.notFound} />

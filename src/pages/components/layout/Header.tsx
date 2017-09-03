@@ -1,13 +1,12 @@
 import { Icon, Menu, Modal, Popover, Select } from 'antd';
 import * as React from 'react';
-import { withLang, LangSiteState } from '../../lang.model';
-import { LoginState } from '../../login/Login.model';
+import { withLang } from '../../lang.model';
 import Menus, { withMenus } from '../menu/Menus';
 import './Header.css';
 import { withLogin } from '../../login/Login';
 import createWith, { KeaProps } from '../../../utils/buildKea';
 import { MenuItem } from '../menu/Menus.model';
-import { Action, createAction } from 'kea';
+import { Action } from 'kea';
 import { push } from 'react-router-redux';
 import PasswordEdit from '../../subaccount/PasswordEdit';
 

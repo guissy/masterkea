@@ -1,0 +1,44 @@
+.page .ant-form-inline .ant-form-item {
+  margin-bottom: 10px; }
+
+.page .actions > *:not(:first-child) {
+  border-left: 1px solid #ddd;
+  padding-left: 3px; }
+
+.page .actions > *:not(:last-child) {
+  padding-right: 3px; }
+
+.page .formItem {
+  min-width: 200px; }
+
+.page .dateRange {
+  min-width: 425px; }
+  .page .dateRange .ant-form-item {
+    margin-right: 4px; }
+    .page .dateRange .ant-form-item .ant-form-item-label {
+      width: 10px;
+      text-overflow: clip; }
+
+.table img {
+  max-height: 50px;
+  display: inline-block; }
+
+.disabled {
+  color: rgba(0, 0, 0, 0.25);
+  cursor: not-allowed;
+  pointer-events: none; }
+
+.ant-upload-list-picture .ant-upload-list-item-thumbnail img {
+  width: auto; }
+
+.ant-upload-list-picture .ant-upload-list-item-name {
+  padding-left: 215px;
+  padding-top: 8px; }
+
+.filter {
+  padding: 0 15px;
+  border: 1px solid #dddddd; }
+
+.filterName {
+  display: inline-block;
+  padding-right: 10px; }
