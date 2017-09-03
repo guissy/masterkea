@@ -13,12 +13,14 @@ const reducers = combineReducers({
 
 export const routeSelector = (state: any) => state.router.location;
 
-const sagaMiddleware = createSagaMiddleware({
-  logger: (level, ...h) => console.log('☞☞☞ store logger 17', level, h),
-  onError: (error: Error) => {
-    console.error('\u2718'.repeat(88), error);
-  },
-});
+const sagaMiddleware = createSagaMiddleware(
+  {
+    // logger: (level, ...h) => console.log('☞☞☞ store logger 17', level, h),
+    // onError: (error: Error) => {
+    //   console.error('\u2718'.repeat(88), error);
+    // },
+  }
+);
 const middle =
   typeof window !== 'undefined' && window.devToolsExtension ? window.devToolsExtension() : (p: any) => ({} as Action);
 const finalCreateStore = compose(

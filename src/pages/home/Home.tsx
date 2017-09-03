@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Menu } from 'antd';
 import Menus, { withMenus } from '../components/menu/Menus';
 import { History } from 'history';
 import environment from '../../utils/environment';
@@ -41,6 +42,7 @@ export default class Home extends React.PureComponent<HomeProps, {}> {
     const fold = !isNavbar && fullSize ? 'fold' : '';
     const navbar = isNavbar ? 'withnavbar' : '';
     const classnames = ['layout', fold, navbar].join(' ');
+    window.defaultSelectedKeys = ['1'];
     return (
       <div>
         {hasLoginBefore && (

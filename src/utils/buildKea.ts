@@ -18,7 +18,8 @@ function getPropTypes(val: string | number | boolean | object) {
 }
 function getStateName(action: string, val: string | number | boolean | any[]): any {
   if (Array.isArray(val)) {
-    return { array: val };
+    throw new Error('not array');
+    // return { array: val };
   } else if (typeof val === 'object') {
     return val;
   } else {
@@ -82,8 +83,11 @@ function buildKea<A, S>({
                         mergeState = nextState;
                       }
                       result = isEqual(preState, mergeState) ? preState : mergeState;
+                      console.log('\u2665  87', stateKey, isEqual(preState, mergeState), '赋值时：', preState, payload, result);
                     }
                   }
+                  // if(stateKey==='defaultSelectedKeys') {
+                  // }
                   return result;
                 },
               }),
@@ -93,7 +97,7 @@ function buildKea<A, S>({
         }),
         {}
       ),
-    takeLatest: effects
+    takeEvery: effects
       ? ({ actions, workers }: TakeLatestParam) =>
           Object.keys(effects).reduce((effectAll, effectKey) => {
             effectAll[actions[effectKey]] = effects[effectKey];

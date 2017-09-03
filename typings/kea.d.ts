@@ -16,6 +16,7 @@ declare module 'kea' {
     selectors?: ( param: selectorParam ) => { [selectorName in keyof StateKeys]: [Selector, Modifier, React.Requireable<any>] };
     connect?: Connect;
     takeLatest?: ( param: TakeLatestParam ) => KeaWorkers2<ActionKeys>;
+    takeEvery?: ( param: TakeLatestParam ) => KeaWorkers2<ActionKeys>;
     workers?: KeyWorkers<ActionKeys>;
     start?: () => void;
   }

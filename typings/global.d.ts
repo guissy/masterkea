@@ -12,6 +12,7 @@ declare global {
   }
   // 平台没有资源站，即没有上传功能
   interface Window {
+    defaultSelectedKeys: string[];
     __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any;
     devToolsExtension: any;
     __keaPrerender: any;

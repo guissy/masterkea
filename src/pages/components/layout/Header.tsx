@@ -7,7 +7,8 @@ import './Header.css';
 import { withLogin } from '../../login/Login';
 import createWith, { KeaProps } from '../../../utils/buildKea';
 import { MenuItem } from '../menu/Menus.model';
-import { Action } from 'kea';
+import { Action, createAction } from 'kea';
+import { push } from 'react-router-redux';
 
 // tslint:disable-next-line
 const Header = ({
@@ -51,6 +52,7 @@ const Header = ({
       actions.onChangeLastPathname({
         pathname: m.path,
       });
+      dispatch(push(m.path));
     }
   };
 
