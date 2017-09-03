@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Menu } from 'antd';
+import { Modal } from 'antd';
 import Menus, { withMenus } from '../components/menu/Menus';
 import { History } from 'history';
 import environment from '../../utils/environment';
@@ -11,6 +11,7 @@ import { Route, Switch } from 'react-router';
 import router from '../../router';
 import { withLogin } from '../login/Login';
 import { Action } from 'kea';
+import PasswordEdit from '../subaccount/PasswordEdit';
 
 class Actions {
   onChangeFullSize = (p: any) => ({} as Action);

@@ -1,4 +1,4 @@
-import { Icon, Menu, Popover, Select } from 'antd';
+import { Icon, Menu, Modal, Popover, Select } from 'antd';
 import * as React from 'react';
 import { withLang, LangSiteState } from '../../lang.model';
 import { LoginState } from '../../login/Login.model';
@@ -9,6 +9,7 @@ import createWith, { KeaProps } from '../../../utils/buildKea';
 import { MenuItem } from '../menu/Menus.model';
 import { Action, createAction } from 'kea';
 import { push } from 'react-router-redux';
+import PasswordEdit from '../../subaccount/PasswordEdit';
 
 // tslint:disable-next-line
 const Header = ({
@@ -16,14 +17,14 @@ const Header = ({
   actions,
   login,
   site,
-  onChangeEditPwd,
-  onChangeProfile,
   collapsed,
   isNavbar,
   menuPopoverVisible,
   switchMenuPopover,
-  onChangeFullSize,
   menusData,
+
+  editPwdVisible,
+  onChangeFullSize,
 }: HeaderProps) => {
   const handleClickMenu = (e: any) => {
     switch (e.key) {
@@ -31,10 +32,10 @@ const Header = ({
         dispatch(actions.logout({}));
         break;
       case 'editPwd':
-        onChangeEditPwd();
+        dispatch(actions.onChangeEditPwdVisible({ editPwdVisible: true }));
         break;
-      case 'profile':
-        onChangeProfile();
+      case 'showProfile':
+        dispatch(actions.showProfile({}));
         break;
     }
   };
@@ -110,6 +111,19 @@ const Header = ({
           </Menu.SubMenu>
         </Menu>
       </div>
+
+      <Modal
+        title="修改密码"
+        visible={editPwdVisible}
+        onCancel={() => dispatch(actions.onChangeEditPwdVisible({ editPwdVisible: false }))}
+        footer={null}
+      >
+        <PasswordEdit
+          editingItem={login}
+          saving={false}
+          onSuccess={() => dispatch(actions.onChangeEditPwdVisible({ editPwdVisible: false }))}
+        />
+      </Modal>
     </div>
   );
 };
@@ -117,9 +131,11 @@ const Header = ({
 class Actions {
   onChangeEditPwdVisible = (p: any) => ({} as Action);
   onChangeProfileVisible = (p: any) => ({} as Action);
+  showProfile = (p: any) => ({} as Action);
 
   onChangeLastPathname: (p: any) => Action;
   logout: (p: any) => Action;
+  editPwd: (p: any) => Action;
 }
 class States {
   editPwdVisible = false;
@@ -144,14 +160,10 @@ export default createWith({
 
 interface HeaderProps extends KeaProps<Actions, States> {
   collapsed?: boolean;
-  onChangeFullSize: () => void;
-  onChangeOpenKeys: () => void;
-  onClickNavMenu: (event: any) => void;
 
   isNavbar: boolean;
   menuPopoverVisible?: boolean;
   switchMenuPopover?: () => void;
 
-  onChangeEditPwd: () => void;
-  onChangeProfile: any;
+  onChangeFullSize?: () => void;
 }
