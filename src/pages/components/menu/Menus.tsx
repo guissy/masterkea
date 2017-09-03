@@ -92,7 +92,6 @@ try {
       defaultSelectedKeys = openKeys.slice(0);
     }
   }
-  // console.log('☞☞☞ Menus  85', );
 } catch (e) {}
 
 class States {
@@ -113,22 +112,17 @@ export const withMenus = createWith({
   namespace: 'menus',
   effects: {
     *onChangeLastPathname(this: MenusProps, { payload: { pathname, openKeys } }: any): any {
-      // console.log('☞☞☞ Menus onChangeLastPathname 111', pathname);
-      // debugger;
       if (pathname) {
         localStorage.setItem(`${environment.prefix}lastPathname`, pathname);
         const menu = menusData.reduce((s, v) => s.concat(v, v.children), []).find(v => v.path === pathname);
         if (menu) {
           const openKeys = [menu.mpid, menu.id].filter(v => !!v).map(v => String(v));
           const defaultSelectedKeys = [menu.id].map(v => String(v));
-          console.log('\u2665 onChangeLastPathname 119', { openKeys, defaultSelectedKeys });
           const action = yield put(
             this.actions.onChangeOpenKeys({ openKeys, defaultSelectedKeys, lastPathname: pathname })
           );
-          console.log('\u2665 onChangeLastPathname 121', action);
         }
       }
-      // console.log('☞☞☞ Menus onChangeLastPathname 120', pathname, openKeys);
     },
   },
 });

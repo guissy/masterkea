@@ -178,7 +178,6 @@ export const withLogin = createWith({
   },
   effects: {
     *logout(this: LoginProps, { payload }: any): any {
-      console.log('\u2665 logout 181', 'logout');
       try {
         if (!payload || (payload && payload.needExit !== false)) {
           yield call(exitAjax, payload); // 退出也要token, 不可先清token
