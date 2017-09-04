@@ -1,17 +1,19 @@
 import { Action, AnyAction } from 'redux';
 interface PayloadAction extends Action {
+  type?: any;
   payload?: any;
 }
-interface PromiseAction extends PayloadAction {
-  promise?: string | true; // 用于标记区分不同的Promise
-}
+// interface PromiseAction extends PayloadAction {
+  // promise?: string | true; // 用于标记区分不同的Promise
+// }
 declare global {
   export interface ReduxProps {
     // dispatch?: (action: Action | PayloadAction) => void;
-    dispatch?: (action: PromiseAction) => Promise<any>;
+    dispatch?: (action: PayloadAction) => Promise<any>;
   }
   // 平台没有资源站，即没有上传功能
   interface Window {
+    defaultSelectedKeys: string[];
     __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any;
     devToolsExtension: any;
     __keaPrerender: any;

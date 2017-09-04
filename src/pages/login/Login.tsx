@@ -1,9 +1,9 @@
 import { Button, Card, Form, Input, Layout, message } from 'antd';
 import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import * as React from 'react';
-import { withLang } from '../lang.model';
+import { LangSiteState, withLang } from '../lang.model';
 import LoginDynamic from './Login.dynamic';
-import { Action, Actions, createAction } from 'kea';
+import { Action } from 'kea';
 import { delay } from 'redux-saga';
 import { exitAjax, loginAjax, loginTwoAjax } from './Login.service';
 import { call, put } from 'redux-saga/effects';
@@ -17,6 +17,17 @@ import { withMenus } from '../components/menu/Menus';
 const { Header, Footer, Content } = Layout;
 
 class Login extends React.PureComponent<LoginProps, any> {
+  public static States? = class {
+    loading = false;
+    login = {};
+    admin = {};
+    loginForm = {};
+    loginTwoLoading = false;
+    hasLoginBefore = false;
+    loginTwoForm = {};
+
+    lastPathname: string;
+  };
   static Actions? = class {
     onChangeLoading = (p: any) => ({} as Action);
     onChangeLogin = (p: any) => ({} as Action);
@@ -26,15 +37,6 @@ class Login extends React.PureComponent<LoginProps, any> {
     onChangeLogout = (p: any) => ({} as Action);
     logout = (p: any) => ({} as Action);
   };
-  static States? = class {
-    loading = false;
-    login = {};
-    loginTwoLoading = false;
-    hasLoginBefore = false;
-
-    site: any;
-    lastPathname: any;
-  }
   constructor(props: LoginProps) {
     super(props);
     this.state = {};
@@ -78,7 +80,7 @@ class Login extends React.PureComponent<LoginProps, any> {
             onSubmit={this.onSubmitTwo}
             loading={login.loading}
             visible={login.visible}
-            onCancel={() => this.props.actions.onChangeLogin({ visible: false })}
+            onCancel={() => this.props.actions.onChangeLogin({ login: { visible: false } })}
           />
           <Footer />
         </Layout>
@@ -118,7 +120,7 @@ export const withLogin = createWith({
     site: withLang,
     lastPathname: withMenus,
   },
-  start: function*(this: { actions: Login.ActionsClass, props: Login.StatesClass }) {
+  start: function*(this: { actions: LoginStatic.Actions; props: LoginStatic.States }) {
     // saga started or component mounted
     // 刷新页面：已登录
     let expiration = window.sessionStorage.getItem(environment.expiration);
@@ -138,7 +140,7 @@ export const withLogin = createWith({
         // dispatch({ type: 'my/querySuccess', payload: adminInfo });
         yield put(
           this.actions.onChangeLogin({
-            ...adminInfo,
+            admin: adminInfo,
             hasLogin: true,
             needLogin: false,
             hasLoginBefore: true,
@@ -147,16 +149,11 @@ export const withLogin = createWith({
 
         // 有权限的菜单
         if (adminInfo.route) {
-          const menu = Array.isArray(adminInfo.route) && adminInfo.route.map((v: MenuItem) => v.id);
-          const subs = adminInfo.route
-            .map((v: MenuItem) => v.children.map(w => w.id))
-            .reduce((s: MenuItem[], w: MenuItem[]) => s.concat(w));
           // yield put({ type: 'menus/update', payload: { menu: menu.concat(subs) } });
         }
 
         if (location.pathname === '/login') {
           yield put(push(this.props.lastPathname));
-          yield put(createAction('hehe', null)())
         }
       }
     } else {
@@ -177,7 +174,7 @@ export const withLogin = createWith({
     }
   },
   effects: {
-    *logout(this: LoginProps, {payload}: any): any {
+    *logout(this: LoginProps, { payload }: any): any {
       try {
         if (!payload || (payload && payload.needExit !== false)) {
           yield call(exitAjax, payload); // 退出也要token, 不可先清token
@@ -188,9 +185,8 @@ export const withLogin = createWith({
         window.sessionStorage.removeItem(environment.tokenName);
         window.sessionStorage.removeItem(environment.expiration);
         window.sessionStorage.removeItem(environment.adminInfo);
-        yield put(push('/login'));
         yield put(this.actions.onChangeLogout({ hasLogin: false }));
-        yield put(createAction('hehe', null)());
+        yield put(push('/login'));
       } catch (e) {
         yield put(this.actions.onChangeLogout({ hasLogin: false }));
       }
@@ -210,7 +206,7 @@ export const withLogin = createWith({
       yield delay(100); // debounce for 100ms
       return null;
     },
-    *onChangeLoginTwoForm(this: { props: LoginProps, actions: any }, action: any): any {
+    *onChangeLoginTwoForm(this: LoginProps & { props: LoginStatic.States }, action: any): any {
       yield put(this.actions.onChangeLoginTwoLoading(true));
       const result = yield loginTwoAjax(action.payload);
       if (result.state === 0) {
@@ -218,10 +214,6 @@ export const withLogin = createWith({
 
         const admin = result.data.list;
         admin.route = result.data.route;
-        // 缓存 token，请求时放在 Header 中
-        window.sessionStorage.setItem(environment.tokenName, result.data.token);
-        window.sessionStorage.setItem(environment.expiration, String(result.data.expire));
-        window.sessionStorage.setItem(environment.adminInfo, String(JSON.stringify(admin)));
 
         // 有权限的菜单
         if (admin.route) {
@@ -232,15 +224,16 @@ export const withLogin = createWith({
           // yield put({ type: 'menus/update', payload: { menu: menu.concat(subs) } });
         }
 
-        yield put(
-          this.actions.onChangeLogin({ login: result.data, hasLogin: true, needLogin: false, hasLoginBefore: true })
-        );
+        // 缓存 token，请求时放在 Header 中
+        window.sessionStorage.setItem(environment.tokenName, result.data.token);
+        window.sessionStorage.setItem(environment.expiration, String(result.data.expire));
+        window.sessionStorage.setItem(environment.adminInfo, String(JSON.stringify(admin)));
+
+        yield put(this.actions.onChangeLogin({ admin, hasLogin: true, needLogin: false, hasLoginBefore: true }));
         yield put(push(this.props.lastPathname));
-        yield put(createAction('hehe', null)());
       } else {
         message.error(result.message);
         yield put(push('/404'));
-        yield put(createAction('hehe', null)());
       }
       yield put(this.actions.onChangeLoginTwoLoading(false));
       yield delay(100); // debounce for 100ms
@@ -250,9 +243,11 @@ export const withLogin = createWith({
 });
 
 export default Form.create()(withLogin(Login));
-export interface LoginProps extends KeaProps<Login.ActionsClass, Login.StatesClass>, FormComponentProps {}
-namespace Login {
-  export class ActionsClass extends Login.Actions {};
-  export class StatesClass extends Login.States {};
+namespace LoginStatic {
+  export class Actions extends Login.Actions {}
+  export class States extends Login.States {}
 }
-
+export interface LoginProps
+  extends KeaProps<LoginStatic.Actions, LoginStatic.States>,
+    LangSiteState,
+    FormComponentProps {}

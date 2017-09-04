@@ -63,7 +63,7 @@ function asyncComponent(chunkName: any, getComponent: any) {
       if (Component != null) {
         return <Component {...this.props} />;
       } else {
-        console.log('\u2714 asyncComponent render 64', chunkName);
+        // console.log('\u2714 asyncComponent render 64', chunkName);
       }
       return <NProgressTag />; // or <div /> with a loading spinner, etc..
     }

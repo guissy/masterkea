@@ -1,28 +1,29 @@
-import { Icon, Menu, Popover, Select } from 'antd';
+import { Icon, Menu, Modal, Popover, Select } from 'antd';
 import * as React from 'react';
-import { withLang, LangSiteState } from '../../lang.model';
-import { LoginState } from '../../login/Login.model';
+import { withLang } from '../../lang.model';
 import Menus, { withMenus } from '../menu/Menus';
 import './Header.css';
 import { withLogin } from '../../login/Login';
 import createWith, { KeaProps } from '../../../utils/buildKea';
 import { MenuItem } from '../menu/Menus.model';
 import { Action } from 'kea';
+import { push } from 'react-router-redux';
+import PasswordEdit from '../../subaccount/PasswordEdit';
 
 // tslint:disable-next-line
 const Header = ({
   dispatch,
   actions,
-  login,
+  admin,
   site,
-  onChangeEditPwd,
-  onChangeProfile,
-  fullSize,
+  collapsed,
   isNavbar,
   menuPopoverVisible,
   switchMenuPopover,
-  onChangeFullSize,
   menusData,
+
+  editPwdVisible,
+  onChangeFullSize,
 }: HeaderProps) => {
   const handleClickMenu = (e: any) => {
     switch (e.key) {
@@ -30,10 +31,10 @@ const Header = ({
         dispatch(actions.logout({}));
         break;
       case 'editPwd':
-        onChangeEditPwd();
+        dispatch(actions.onChangeEditPwdVisible({ editPwdVisible: true }));
         break;
-      case 'profile':
-        onChangeProfile();
+      case 'showProfile':
+        dispatch(actions.showProfile({}));
         break;
     }
   };
@@ -51,6 +52,7 @@ const Header = ({
       actions.onChangeLastPathname({
         pathname: m.path,
       });
+      dispatch(push(m.path));
     }
   };
 
@@ -65,7 +67,7 @@ const Header = ({
             visible={menuPopoverVisible}
             overlayClassName="popovermenu"
             trigger="click"
-            content={<Menus fullSize={fullSize} />}
+            content={<Menus collapsed={collapsed} />}
           >
             <div className="button">
               <Icon type="bars" />
@@ -73,7 +75,7 @@ const Header = ({
           </Popover>
         ) : (
           <span className="button" onClick={onChangeFullSize}>
-            <Icon type={fullSize ? 'menu-unfold' : 'menu-fold'} />
+            <Icon type={collapsed ? 'menu-unfold' : 'menu-fold'} />
           </span>
         )}
         <Select
@@ -98,7 +100,7 @@ const Header = ({
             title={
               <span>
                 <Icon type="user" />
-                {login.username}
+                {admin.username}
               </span>
             }
           >
@@ -108,6 +110,19 @@ const Header = ({
           </Menu.SubMenu>
         </Menu>
       </div>
+
+      <Modal
+        title="修改密码"
+        visible={editPwdVisible}
+        onCancel={() => dispatch(actions.onChangeEditPwdVisible({ editPwdVisible: false }))}
+        footer={null}
+      >
+        <PasswordEdit
+          editingItem={admin}
+          saving={false}
+          onSuccess={() => dispatch(actions.onChangeEditPwdVisible({ editPwdVisible: false }))}
+        />
+      </Modal>
     </div>
   );
 };
@@ -115,15 +130,18 @@ const Header = ({
 class Actions {
   onChangeEditPwdVisible = (p: any) => ({} as Action);
   onChangeProfileVisible = (p: any) => ({} as Action);
+  showProfile = (p: any) => ({} as Action);
 
   onChangeLastPathname: (p: any) => Action;
   logout: (p: any) => Action;
+  editPwd: (p: any) => Action;
 }
 class States {
   editPwdVisible = false;
   profileVisible = false;
 
   login: any;
+  admin: any;
   site: any;
   menusData: any;
 }
@@ -133,6 +151,7 @@ export default createWith({
   state: new States(),
   props: {
     login: withLogin,
+    admin: withLogin,
     logout: withLogin,
     site: withLang,
     menusData: withMenus,
@@ -141,15 +160,11 @@ export default createWith({
 })(Header as any);
 
 interface HeaderProps extends KeaProps<Actions, States> {
-  fullSize?: boolean;
-  onChangeFullSize: () => void;
-  onChangeOpenKeys: () => void;
-  onClickNavMenu: (event: any) => void;
+  collapsed?: boolean;
 
   isNavbar: boolean;
   menuPopoverVisible?: boolean;
   switchMenuPopover?: () => void;
 
-  onChangeEditPwd: () => void;
-  onChangeProfile: any;
+  onChangeFullSize?: () => void;
 }

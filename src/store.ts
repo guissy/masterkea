@@ -1,8 +1,8 @@
-import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
+import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import { keaSaga, keaReducer, Action } from 'kea';
+import { Action, keaReducer, keaSaga } from 'kea';
 import createHistory from 'history/createBrowserHistory';
-import { routerReducer, routerMiddleware } from 'react-router-redux';
+import { routerMiddleware, routerReducer } from 'react-router-redux';
 
 export const history = createHistory({ forceRefresh: false });
 
@@ -13,11 +13,14 @@ const reducers = combineReducers({
 
 export const routeSelector = (state: any) => state.router.location;
 
-const sagaMiddleware = createSagaMiddleware({
-  logger: (level, ...h) => console.log('☞☞☞ store logger 17', level, h),
-  // onError: (error: Error) => {
-  // },
-});
+const sagaMiddleware = createSagaMiddleware(
+  {
+    // logger: (level, ...h) => console.log('☞☞☞ store logger 17', level, h),
+    // onError: (error: Error) => {
+    //   console.error('\u2718'.repeat(88), error);
+    // },
+  }
+);
 const middle =
   typeof window !== 'undefined' && window.devToolsExtension ? window.devToolsExtension() : (p: any) => ({} as Action);
 const finalCreateStore = compose(

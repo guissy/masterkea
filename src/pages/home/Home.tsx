@@ -9,13 +9,14 @@ import { Route, Switch } from 'react-router';
 import router from '../../router';
 import { withLogin } from '../login/Login';
 import { Action } from 'kea';
+import Stage from '../lottery/Stage';
 
 class Actions {
   onChangeFullSize = (p: any) => ({} as Action);
   onChangeOpenKeys: (p: any) => Action;
 }
 class States {
-  fullSize = true;
+  collapsed = true; // 折叠
   isNavbar = false;
   openKeys = [] as any[];
 
@@ -35,10 +36,11 @@ export default class Home extends React.PureComponent<KeaProps<Actions, States>,
   state = {};
 
   public render() {
-    const { isNavbar, fullSize, hasLoginBefore } = this.props;
-    const fold = !isNavbar && fullSize ? 'fold' : '';
+    const { isNavbar, collapsed, hasLoginBefore } = this.props;
+    const fold = !isNavbar && collapsed ? 'fold' : '';
     const navbar = isNavbar ? 'withnavbar' : '';
     const classnames = ['layout', fold, navbar].join(' ');
+    window.defaultSelectedKeys = ['1'];
     return (
       <div>
         {hasLoginBefore && (
@@ -49,7 +51,7 @@ export default class Home extends React.PureComponent<KeaProps<Actions, States>,
                   <div className={'logo'}>
                     <img alt="logo" src={environment.logo} />
                   </div>
-                  <Menus fullSize={fullSize} />
+                  <Menus collapsed={collapsed} />
                 </div>
               </aside>
             ) : (
@@ -59,17 +61,16 @@ export default class Home extends React.PureComponent<KeaProps<Actions, States>,
               <Header
                 location={location}
                 isNavbar={isNavbar}
-                fullSize={fullSize}
+                collapsed={collapsed}
                 onChangeFullSize={(e: any) => {
-                  this.props.actions.onChangeFullSize({ fullSize: !fullSize });
-                  this.props.actions.onChangeOpenKeys({ openKeys: [] });
+                  this.props.actions.onChangeFullSize({ collapsed: !collapsed });
                 }}
               />
               <div className={'container'}>
                 <div className={'content'}>
                   {/*<Route path="lottery/result" />*/}
                   <Switch>
-                    <Route path="/lottery/stage" component={router.stage} />
+                    <Route path="/lottery/stage" component={Stage} />
                     <Route path="/lottery/result" component={router.result} />
                     <Route path="/thirdgame" component={router.thirdgame} />
                     <Route path="/*" component={router.notFound} />

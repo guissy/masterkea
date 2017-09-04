@@ -16,6 +16,18 @@ export class Result {
   }
 }
 
+function range(min: number, max: number) {
+  return function(target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
+    const originalMethod = descriptor.set; // save a reference to the original method
+    descriptor.set = function(val: number) {
+      // const val = originalMethod()
+      const valOk = Math.max(Math.min(val, max), min);
+      originalMethod.apply(this, [valOk]);
+    };
+    return descriptor;
+  };
+}
+
 export enum AjaxState {
   成功,
   警告,
