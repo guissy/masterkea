@@ -7,7 +7,7 @@ import buildRowKey from '../../utils/buildRowKey';
 import environment from '../../utils/environment';
 import RangePicker from '../components/RangePicker';
 import { LangSiteState } from '../lang.model';
-import { AllStore, AnyStore } from './BaseModel';
+import { AllStore, AnyStore, BaseModelState } from './BaseModel';
 import './BasePage.scss';
 import getDataSourceMap from './getDataSourceMap';
 import { Action } from 'redux';
@@ -55,7 +55,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
       throw new Error('命名空间 ns 不得为空！');
     } else {
       this.ns = context.ns;
-      this.itemName = props[this.ns].itemName;
+      this.itemName = props.itemName;
       this.createComponent = context.createComponent || DefaultComponent;
       this.createOkText = context.createOkText || site.提交;
       this.updateComponent = context.updateComponent || DefaultComponent;
@@ -78,7 +78,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
       this.modalWidth = context.modalWidth;
       if (this.withStatus) {
         const index = this.columns.findIndex(v => v.dataIndex === 'status');
-        const [status] = this.columns.splice(index, 1);
+        const [status] = index >= 0 ? this.columns.splice(index, 1) : [null];
         const defaultStatus = {
           title: '状态',
           dataIndex: 'status',
@@ -98,7 +98,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
             );
           },
         };
-        const statusOk = status ? { ...defaultStatus, ...status } : defaultStatus;
+        const statusOk = index >= 0 && status ? { ...defaultStatus, ...status } : defaultStatus;
         this.columns.push(statusOk);
       }
       if (this.withOperator && (this.withDelete || this.withEdit || (this.actions && this.actions.length))) {
@@ -107,28 +107,30 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
           key: 'action',
           render: (text, record) => (
             <span className="actions">
-              {this.withEdit && <a onClick={this.onShowEdit.bind(this, record)}>{site.编辑}</a>}
+              {this.withEdit &&
+              <a onClick={this.onShowEdit.bind(this, record)}>
+                {site.编辑}
+              </a>}
               {this.actions.map(
                 action =>
-                  action.render ? (
-                    action.render(record)
-                  ) : (
-                    <a
+                  action.render
+                    ? action.render(record)
+                    : <a
                       key={action.label}
+                      hidden={action.hidden && action.hidden(record)}
                       className={action.disabled && action.disabled(record) && 'disabled'}
                       onClick={action.onClick.bind(this, record)}
                     >
                       {action.label}
                     </a>
-                  )
               )}
-              {this.withDelete && (
-                <Popconfirm title="确定要删除吗？" onConfirm={this.onDelete.bind(this, record)}>
-                  <a>{site.删除}</a>
-                </Popconfirm>
-              )}
-            </span>
-          ),
+              {this.withDelete &&
+              <Popconfirm title="确定要删除吗？" onConfirm={this.onDelete.bind(this, record)}>
+                <a>
+                  {site.删除}
+                </a>
+              </Popconfirm>}
+            </span>),
         });
       }
       fieldsForTable = this.columns.filter(v => v.canShow !== false);
@@ -146,23 +148,24 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
 
   public componentWillReceiveProps(nextProps: T) {
     // 点击【提交】后，隐藏modal
-    if (nextProps[this.ns].saving) {
-      this.setState({
-        isShowAdd: false,
-        isShowEdit: false,
-      });
-    }
+    // if (nextProps.saving) {
+    // 已改为 SimpleEdit 隐藏了
+    // this.setState({
+    //   isShowAdd: false,
+    //   isShowEdit: false,
+    // });
+    // }
     // 弹出编辑modal时，先请求infoAjax, 更新 props.info 到最新数据 editingItem
     if (this.state.isShowEdit) {
-      const info = nextProps[this.ns].info;
+      const info = nextProps.info;
       if (info && info.id === this.state.editingItem.id) {
         this.setState({
-          editingItem: nextProps[this.ns].info,
+          editingItem: nextProps.info,
         });
       }
     }
     // 用于强制刷新 Switch 状态, 特别是失败时
-    if (!isEqual(nextProps[this.ns].list, this.props[this.ns].list)) {
+    if (!isEqual(nextProps.list, this.props.list)) {
       this.setState({
         switchKey: Date.now(),
       });
@@ -175,8 +178,29 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
   }
 
   public componentDidMount() {
-    console.log('\u2665 componentDidMount 179', this.props.actions.query({}));
-    this.props.dispatch(this.props.actions.query({}));
+    const query = this.props.location && this.props.location.query;
+    if (query) {
+      this.props
+        .dispatch({
+          type: `${this.ns}/query`,
+          payload: query,
+          promise: true,
+        })
+        .then(v => {
+          if (query) {
+            try {
+              this.props.form.setFieldsValue(query);
+            } catch (e) {}
+          }
+        });
+    } else {
+      console.log('☞☞☞ 9527 BasePage 197', this.props);
+      this.props.dispatch(this.props.actions.query({}));
+      this.props.dispatch({
+        type: `${this.ns}/query`,
+        payload: query,
+      });
+    }
   }
 
   // Todo 会影响到 antd 的 Select ，怀疑 Select 使用了 document 之类的方法
@@ -187,7 +211,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
   public render() {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { selectedRowKeys } = this.state;
-    const { site, [this.ns]: { list, loading, saving, page, total } } = this.props;
+    const { site, list, loading, saving, page, total } = this.props;
     const pageSize = environment.page_size;
     const layout16 = { labelCol: { span: 8 }, wrapperCol: { span: 16 } };
     const layout20 = { labelCol: { span: 4 }, wrapperCol: { span: 20 } };
@@ -224,9 +248,9 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
                           placeholder={site.请输入关键字}
                           onBlur={this.onSearchChange.bind(this, v.dataIndex)}
                           suffix={
-                            getFieldValue(v.dataIndex) ? (
-                              <Icon type="close-circle" onClick={this.onSearchEmpty.bind(this, v.dataIndex)} />
-                            ) : null
+                            getFieldValue(v.dataIndex)
+                              ? <Icon type="close-circle" onClick={this.onSearchEmpty.bind(this, v.dataIndex)} />
+                              : null
                           }
                         />
                       );
@@ -249,77 +273,73 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
                       const [start, end] = v.dataIndex.split(',');
                       return <RangePicker label={''} form={this.props.form} startField={start} endField={end} />;
                     } else {
-                      return <div>没有可用的</div>;
+                      return <div />
                     }
                   })() // tslint:disable-line
                 )}
               </Form.Item>
             ))}
-            {this.searchs.length > 0 && (
-              <div style={{ display: 'inline-block' }}>
-                <Form.Item>
-                  <Button type="primary" htmlType="submit" size="large">
-                    {site.查询}
-                  </Button>
-                </Form.Item>
-                <Form.Item>
-                  <Button type="primary" onClick={this.onReset} size="large">
-                    重置
-                  </Button>
-                </Form.Item>
-              </div>
-            )}
-            {this.canCreate && (
+            {this.searchs.length > 0 &&
+            <div style={{ display: 'inline-block' }} className="e2e-searchBtn">
               <Form.Item>
-                <Button onClick={this.onShowAdd} type="primary" size="large">
-                  {this.createBtnName || `${site.新增}${this.itemName}`}
+                <Button type="primary" htmlType="submit" size="large">
+                  {site.查询}
                 </Button>
               </Form.Item>
-            )}
+              <Form.Item>
+                <Button type="primary" onClick={this.onReset} size="large">
+                  重置
+                </Button>
+              </Form.Item>
+            </div>}
+            {this.canCreate &&
+            <Form.Item>
+              <Button onClick={this.onShowAdd} type="primary" size="large" className="e2e-create-btn">
+                {this.createBtnName || `${site.新增}${this.itemName}`}
+              </Button>
+              </Form.Item>
+            }
             {filters.length > 0 && (
               <Form.Item className="filter">
                 <span className="filterName">筛选可见列</span>
                 {filters.map(column => (
-                  <Checkbox
-                    key={column.filter[0]}
-                    indeterminate={this.state.indeterminate}
-                    onChange={event => this.onCheckFilter(column, (event.target as HTMLInputElement).checked)}
-                    checked={column.canShow || column.canShow === undefined}
-                  >
-                    {column.filter[1]}
-                  </Checkbox>
-                ))}
-              </Form.Item>
-            )}
+                <Checkbox
+                  key={column.filter[0]}
+                  indeterminate={this.state.indeterminate}
+                  onChange={event => this.onCheckFilter(column, (event.target as HTMLInputElement).checked)}
+                  checked={column.canShow || column.canShow === undefined}
+                >
+                  {column.filter[1]}
+                </Checkbox>
+              ))}
+            </Form.Item>)}
           </Form>
-          {list && !loading ? this.state.fieldsForTable.length > 0 ? (
-            <Table
-              className="table"
-              bordered={true}
-              dataSource={list}
-              columns={this.state.fieldsForTable}
-              rowKey={buildRowKey}
-              rowSelection={this.rowSelection ? rowSelct : null}
-              footer={this.footer as any}
-              onRowClick={this.onRowClick}
-              pagination={
-                page > 0 ? (
-                  {
-                    total,
-                    pageSize,
-                    current: page,
-                    showSizeChanger: true,
-                    onChange: this.onChangePage,
-                    onShowSizeChange: this.onChangePage,
-                  }
-                ) : (
-                  false
-                )
-              }
-            /> // tslint:disable-line
-          ) : null : (
-            <Spin tip="Loading..." />
-          )}
+          {list && !loading
+            ? this.state.fieldsForTable.length > 0
+              ? <Table
+                className="table"
+                bordered={true}
+                dataSource={list}
+                columns={this.state.fieldsForTable}
+                rowKey={buildRowKey}
+                rowSelection={this.rowSelection ? rowSelct : null}
+                footer={this.footer as any}
+                onRowClick={this.onRowClick}
+                pagination={
+                  page > 0
+                    ? {
+                      total,
+                      pageSize,
+                      current: page,
+                      showSizeChanger: true,
+                      onChange: this.onChangePage,
+                      onShowSizeChange: this.onChangePage,
+                    }
+                    : false
+                }
+              /> // tslint:disable-line
+              : null
+            : <Spin tip="Loading..." />}
         </div>
 
         <div className="base-after">
@@ -341,6 +361,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
             ns={this.ns}
             effect="save"
             okText={this.createOkText}
+            onSuccess={this.onOkAdd}
           />
         </Modal>
 
@@ -361,6 +382,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
             ns={this.ns}
             effect="save"
             okText={this.updateOkText}
+            onSuccess={this.onOkEdit}
           />
         </Modal>
       </div>
@@ -410,7 +432,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
     });
   };
 
-  private doQuery({ page, page_size }: any) {
+  protected doQuery({ page, page_size }: any) {
     this.props.form.validateFields((err, fieldsValue) => {
       if (err) {
         return;
@@ -446,51 +468,51 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
     });
   }
 
-  private onSearch = (event: React.FormEvent<HTMLFormElement>) => {
+  protected onSearch = (event: React.FormEvent<HTMLFormElement>) => {
     if (event) {
       event.preventDefault();
     }
     this.doQuery({ page: 1, page_size: environment.page_size });
   };
 
-  private onShowAdd = () => {
+  protected onShowAdd = () => {
     this.setState({
       isShowAdd: true,
     });
   };
 
-  //重置
-  private onReset = () => {
+  // 重置
+  protected onReset = () => {
     const { resetFields } = this.props.form;
     resetFields();
   };
 
-  private onOkAdd = () => {
-    this.setState({
-      isShowAdd: true,
-    });
-  };
-
-  private onCancelAdd = () => {
+  protected onOkAdd = () => {
     this.setState({
       isShowAdd: false,
     });
   };
 
-  private onShowEdit = (editingItem: any) => {
+  protected onCancelAdd = () => {
+    this.setState({
+      isShowAdd: false,
+    });
+  };
+
+  protected onShowEdit = (editingItem: any) => {
     this.setState({
       editingItem,
       isShowEdit: true,
     });
   };
 
-  private onOkEdit = () => {
+  protected onOkEdit = () => {
     this.setState({
-      isShowEdit: true,
+      isShowEdit: false,
     });
   };
 
-  private onCancelEdit = () => {
+  protected onCancelEdit = () => {
     this.setState({
       isShowEdit: false,
     });
@@ -525,13 +547,18 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
 export class Actions {
   query = (p: any) => ({} as Action);
   info = (p: any) => ({} as Action);
-  remote = (p: any) => ({} as Action);
+  remove = (p: any) => ({} as Action);
   update = (p: any) => ({} as Action);
   status = (p: any) => ({} as Action);
+  querySuccess = (p: any) => ({} as Action);
+  infoSuccess = (p: any) => ({} as Action);
+  removeSuccess = (p: any) => ({} as Action);
+  updateSuccess = (p: any) => ({} as Action);
+  statusSuccess = (p: any) => ({} as Action);
 }
-
-export interface BasePageProps extends ReduxProps, LangSiteState, AnyStore {
+export interface BasePageProps extends BaseModelState, ReduxProps, LangSiteState, AnyStore {
   form?: WrappedFormUtils;
+  location?: { query: any; state: any };
   actions?: Actions;
 }
 
@@ -539,7 +566,7 @@ export enum FormType {
   Hidden, // 隐含字段
   InputText, // 文本输入框，默认值
   InputNumber, // 数字输入框，
-  Account, // 文本输入框，6位数字和字母组合
+  Account, // 文本输入框，6位数字和字母组合，仅平台账号有同名检测
   Password, // 密码输入框，需要输入二次确认
   Password2, // 密码输入框，需要输入二次确认
   url, // url地址
@@ -553,6 +580,8 @@ export enum FormType {
   DatePicker,
   DateRange,
   Switch,
+  Static, // 静态文字
+  IpList, // 批量文字
 }
 
 export interface Column extends ColumnProps<any> {
@@ -576,8 +605,8 @@ export interface Column extends ColumnProps<any> {
   rules?: ValidationRule[]; // 最大长度
   content?: React.ReactChild; // checkbox中内容
   labels?: string[]; // Switch 开关文字
-
   values?: string[]; // Switch 开关的变量enable,disable两种
+  otherData?: any; // 下拉选择时传更多的参数
   formClassName?: string;
 }
 // 比 Column 字段少
@@ -591,6 +620,7 @@ export interface SearchColumn {
 interface TableAction {
   label: string;
   disabled?: (record: any) => boolean;
+  hidden?: (record: any) => boolean;
   onClick?: (record: any) => void;
   render?: (record: any) => any;
 }

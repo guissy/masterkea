@@ -79,18 +79,18 @@ export interface MenusProps extends KeaProps<Actions, States> {
 }
 
 // 默认首页
-let lastPathnameCache = { pathname: environment.adminFirstPage };
+const lastPathnameDefault = { pathname: environment.adminFirstPage };
+let lastPathnameCache: string;
 let openKeys = [] as string[];
 let defaultSelectedKeys = [] as string[];
 try {
   // 上次退出前的首页
-  lastPathnameCache = localStorage.getItem(`${environment.prefix}lastPathname`) as any;
-  if (lastPathnameCache) {
-    const menu = menusData.reduce((s, v) => s.concat(v, v.children), []).find(v => v.path === lastPathnameCache);
-    if (menu) {
-      openKeys = [menu.mpid, menu.id].filter(v => !!v).map(v => String(v));
-      defaultSelectedKeys = openKeys.slice(0);
-    }
+  const fromSession = localStorage.getItem(`${environment.prefix}lastPathname`) as any;
+  lastPathnameCache = fromSession || lastPathnameDefault;
+  const menu = menusData.reduce((s, v) => s.concat(v, v.children), []).find(v => v.path === lastPathnameCache);
+  if (menu) {
+    openKeys = [menu.mpid, menu.id].filter(v => !!v).map(v => String(v));
+    defaultSelectedKeys = openKeys.slice(0);
   }
 } catch (e) {}
 

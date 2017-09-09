@@ -1,25 +1,20 @@
 import { Form, Icon, Input, Switch } from 'antd';
-import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
+import { FormComponentProps } from 'antd/es/form/Form';
 // import { connect } from 'dva';
 import * as React from 'react';
 // import { Store } from '../../abstract/BaseModel';
-import BasePage, { BasePageConfig, Actions } from '../abstract/BasePage';
+import BasePage, { Actions, BasePageConfig } from '../abstract/BasePage';
 import SimpleEdit from '../abstract/SimpleEdit';
 import { LangSiteState, withLang } from '../lang.model';
 import './Stage.css';
-import { Action, kea } from "kea";
 import createWith from "../../utils/buildKea";
-import BaseModel from "../abstract/BaseModel";
-// import { StageState } from './Stage.model';
+import BaseModel, { BaseModelState } from "../abstract/BaseModel";
 import * as service from './Stage.service';
 
-
-// @connect(({ date, lang }: Store) => ({ date, site: lang.site }))
 const model = new BaseModel('stage', {itemName: ''}, service);
-
 @createWith({
   namespace: model.namespace,
-  state: { [model.namespace]: model.state },
+  state: model.state,
   actions: new Actions(),
   effects: model.effects,
   props: {
@@ -122,7 +117,7 @@ class Stage extends BasePage<StageProps, any> {
 
 export default Form.create()(Stage)
 
-export interface StageProps extends ReduxProps, LangSiteState, FormComponentProps {
+export interface StageProps extends BaseModelState, ReduxProps, LangSiteState, FormComponentProps {
   // form?: WrappedFormUtils;
   // stage?: StageState;
 }

@@ -5,6 +5,7 @@ import { IntlXlz } from '../../../typings/intl';
 import environment from '../../utils/environment';
 import { AjaxState, Result } from '../../utils/Result';
 import { call, put, select } from 'redux-saga/effects';
+import { Actions } from './BasePage';
 
 const initState = {
   itemName: '', // 用于提示『创建xxx成功！』
@@ -123,11 +124,12 @@ export default class BaseModel {
   private getEffects(namespace: string, itemName: string, service: any) {
     const { createAjax, deleteAjax, infoAjax, queryAjax, statusAjax, updateAjax } = service;
     return {
-      *query({ payload }: any) {
+      *query(this: { actions: Actions, props: BaseModelState }, { payload }: any) {
         if (!payload || (payload && !payload.noLoading)) {
           yield put({ type: 'changeLoading', payload: { loading: true } });
         }
-        let { page } = yield select((store: Store) => store.scenes[namespace][namespace]);
+        let { page } = yield select((store: Store) => store.scenes[namespace]);
+        console.log('☞☞☞ 9527 BaseModel 132', page);
         page = (payload && payload.page) || page || 1;
         // tslint:disable-next-line
         const page_size = (payload && payload.page_size) || environment.page_size;
@@ -146,16 +148,13 @@ export default class BaseModel {
           } else {
             console.error('返回数据不是数组：', queryAjax.toString(), result.data);
           }
-          yield put({
-            type: 'querySuccess',
-            payload: {
-              list,
-              total: result.attributes ? result.attributes.total : 0,
-              page: result.attributes ? result.attributes.number : 0,
-              attributes: result.attributes,
-              loading: false,
-            },
-          });
+          yield put(this.actions.querySuccess({
+            list,
+            total: result.attributes ? result.attributes.total : 0,
+            page: result.attributes ? result.attributes.number : 0,
+            attributes: result.attributes,
+            loading: false,
+          }));
         } else {
           if (!payload || (payload && !payload.noLoading)) {
             yield put({ type: 'changeLoading', payload: { loading: false } });
@@ -360,3 +359,14 @@ export interface BaseService {
 }
 
 type getAjaxMessage = (payload: any) => string;
+
+export interface  BaseModelState {
+  itemName: string, // 用于提示『创建xxx成功！』
+  loading: boolean,
+  saving: boolean,
+  total: number, // 翻页用
+  page: number,
+  list: any[],
+  info: any, // 正在编辑的
+  attributes: any,
+}

@@ -33,7 +33,6 @@ class States {
   },
 })
 export default class Home extends React.PureComponent<KeaProps<Actions, States>, {}> {
-  state = {};
 
   public render() {
     const { isNavbar, collapsed, hasLoginBefore } = this.props;

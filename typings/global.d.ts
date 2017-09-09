@@ -2,6 +2,7 @@ import { Action, AnyAction } from 'redux';
 interface PayloadAction extends Action {
   type?: any;
   payload?: any;
+  promise?: boolean;
 }
 // interface PromiseAction extends PayloadAction {
   // promise?: string | true; // 用于标记区分不同的Promise
@@ -10,6 +11,7 @@ declare global {
   export interface ReduxProps {
     // dispatch?: (action: Action | PayloadAction) => void;
     dispatch?: (action: PayloadAction) => Promise<any>;
+    promise?: boolean;
   }
   // 平台没有资源站，即没有上传功能
   interface Window {
