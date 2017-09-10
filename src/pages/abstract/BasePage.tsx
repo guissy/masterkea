@@ -10,7 +10,6 @@ import { LangSiteState } from '../lang.model';
 import { AllStore, AnyStore, BaseModelState } from './BaseModel';
 import './BasePage.scss';
 import getDataSourceMap from './getDataSourceMap';
-import { Action } from 'redux';
 
 class DefaultComponent extends React.PureComponent<any, any> {
   public render(): null {
@@ -107,15 +106,13 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
           key: 'action',
           render: (text, record) => (
             <span className="actions">
-              {this.withEdit &&
-              <a onClick={this.onShowEdit.bind(this, record)}>
-                {site.编辑}
-              </a>}
+              {this.withEdit && <a onClick={this.onShowEdit.bind(this, record)}>{site.编辑}</a>}
               {this.actions.map(
                 action =>
-                  action.render
-                    ? action.render(record)
-                    : <a
+                  action.render ? (
+                    action.render(record)
+                  ) : (
+                    <a
                       key={action.label}
                       hidden={action.hidden && action.hidden(record)}
                       className={action.disabled && action.disabled(record) && 'disabled'}
@@ -123,14 +120,15 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
                     >
                       {action.label}
                     </a>
+                  )
               )}
-              {this.withDelete &&
-              <Popconfirm title="确定要删除吗？" onConfirm={this.onDelete.bind(this, record)}>
-                <a>
-                  {site.删除}
-                </a>
-              </Popconfirm>}
-            </span>),
+              {this.withDelete && (
+                <Popconfirm title="确定要删除吗？" onConfirm={this.onDelete.bind(this, record)}>
+                  <a>{site.删除}</a>
+                </Popconfirm>
+              )}
+            </span>
+          ),
         });
       }
       fieldsForTable = this.columns.filter(v => v.canShow !== false);
@@ -194,12 +192,11 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
           }
         });
     } else {
-      console.log('☞☞☞ 9527 BasePage 197', this.props);
-      this.props.dispatch(this.props.actions.query({}));
-      this.props.dispatch({
-        type: `${this.ns}/query`,
-        payload: query,
-      });
+      this.props.actions.query({});
+      // this.props.dispatch({
+      //   type: `${this.ns}/query`,
+      //   payload: query,
+      // });
     }
   }
 
@@ -248,9 +245,9 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
                           placeholder={site.请输入关键字}
                           onBlur={this.onSearchChange.bind(this, v.dataIndex)}
                           suffix={
-                            getFieldValue(v.dataIndex)
-                              ? <Icon type="close-circle" onClick={this.onSearchEmpty.bind(this, v.dataIndex)} />
-                              : null
+                            getFieldValue(v.dataIndex) ? (
+                              <Icon type="close-circle" onClick={this.onSearchEmpty.bind(this, v.dataIndex)} />
+                            ) : null
                           }
                         />
                       );
@@ -273,73 +270,77 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
                       const [start, end] = v.dataIndex.split(',');
                       return <RangePicker label={''} form={this.props.form} startField={start} endField={end} />;
                     } else {
-                      return <div />
+                      return <div />;
                     }
                   })() // tslint:disable-line
                 )}
               </Form.Item>
             ))}
-            {this.searchs.length > 0 &&
-            <div style={{ display: 'inline-block' }} className="e2e-searchBtn">
+            {this.searchs.length > 0 && (
+              <div style={{ display: 'inline-block' }} className="e2e-searchBtn">
+                <Form.Item>
+                  <Button type="primary" htmlType="submit" size="large">
+                    {site.查询}
+                  </Button>
+                </Form.Item>
+                <Form.Item>
+                  <Button type="primary" onClick={this.onReset} size="large">
+                    重置
+                  </Button>
+                </Form.Item>
+              </div>
+            )}
+            {this.canCreate && (
               <Form.Item>
-                <Button type="primary" htmlType="submit" size="large">
-                  {site.查询}
+                <Button onClick={this.onShowAdd} type="primary" size="large" className="e2e-create-btn">
+                  {this.createBtnName || `${site.新增}${this.itemName}`}
                 </Button>
               </Form.Item>
-              <Form.Item>
-                <Button type="primary" onClick={this.onReset} size="large">
-                  重置
-                </Button>
-              </Form.Item>
-            </div>}
-            {this.canCreate &&
-            <Form.Item>
-              <Button onClick={this.onShowAdd} type="primary" size="large" className="e2e-create-btn">
-                {this.createBtnName || `${site.新增}${this.itemName}`}
-              </Button>
-              </Form.Item>
-            }
+            )}
             {filters.length > 0 && (
               <Form.Item className="filter">
                 <span className="filterName">筛选可见列</span>
                 {filters.map(column => (
-                <Checkbox
-                  key={column.filter[0]}
-                  indeterminate={this.state.indeterminate}
-                  onChange={event => this.onCheckFilter(column, (event.target as HTMLInputElement).checked)}
-                  checked={column.canShow || column.canShow === undefined}
-                >
-                  {column.filter[1]}
-                </Checkbox>
-              ))}
-            </Form.Item>)}
+                  <Checkbox
+                    key={column.filter[0]}
+                    indeterminate={this.state.indeterminate}
+                    onChange={event => this.onCheckFilter(column, (event.target as HTMLInputElement).checked)}
+                    checked={column.canShow || column.canShow === undefined}
+                  >
+                    {column.filter[1]}
+                  </Checkbox>
+                ))}
+              </Form.Item>
+            )}
           </Form>
-          {list && !loading
-            ? this.state.fieldsForTable.length > 0
-              ? <Table
-                className="table"
-                bordered={true}
-                dataSource={list}
-                columns={this.state.fieldsForTable}
-                rowKey={buildRowKey}
-                rowSelection={this.rowSelection ? rowSelct : null}
-                footer={this.footer as any}
-                onRowClick={this.onRowClick}
-                pagination={
-                  page > 0
-                    ? {
-                      total,
-                      pageSize,
-                      current: page,
-                      showSizeChanger: true,
-                      onChange: this.onChangePage,
-                      onShowSizeChange: this.onChangePage,
-                    }
-                    : false
-                }
-              /> // tslint:disable-line
-              : null
-            : <Spin tip="Loading..." />}
+          {list && !loading ? this.state.fieldsForTable.length > 0 ? (
+            <Table
+              className="table"
+              bordered={true}
+              dataSource={list}
+              columns={this.state.fieldsForTable}
+              rowKey={buildRowKey}
+              rowSelection={this.rowSelection ? rowSelct : null}
+              footer={this.footer as any}
+              onRowClick={this.onRowClick}
+              pagination={
+                page > 0 ? (
+                  {
+                    total,
+                    pageSize,
+                    current: page,
+                    showSizeChanger: true,
+                    onChange: this.onChangePage,
+                    onShowSizeChange: this.onChangePage,
+                  }
+                ) : (
+                  false
+                )
+              }
+            /> // tslint:disable-line
+          ) : null : (
+            <Spin tip="Loading..." />
+          )}
         </div>
 
         <div className="base-after">
@@ -545,16 +546,18 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
   };
 }
 export class Actions {
-  query = (p: any) => ({} as Action);
-  info = (p: any) => ({} as Action);
-  remove = (p: any) => ({} as Action);
-  update = (p: any) => ({} as Action);
-  status = (p: any) => ({} as Action);
-  querySuccess = (p: any) => ({} as Action);
-  infoSuccess = (p: any) => ({} as Action);
-  removeSuccess = (p: any) => ({} as Action);
-  updateSuccess = (p: any) => ({} as Action);
-  statusSuccess = (p: any) => ({} as Action);
+  query = (p: any) => ({} as Promise<any>);
+  info = (p: any) => ({} as Promise<any>);
+  remove = (p: any) => ({} as Promise<any>);
+  save = (p: any) => ({} as Promise<any>);
+  status = (p: any) => ({} as Promise<any>);
+  querySuccess = (p: any) => ({} as any);
+  infoSuccess = (p: any) => ({} as Promise<any>);
+  removeSuccess = (p: any) => ({} as Promise<any>);
+  saveSuccess = (p: any) => ({} as Promise<any>);
+  statusSuccess = (p: any) => ({} as Promise<any>);
+
+  [k: string]: (p: any) => Promise<any>;
 }
 export interface BasePageProps extends BaseModelState, ReduxProps, LangSiteState, AnyStore {
   form?: WrappedFormUtils;

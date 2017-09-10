@@ -1,21 +1,23 @@
 import { Form, Input, message, Tag } from 'antd';
-import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import * as React from 'react';
-import BasePage, { BasePageConfig, FormType } from '../abstract/BasePage';
+import BasePage, { Actions, BasePageConfig, BasePageProps, FormType } from '../abstract/BasePage';
 import SimpleEdit from '../abstract/SimpleEdit';
-import { LangSiteState } from '../lang.model';
-import { datetime } from '../../utils/date';
-import { default as BaseModel, BaseModelState } from '../abstract/BaseModel';
 import { withLang } from '../lang.model';
-import { Actions } from '../abstract/BasePage';
+import { datetime } from '../../utils/date';
+import { default as BaseModel } from '../abstract/BaseModel';
 import createWith from '../../utils/buildKea';
 import * as service from './Result.service';
+import { createAction } from 'kea';
 
-const model = new BaseModel('stage', {itemName: ''}, service);
+const model = new BaseModel('result', { itemName: '' }, service);
+model.addEffect('type');
+
+let resolve: any;
+const promise = new Promise(r => (resolve = r));
 @createWith({
   namespace: model.namespace,
-  state: model.state,
-  actions: new Actions(),
+  state: { ...model.state, type: [] },
+  actions: model.actions,
   effects: model.effects,
   props: {
     site: withLang,
@@ -23,15 +25,6 @@ const model = new BaseModel('stage', {itemName: ''}, service);
 })
 class Result extends BasePage<ResultProps, any> {
   constructor(props: ResultProps) {
-    const lotteryTypePromise = props.dispatch({ type: 'result/type', promise: true }).then(v => {
-      // console.log(v.type);
-      const list = v.type.filter((w: any) => w.pid !== '0');
-      if (list.length > 0) {
-        this.props.dispatch({ type: 'result/query', payload: { lottery_id: list[0].id } });
-      }
-      return { list };
-    });
-
     const config: BasePageConfig = {
       ns: 'result',
       createComponent: SimpleEdit,
@@ -84,46 +77,46 @@ class Result extends BasePage<ResultProps, any> {
             return (
               <div className="stateTag">
                 {text &&
-                text.split(',').map((txt: string) => {
-                  let elm;
-                  switch (txt) {
-                    case 'send':
-                      elm = (
-                        <Tag key={txt} color="#2db7f5">
-                          已派奖
-                        </Tag>
-                      );
-                      break;
-                    case 'stop':
-                      elm = (
-                        <Tag key={txt} color="#f50">
-                          停售
-                        </Tag>
-                      );
-                      break;
-                    case 'open':
-                      elm = (
-                        <Tag key={txt} color="orange">
-                          已开奖
-                        </Tag>
-                      );
-                      break;
-                    case 'valid':
-                      elm = (
-                        <Tag key={txt} color="#87d068">
-                          有效
-                        </Tag>
-                      );
-                      break;
-                    default:
-                      elm = (
-                        <Tag key={txt} color="#108ee9">
-                          未开奖
-                        </Tag>
-                      );
-                  }
-                  return elm;
-                })}
+                  text.split(',').map((txt: string) => {
+                    let elm;
+                    switch (txt) {
+                      case 'send':
+                        elm = (
+                          <Tag key={txt} color="#2db7f5">
+                            已派奖
+                          </Tag>
+                        );
+                        break;
+                      case 'stop':
+                        elm = (
+                          <Tag key={txt} color="#f50">
+                            停售
+                          </Tag>
+                        );
+                        break;
+                      case 'open':
+                        elm = (
+                          <Tag key={txt} color="orange">
+                            已开奖
+                          </Tag>
+                        );
+                        break;
+                      case 'valid':
+                        elm = (
+                          <Tag key={txt} color="#87d068">
+                            有效
+                          </Tag>
+                        );
+                        break;
+                      default:
+                        elm = (
+                          <Tag key={txt} color="#108ee9">
+                            未开奖
+                          </Tag>
+                        );
+                    }
+                    return elm;
+                  })}
               </div>
             );
           },
@@ -135,7 +128,7 @@ class Result extends BasePage<ResultProps, any> {
           dataIndex: 'lottery_id',
           formType: FormType.Select,
           initialValue: '2',
-          dataSource: lotteryTypePromise,
+          dataSource: promise as any,
         },
         {
           title: '开奖状态',
@@ -164,11 +157,24 @@ class Result extends BasePage<ResultProps, any> {
     };
     super(props, config);
   }
+
+  componentDidMount(): void {
+    this.props.actions.type({ promise: true }).then(v => {
+      // console.log(v.type);
+      const list = v.type.filter((w: any) => w.pid !== '0');
+      if (list.length > 0) {
+        this.props.actions.query({ lottery_id: list[0].id });
+      }
+      console.log('\u2665  171', list);
+      resolve({ list });
+      return { list };
+    });
+  }
 }
 
-export default Form.create()(Result)
+export default Form.create()(Result as any);
 
-export interface ResultProps extends BaseModelState, ReduxProps, LangSiteState, FormComponentProps {
+export interface ResultProps extends BasePageProps {
   // form?: WrappedFormUtils;
   // result?: ResultState;
 }

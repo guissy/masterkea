@@ -50,6 +50,7 @@ export default class BaseModel {
   public effects: any;
   public namespace: string;
   public state: any;
+  public actions: any;
   public reducers: any;
   private service: any;
 
@@ -59,6 +60,7 @@ export default class BaseModel {
     this.state = { ...initState, ...state };
     this.effects = this.getEffects(this.namespace, this.state.itemName, this.service);
     this.reducers = this.getReducers();
+    this.actions = new Actions();
   }
 
   // itemName 模块名（提示消息中出现），
@@ -70,7 +72,7 @@ export default class BaseModel {
     const needMessage = ajaxMessage !== '';
     let ajaxMsg = ajaxMessage;
     const effects = {
-      *effect({ payload }: any) {
+      *effect(this: { actions: Actions; props: BaseModelState }, { payload, resolve }: any) {
         if (ajax) {
           if (needMessage) {
             if (typeof ajaxMessage === 'function') {
@@ -81,19 +83,23 @@ export default class BaseModel {
               payload: { [loading]: true },
             });
           }
-          const { site } = yield select(({ lang }: Store) => lang);
+          const { site } = yield select((store: Store) => ['lang']);
           const result = yield call(ajax, payload);
           if (result && result.state === 0) {
             const action = {
-              type: `${namespace}/${key}Success`,
+              type: `${key}Success`,
               payload: { [key]: result.data || [] },
             };
             if (needMessage) {
               action.payload[loading] = false;
-              yield put(action);
+              yield put(this.actions[key](action.payload) as any);
               message.info(`${ajaxMsg}${site.成功}`);
             } else {
-              yield put(action);
+              yield put(this.actions[action.type](action.payload) as any);
+              // yield put(action);
+            }
+            if (resolve) {
+              resolve(action.payload);
             }
           } else {
             if (needMessage) {
@@ -118,18 +124,18 @@ export default class BaseModel {
       },
     };
     this.effects = { ...this.effects, [key]: effects.effect };
-    this.reducers = { ...this.reducers, ...reducers };
+    this.actions = { ...this.actions, [key + 'Success']: () => {} };
+    // this.reducers = { ...this.reducers, ...reducers };
   }
 
   private getEffects(namespace: string, itemName: string, service: any) {
     const { createAjax, deleteAjax, infoAjax, queryAjax, statusAjax, updateAjax } = service;
     return {
-      *query(this: { actions: Actions, props: BaseModelState }, { payload }: any) {
+      *query(this: { actions: Actions; props: BaseModelState }, { payload, resolve }: any) {
         if (!payload || (payload && !payload.noLoading)) {
           yield put({ type: 'changeLoading', payload: { loading: true } });
         }
         let { page } = yield select((store: Store) => store.scenes[namespace]);
-        console.log('☞☞☞ 9527 BaseModel 132', page);
         page = (payload && payload.page) || page || 1;
         // tslint:disable-next-line
         const page_size = (payload && payload.page_size) || environment.page_size;
@@ -148,13 +154,18 @@ export default class BaseModel {
           } else {
             console.error('返回数据不是数组：', queryAjax.toString(), result.data);
           }
-          yield put(this.actions.querySuccess({
-            list,
-            total: result.attributes ? result.attributes.total : 0,
-            page: result.attributes ? result.attributes.number : 0,
-            attributes: result.attributes,
-            loading: false,
-          }));
+          yield put(
+            this.actions.querySuccess({
+              list,
+              total: result.attributes ? result.attributes.total : 0,
+              page: result.attributes ? result.attributes.number : 0,
+              attributes: result.attributes,
+              loading: false,
+            })
+          );
+          if (resolve) {
+            resolve({ list });
+          }
         } else {
           if (!payload || (payload && !payload.noLoading)) {
             yield put({ type: 'changeLoading', payload: { loading: false } });
@@ -360,13 +371,13 @@ export interface BaseService {
 
 type getAjaxMessage = (payload: any) => string;
 
-export interface  BaseModelState {
-  itemName: string, // 用于提示『创建xxx成功！』
-  loading: boolean,
-  saving: boolean,
-  total: number, // 翻页用
-  page: number,
-  list: any[],
-  info: any, // 正在编辑的
-  attributes: any,
+export interface BaseModelState {
+  itemName: string; // 用于提示『创建xxx成功！』
+  loading: boolean;
+  saving: boolean;
+  total: number; // 翻页用
+  page: number;
+  list: any[];
+  info: any; // 正在编辑的
+  attributes: any;
 }

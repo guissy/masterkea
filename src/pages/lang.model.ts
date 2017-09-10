@@ -165,6 +165,7 @@ export interface LangSiteState {
 }
 
 export const withLang = kea({
+  path: (p: any) => ['scenes', 'lang'],
   actions: () => ({
     siteTo: (val: any) => val,
   }),

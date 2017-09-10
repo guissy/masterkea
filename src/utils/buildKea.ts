@@ -38,7 +38,8 @@ interface BuildKeaOption<A, S> {
   effects?: any;
   start?: () => void;
 }
-
+const all = [] as any[];
+const all2 = [] as any[];
 function buildKea<A, S>({
   namespace,
   state,
@@ -47,12 +48,23 @@ function buildKea<A, S>({
   effects,
   start,
 }: BuildKeaOption<A, S>): KeaOption<any, any> {
-  return {
+  const opt = {
     path: () => ['scenes', namespace],
     actions: () =>
       Object.keys(actions)
+        .concat(Object.keys(effects || {}))
         .filter(v => typeof v === 'string')
-        .reduce((o, v) => ({ ...o, [v]: (w: any) => getStateName(v, w) }), {}),
+        .reduce(
+          (o, v) => ({
+            ...o,
+            [v as any]: (() => {
+              const f = (w: any) => getStateName(v, w);
+              f.toString = () => `${v} (${namespace})`;
+              return f;
+            })(),
+          }),
+          {}
+        ),
     reducers: ({ actions }: any) =>
       Object.keys(state).reduce(
         (reducersAll, stateKey) => ({
@@ -83,7 +95,16 @@ function buildKea<A, S>({
                         mergeState = nextState;
                       }
                       result = isEqual(preState, mergeState) ? preState : mergeState;
-                      if (stateKey==='login') console.log('\u2665  87', stateKey, isEqual(preState, mergeState), '赋值时：', preState, payload, result);
+                      if (stateKey === 'login')
+                        console.log(
+                          '\u2665  87',
+                          stateKey,
+                          isEqual(preState, mergeState),
+                          '赋值时：',
+                          preState,
+                          payload,
+                          result
+                        );
                     }
                   }
                   return result;
@@ -99,6 +120,8 @@ function buildKea<A, S>({
       ? ({ actions, workers }: TakeLatestParam) =>
           Object.keys(effects).reduce((effectAll, effectKey) => {
             effectAll[actions[effectKey]] = effects[effectKey];
+            // console.log('\u2665  102', effectKey, actions[effectKey], effectAll[actions[effectKey]]);
+            all.push(actions[effectKey]);
             return effectAll;
           }, {})
       : undefined,
@@ -119,6 +142,17 @@ function buildKea<A, S>({
     },
     start: start,
   };
+  // console.log('\u2665 buildKea 125', Object.values(opt.actions()));
+  // console.log('\u2665 buildKea 125', all.map(v=>v.toString()));
+  // console.log('\u2665 buildKea 125', all[0]==all[1]);
+  // console.log('\u2665 buildKea 125', all[1]==all[2]);
+  // console.log('\u2665 buildKea 122', Object.keys(effects||{}));
+  // console.log('\u2665 buildKea 122', namespace,'actions', opt.actions());
+  // console.log('\u2665 buildKea 135', namespace,'workers', opt.workers);
+  // console.log('\u2665 buildKea 135', namespace,'reducers', opt.reducers({actions:opt.actions()}));
+  // console.log('\u2665 buildKea 135', namespace,'takeEvery',
+  //   opt.takeEvery && opt.takeEvery({actions: opt.actions(), workers: opt.workers}));
+  return opt;
 }
 export default function createWith<A, S>(option: BuildKeaOption<A, S>): ComponentDecorator<A, S> {
   return kea(buildKea(option));

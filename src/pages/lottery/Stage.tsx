@@ -7,15 +7,15 @@ import BasePage, { Actions, BasePageConfig } from '../abstract/BasePage';
 import SimpleEdit from '../abstract/SimpleEdit';
 import { LangSiteState, withLang } from '../lang.model';
 import './Stage.css';
-import createWith from "../../utils/buildKea";
-import BaseModel, { BaseModelState } from "../abstract/BaseModel";
+import createWith from '../../utils/buildKea';
+import BaseModel, { BaseModelState } from '../abstract/BaseModel';
 import * as service from './Stage.service';
 
-const model = new BaseModel('stage', {itemName: ''}, service);
+const model = new BaseModel('stage', { itemName: '' }, service);
 @createWith({
   namespace: model.namespace,
   state: model.state,
-  actions: new Actions(),
+  actions: model.actions,
   effects: model.effects,
   props: {
     site: withLang,
@@ -115,7 +115,7 @@ class Stage extends BasePage<StageProps, any> {
   }
 }
 
-export default Form.create()(Stage)
+export default Form.create()(Stage);
 
 export interface StageProps extends BaseModelState, ReduxProps, LangSiteState, FormComponentProps {
   // form?: WrappedFormUtils;

@@ -3,6 +3,7 @@ import createSagaMiddleware from 'redux-saga';
 import { Action, keaReducer, keaSaga } from 'kea';
 import createHistory from 'history/createBrowserHistory';
 import { routerMiddleware, routerReducer } from 'react-router-redux';
+import thunkMiddleware from './utils/thunkMiddleware';
 
 export const history = createHistory({ forceRefresh: false });
 
@@ -26,6 +27,7 @@ const middle =
 const finalCreateStore = compose(
   applyMiddleware(sagaMiddleware),
   applyMiddleware(routerMiddleware(history)),
+  applyMiddleware(thunkMiddleware),
   middle as Function
 )(createStore);
 
