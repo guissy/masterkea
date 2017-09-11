@@ -76,7 +76,7 @@ class Stage extends BasePage<StageProps, any> {
             return (
               <div>
                 <Form
-                  onSubmit={e => {
+                  onSubmit={(e: any) => {
                     e.preventDefault();
                     if (e.currentTarget.stop_bet.value === text) return; // tslint:disable-line
                     if (e.currentTarget.stop_bet.value < 0) return; // tslint:disable-line

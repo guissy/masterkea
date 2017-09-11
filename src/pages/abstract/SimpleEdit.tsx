@@ -11,7 +11,6 @@ import { Column, DataSource, FormType } from './BasePage';
 import getDataSourceMap from './getDataSourceMap';
 import { kea } from 'kea';
 
-// @connect(({ lang }: Store) => ({ site: lang.site }))
 
 @kea({
   connect: {

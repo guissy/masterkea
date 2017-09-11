@@ -72,6 +72,7 @@ export default class Home extends React.PureComponent<KeaProps<Actions, States>,
                     <Route path="/lottery/stage" component={Stage} />
                     <Route path="/lottery/result" component={router.result} />
                     <Route path="/thirdgame" component={router.thirdgame} />
+                    <Route path="/notice/message" component={router.message} />
                     <Route path="/*" component={router.notFound} />
                   </Switch>
                 </div>

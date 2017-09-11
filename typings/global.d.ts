@@ -48,10 +48,3 @@ declare global {
     }
   }
 }
-
-
-declare module 'antd/es/form/Form' {
-  export interface WrappedFormUtils {
-    form?: WrappedFormUtils;
-  }
-}

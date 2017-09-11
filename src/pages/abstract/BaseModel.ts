@@ -65,7 +65,7 @@ export default class BaseModel {
 
   // itemName 模块名（提示消息中出现），
   // itemName 默认为null，表示不出现提示消息
-  public addEffect(key: string, ajaxMessage: string | getAjaxMessage = '') {
+  public addEffect(key: string, ajaxMessage: string | getAjaxMessage = '', needQuery = false) {
     const { namespace, service } = this;
     const ajax = service[`${key}Ajax`];
     const loading = `${key}Loading`;
@@ -100,6 +100,9 @@ export default class BaseModel {
             }
             if (resolve) {
               resolve(action.payload);
+            }
+            if (needQuery) {
+              yield put(this.actions.query({}) as any);
             }
           } else {
             if (needMessage) {

@@ -7,6 +7,7 @@ export default {
   notFound: asyncComponent('notFound', () => import(/* webpackChunkName: "notFound" */ './pages/error/NotFound')),
   stage: asyncComponent('stage', () => import(/* webpackChunkName: "notFound" */ './pages/lottery/Stage')),
   result: asyncComponent('result', () => import(/* webpackChunkName: "notFound" */ './pages/lottery/Result')),
+  message: asyncComponent('message', () => import(/* webpackChunkName: "notFound" */ './pages/notice/Message')),
   thirdgame: asyncComponent('thirdgame', () =>
     import(/* webpackChunkName: "thirdgame" */ './pages/thirdgame/Thirdgame')
   ),

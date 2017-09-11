@@ -7,7 +7,6 @@ import { datetime } from '../../utils/date';
 import { default as BaseModel } from '../abstract/BaseModel';
 import createWith from '../../utils/buildKea';
 import * as service from './Result.service';
-import { createAction } from 'kea';
 
 const model = new BaseModel('result', { itemName: '' }, service);
 model.addEffect('type');
@@ -135,9 +134,9 @@ class Result extends BasePage<ResultProps, any> {
           dataIndex: 'state',
           formType: FormType.Select,
           initialValue: '全部',
-          dataSource: Promise.resolve().then(v => ({
+          dataSource: Promise.resolve({
             list: [{ id: 1, title: '未开奖' }, { id: 2, title: '已开奖' }],
-          })),
+          }),
         },
         {
           title: '日期',
@@ -165,7 +164,6 @@ class Result extends BasePage<ResultProps, any> {
       if (list.length > 0) {
         this.props.actions.query({ lottery_id: list[0].id });
       }
-      console.log('\u2665  171', list);
       resolve({ list });
       return { list };
     });

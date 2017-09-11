@@ -18,11 +18,12 @@ class DefaultComponent extends React.PureComponent<any, any> {
 }
 
 export default class BasePage<T extends BasePageProps, S> extends React.PureComponent<T, any> {
+  protected actions: Actions;
   protected fieldsForUpdate: Column[];
   protected fieldsForCreate: Column[];
   protected columns: Column[];
   protected searchs: SearchColumn[];
-  protected actions: TableAction[];
+  protected tableActions: TableAction[];
   protected withStatus: boolean;
   protected withEdit: boolean;
   protected withDelete: boolean;
@@ -65,7 +66,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
       this.hasFooter = Boolean(context.footer) || context.rowSelection;
       this.columns = context.columns || [];
       this.searchs = context.searchs || [];
-      this.actions = context.actions || [];
+      this.tableActions = context.actions || [];
       this.withDelete = context.withDelete !== false;
       this.withEdit = context.withEdit !== false;
       this.withStatus = context.withStatus !== false;
@@ -100,14 +101,14 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
         const statusOk = index >= 0 && status ? { ...defaultStatus, ...status } : defaultStatus;
         this.columns.push(statusOk);
       }
-      if (this.withOperator && (this.withDelete || this.withEdit || (this.actions && this.actions.length))) {
+      if (this.withOperator && (this.withDelete || this.withEdit || (this.tableActions && this.tableActions.length))) {
         this.columns.push({
           title: '操作',
           key: 'action',
           render: (text, record) => (
             <span className="actions">
               {this.withEdit && <a onClick={this.onShowEdit.bind(this, record)}>{site.编辑}</a>}
-              {this.actions.map(
+              {this.tableActions.map(
                 action =>
                   action.render ? (
                     action.render(record)
