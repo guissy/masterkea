@@ -4,6 +4,8 @@ import FormItem from 'antd/es/form/FormItem';
 import { FormProps, FormCreateOption, WrappedFormUtils } from 'antd/es/form/Form';
 
 declare module 'antd' {
+  import BasePage, { BasePageProps } from '../src/pages/abstract/BasePage';
+
   export interface FormComponentProps {
     form: WrappedFormUtils;
   }
@@ -13,10 +15,16 @@ declare module 'antd' {
     & { [x: string]: T }
     )[T];
   type Omit<T, K extends keyof T> = Pick<T, Diff<keyof T, K>>;
+  // interface ComponentDecorator<TOwnProps> {
+  //   <P extends FormComponentProps>(component: React.ComponentClass<P>):
+  //     React.ComponentClass<Omit<P, keyof FormComponentProps>>;
+  // }
   interface ComponentDecorator<TOwnProps> {
-    <P extends FormComponentProps>(component: React.ComponentClass<P>):
-      React.ComponentClass<Omit<P, keyof FormComponentProps>>;
+    <P extends FormComponentProps,
+      C extends React.ComponentClass<P>,
+        PP extends P>(component: C): React.ComponentClass<BasePageProps>;
   }
+
   export class Form extends React.Component<FormProps, any> {
     constructor(props: any);
     static Item: typeof FormItem;

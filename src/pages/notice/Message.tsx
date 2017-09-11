@@ -1,17 +1,16 @@
 import { Alert, Form, Modal } from 'antd';
-import { WrappedFormUtils } from 'antd/es/form/Form';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { datetime } from '../../utils/date';
 import { default as BaseModel, Store } from '../abstract/BaseModel';
 import BasePage, { BasePageConfig, BasePageProps, FormType } from '../abstract/BasePage';
 import SimpleEdit from '../abstract/SimpleEdit';
-import { LangSiteState, withLang } from '../lang.model';
+import { withLang } from '../lang.model';
 // import 'Message.css';
 import MessageView from './MessageView';
 import createWith from '../../utils/buildKea';
 import * as service from './Message.service';
-import { withHall } from '../account/hall/Hall';
+// import { withHall } from '../account/hall/Hall';
 
 const model = new BaseModel('message', { itemName: '' }, service);
 model.addEffect('sender');
@@ -22,7 +21,7 @@ model.addEffect('sender');
   effects: model.effects,
   props: {
     site: withLang,
-    simpleList: withHall,
+    // simpleList: withHall,
   },
 })
 class Message extends BasePage<MessageProps, any> {
@@ -34,7 +33,7 @@ class Message extends BasePage<MessageProps, any> {
       createOkText: '发送',
       createBtnName: '给所有厅主发消息',
       withDelete: true,
-      withEdit: false,
+      withEdit: true,
       withStatus: false,
       onRowClick: (editingItem, index, event) => {
         if (!event.target.className.includes('ant-') && !event.target.closest('td:last-child')) {
@@ -96,10 +95,10 @@ class Message extends BasePage<MessageProps, any> {
           dataIndex: 'recipient',
           formType: FormType.Select,
           initialValue: '全部',
-          dataSource: Promise.resolve().then(() => this.actions.simpleList({ promise: true })
-            .then(v => ({
-              list: v.simpleList.map((w: any) => ({ name: w.company_account, id: w.id })),
-            }))),
+          // dataSource: Promise.resolve().then(() => this.actions.simpleList({ promise: true })
+          //   .then(v => ({
+          //     list: v.simpleList.map((w: any) => ({ name: w.company_account, id: w.id })),
+          //   }))),
         },
       ],
       actions: [
@@ -161,7 +160,7 @@ class Message extends BasePage<MessageProps, any> {
   }
 }
 
-export default Form.create()(Message as any);
+export default Form.create()(Message);
 
 export interface MessageProps extends BasePageProps {
 }

@@ -1,7 +1,7 @@
 import { Button, Checkbox, DatePicker, Form, Icon, Input, Modal, Popconfirm, Select, Switch, Table, Spin } from 'antd';
 import { ValidationRule, WrappedFormUtils } from 'antd/lib/form/Form';
 import { ColumnProps } from 'antd/lib/table/Column';
-import { isEqual, uniqBy } from 'lodash';
+import { isEqual, uniqBy, memoize, partial } from 'lodash';
 import * as React from 'react';
 import buildRowKey from '../../utils/buildRowKey';
 import environment from '../../utils/environment';
@@ -10,10 +10,18 @@ import { LangSiteState } from '../lang.model';
 import { AllStore, AnyStore, BaseModelState } from './BaseModel';
 import './BasePage.scss';
 import getDataSourceMap from './getDataSourceMap';
+import { FormComponentProps } from 'antd/es/form/Form';
 
 class DefaultComponent extends React.PureComponent<any, any> {
   public render(): null {
     return null;
+  }
+}
+
+class A extends React.PureComponent<any, any> {
+  render () {
+    console.log('☞☞☞ 9527 BasePage 23', this.props.id);
+    return <a onClick={this.props.onClick}>编辑</a>;
   }
 }
 
@@ -107,7 +115,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
           key: 'action',
           render: (text, record) => (
             <span className="actions">
-              {this.withEdit && <a onClick={this.onShowEdit.bind(this, record)}>{site.编辑}</a>}
+              {this.withEdit && <A id={record.id} onClick={this.onShowEdit(record)}>{site.编辑}</A>}
               {this.tableActions.map(
                 action =>
                   action.render ? (
@@ -143,6 +151,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
       dataSourceMap: getDataSourceMap.call(this, context.searchs),
       selectedRowKeys: [],
     };
+    this.onShowEdit = this.onShowEdit.bind(this);
   }
 
   public componentWillReceiveProps(nextProps: T) {
@@ -199,6 +208,9 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
       //   payload: query,
       // });
     }
+    setInterval(() => {
+      this.setState({ok: Date.now()})
+    }, 1000)
   }
 
   // Todo 会影响到 antd 的 Select ，怀疑 Select 使用了 document 之类的方法
@@ -501,7 +513,18 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
     });
   };
 
-  protected onShowEdit = (editingItem: any) => {
+  // 解决问题：实现 jsx 属性中 onClick={()=>this.onShowEdit(editingItem)} 总是产生新函数
+  // 思路类似 html： onclick="行内脚本"
+  // 使用方法 jsx：onClick={this.onShowEdit(editingItem)}
+  @(function (t:any,pk:any,d:any){
+    const originFn = d.value;
+    const getFn = function (this: any, val: any) {
+      return originFn.bind(this, val);
+    };
+    d.value=memoize(getFn);
+    return d;
+  })
+  protected onShowEdit(editingItem: any): any {
     this.setState({
       editingItem,
       isShowEdit: true,
@@ -560,8 +583,8 @@ export class Actions {
 
   [k: string]: (p: any) => Promise<any>;
 }
-export interface BasePageProps extends BaseModelState, ReduxProps, LangSiteState, AnyStore {
-  form?: WrappedFormUtils;
+export interface BasePageProps extends FormComponentProps, BaseModelState, ReduxProps, LangSiteState, AnyStore {
+  // form?: WrappedFormUtils;
   location?: { query: any; state: any };
   actions?: Actions;
 }

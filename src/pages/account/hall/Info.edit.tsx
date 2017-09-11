@@ -5,11 +5,11 @@ import * as styles from './Hall.less';
 import { withHall } from './Hall';
 import { kea } from 'kea';
 
-// @kea({
-//   connect: {
-//     props: [withHall, ['hallLoginLoading', 'hallInfo', 'saveHallInfoLoading']],
-//   },
-// })
+@kea({
+  connect: {
+    props: [withHall, ['hallLoginLoading', 'hallInfo', 'saveHallInfoLoading']],
+  },
+})
 class InfoEdit extends React.PureComponent<InfoEditProps, any> {
   constructor(props: InfoEditProps) {
     super(props);
@@ -159,6 +159,5 @@ export default Form.create()(InfoEdit);
 
 export interface InfoEditProps extends ReduxProps, FormComponentProps {
   hall?: any;
-  // form?: WrappedFormUtils;
   onSuccess: (p?: any) => void;
 }
