@@ -10,7 +10,7 @@ import { withLang } from '../lang.model';
 import MessageView from './MessageView';
 import createWith from '../../utils/buildKea';
 import * as service from './Message.service';
-import { withHall } from '../account/hall/Hall.model';
+import { withHallList } from '../account/hall/Hall.model.pk';
 // 虽然这里import了，但是组件没import呢？可以使用了懒加载的原因
 
 const model = new BaseModel('message', { itemName: '' }, service);
@@ -22,7 +22,7 @@ model.addEffect('sender');
   effects: model.effects,
   props: {
     site: withLang,
-    simpleList: withHall,
+    simpleList: withHallList,
   },
 })
 class Message extends BasePage<MessageProps, any> {
@@ -73,11 +73,7 @@ class Message extends BasePage<MessageProps, any> {
           title: '发送状态',
           dataIndex: 'status',
           render: (text, record) => {
-            return (
-              <span>
-                {!!text ? '已发送' : '未发送'}
-              </span>
-            );
+            return <span>{!!text ? '已发送' : '未发送'}</span>;
           },
         },
       ],
@@ -88,7 +84,8 @@ class Message extends BasePage<MessageProps, any> {
           formType: FormType.Select,
           initialValue: '全部',
           // dataSource: props.dispatch({ type: 'message/sender', promise: true }).then(v => ({ list: v.sender })),
-          dataSource: Promise.resolve().then(() => this.actions.sender({ promise: true }))
+          dataSource: Promise.resolve()
+            .then(() => this.actions.sender({ promise: true }))
             .then(v => ({ list: v.sender })),
         },
         {
@@ -96,10 +93,11 @@ class Message extends BasePage<MessageProps, any> {
           dataIndex: 'recipient',
           formType: FormType.Select,
           initialValue: '全部',
-          dataSource: Promise.resolve().then(() => this.actions.simpleList({ promise: true })
-            .then(v => ({
+          dataSource: Promise.resolve().then(() =>
+            this.actions.simpleList({ promise: true }).then(v => ({
               list: v.simpleList.map((w: any) => ({ name: w.company_account, id: w.id })),
-            }))),
+            }))
+          ),
         },
       ],
       actions: [
@@ -128,7 +126,8 @@ class Message extends BasePage<MessageProps, any> {
         <Alert
           message={
             <span>
-              {' '}点击<Link to="/account/hall">这里</Link>给指定厅主发消息{' '}
+              {' '}
+              点击<Link to="/account/hall">这里</Link>给指定厅主发消息{' '}
             </span>
           }
           banner={true}
@@ -163,5 +162,4 @@ class Message extends BasePage<MessageProps, any> {
 
 export default Form.create()(Message);
 
-export interface MessageProps extends BasePageProps {
-}
+export interface MessageProps extends BasePageProps {}

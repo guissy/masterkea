@@ -120,12 +120,6 @@ export default class BaseModel {
         }
       },
     };
-    const reducers = {
-      // tslint:disable-next-line
-      [key + 'Success'](state: BaseState, action: any) {
-        return { ...state, ...action.payload };
-      },
-    };
     this.effects = { ...this.effects, [key]: effects.effect };
     this.actions = { ...this.actions, [key + 'Success']: () => {} };
     // this.reducers = { ...this.reducers, ...reducers };

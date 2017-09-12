@@ -2,7 +2,7 @@ import { BaseState, default as BaseModel } from '../../abstract/BaseModel';
 import * as service from './Webset.service';
 import { withLang } from '../../lang.model';
 import createWith from '../../../utils/buildKea';
-import { withHall } from '../hall/Hall.model';
+import { withHallList } from '../hall/Hall.model.pk';
 
 const model = new BaseModel('webset', { itemName: '' }, service);
 model.addEffect('threshold'); // 负载等级
@@ -17,10 +17,9 @@ export const withWebset: any = createWith({
   effects: model.effects,
   props: {
     site: withLang,
-    simpleList: withHall,
+    simpleList: withHallList,
   },
-})
-
+});
 export interface WebsetState extends BaseState {
   list: any[];
   noAssign: any[];

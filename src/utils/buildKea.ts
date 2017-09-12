@@ -53,6 +53,9 @@ function buildKea<A, S>({
     actions: () =>
       Object.keys(actions)
         .concat(Object.keys(effects || {}))
+        .concat(Object.keys(effects || {})
+            .filter(v => !v.endsWith('Success'))
+            .map(v => v + 'Success'))
         .filter(v => typeof v === 'string')
         .reduce(
           (o, v) => ({
@@ -128,6 +131,9 @@ function buildKea<A, S>({
     workers: effects,
     connect: props && {
       actions: Object.keys(props).reduce((o, v) => {
+        if (props[v]===undefined) {
+          console.warn(`${v} is not in ` + namespace);
+        }
         if (Object.keys(props[v].actions).includes(v)) {
           o = o.concat([props[v], [v]]);
         }

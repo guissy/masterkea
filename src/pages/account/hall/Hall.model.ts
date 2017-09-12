@@ -5,9 +5,9 @@ import * as service from './Hall.service';
 import { stringify } from 'querystring';
 import { call } from 'redux-saga/effects';
 import { withWebset } from '../webset/Webset.model';
+import { withHallList } from './Hall.model.pk';
 
 const model = new BaseModel('hall', { itemName: '' }, service);
-model.addEffect('simpleList');
 model.addEffect('hallInfo'); // 获取指定厅主的平台资料
 model.addEffect('hallGame'); // 获取指定厅主的游戏设置
 model.addEffect('hallLogin'); // 获取指定厅主的登录资料
@@ -38,9 +38,10 @@ export const withHall = createWith({
   namespace: model.namespace,
   state: { ...model.state, type: [] },
   actions: model.actions,
-  effects: {...model.effects, ...effects},
+  effects: { ...model.effects, ...effects },
   props: {
     site: withLang,
-    // noAssign: withWebset,
+    noAssign: withWebset,
+    simpleList: withHallList,
   },
 });

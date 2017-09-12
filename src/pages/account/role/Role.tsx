@@ -1,13 +1,8 @@
 import { Form } from 'antd';
 import * as React from 'react';
-import { default as BaseModel } from '../../abstract/BaseModel';
 import BasePage, { BasePageConfig, BasePageProps } from '../../abstract/BasePage';
-import { withLang } from '../../lang.model';
 import RoleEdit from './Role.edit';
-import * as service from './Role.service';
-import createWith from '../../../utils/buildKea';
 import { withRole } from './Role.model';
-
 
 @withRole
 class Role extends BasePage<RoleProps, any> {
@@ -61,7 +56,7 @@ class Role extends BasePage<RoleProps, any> {
   }
 }
 
-export default Form.create()(Role)
+export default Form.create()(Role);
 
 export interface RoleProps extends BasePageProps {
   permissionLoading: boolean;

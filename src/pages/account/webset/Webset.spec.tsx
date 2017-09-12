@@ -23,7 +23,7 @@ test('\u2665 webset: 分页', async () => {
     lang,
     webset: { list: [] as any, loading: true, page: 0, page_size: 0, total: 0 },
   };
-  const store = configureStore([thunkMiddleware()])(() => state);
+  const store = configureStore([thunkMiddleware])(() => state);
   store.subscribe(() => {
     const action = store.getActions().shift();
     if (action && action.type === 'webset/query') {
@@ -44,10 +44,25 @@ test('\u2665 webset: 分页', async () => {
       <Webset />
     </Provider>
   );
-  expect(wrapper.find('.base-main').first().text()).toContain('Loading');
+  expect(
+    wrapper
+      .find('.base-main')
+      .first()
+      .text()
+  ).toContain('Loading');
   await new Promise(resolve => setTimeout(resolve, 10));
-  expect(wrapper.find('.ant-pagination-item a').first().text()).toBe('1');
-  expect(wrapper.find('.ant-pagination-item a').last().text()).toBe('10');
+  expect(
+    wrapper
+      .find('.ant-pagination-item a')
+      .first()
+      .text()
+  ).toBe('1');
+  expect(
+    wrapper
+      .find('.ant-pagination-item a')
+      .last()
+      .text()
+  ).toBe('10');
 });
 
 test('\u2665 webset: 新增', async () => {
@@ -74,7 +89,7 @@ test('\u2665 webset: 新增', async () => {
     lang,
     webset: { list: [] as any, loading: true, page: 0, page_size: 0, total: 0 },
   };
-  const store = configureStore([thunkMiddleware()])(() => state);
+  const store = configureStore([thunkMiddleware])(() => state);
   store.subscribe(() => {
     const action = store.getActions().shift();
     if (action && action.type === 'webset/save') {
@@ -111,11 +126,7 @@ test('\u2665 webset: 新增', async () => {
   expect(modal).toBeTruthy();
 
   // 填写表单
-  const wrapper2 = mount(
-    <Provider store={store}>
-      {findReactElement(modal)}
-    </Provider>
-  );
+  const wrapper2 = mount(<Provider store={store}>{findReactElement(modal)}</Provider>);
   const simpleEdit = wrapper2.find('WebsetEdit');
   expect(simpleEdit.exists()).toBeTruthy();
   await new Promise(resolve => setTimeout(resolve, 0)); // Promise 需要异步刷新
@@ -124,9 +135,11 @@ test('\u2665 webset: 新增', async () => {
   wrapper2.find('#alias').simulate('change', { target: { value: webset.alias } });
   wrapper2.find('#access_token').simulate('change', { target: { value: webset.access_token } });
   wrapper2.find('#jwt_token').simulate('change', { target: { value: webset.jwt_token } });
-  expect(wrapper2.find(Select).props().children.length);
 
-  wrapper2.find('.ant-tabs-tab').last().simulate('click');
+  wrapper2
+    .find('.ant-tabs-tab')
+    .last()
+    .simulate('click');
   await new Promise(resolve => setTimeout(resolve, 0)); // Promise 需要异步刷新
 
   // 表单验证
@@ -151,7 +164,10 @@ test('\u2665 webset: 新增', async () => {
   // 提交表单
   simpleEdit.find('Form').simulate('submit');
   simpleEdit.find('form').simulate('submit');
-  simpleEdit.find('button[type="submit"]').last().simulate('click');
+  simpleEdit
+    .find('button[type="submit"]')
+    .last()
+    .simulate('click');
   await new Promise(resolve => setTimeout(resolve, 100));
   expect(state.webset.list[0].sites).toBe(webset.sites);
   expect(wrapper2.props().visible).toBeFalsy();

@@ -15,7 +15,7 @@ class Hall extends BasePage<HallProps, any> {
   private domainPromise: Promise<any>;
   constructor(props: HallProps) {
     const companyAccountPromise = Promise.resolve()
-      .then(() => this.props.actions.simpleList({ promise: true }))
+      .then(() => this.actions.simpleList({ promise: true }))
       .then(data => ({
         list: data.simpleList.map((item: HallSimpleItem) => ({
           title: item.company_account,
@@ -69,17 +69,20 @@ class Hall extends BasePage<HallProps, any> {
           title: '厅主后台登录账号',
           dataIndex: 'account',
           render: (text, { id }) =>
-            text
-              ? text
-              : <a
-                  onClick={() => {
-                    this.props.dispatch({ type: 'hall/hallLogin', payload: { id } });
-                    this.props.dispatch({ type: 'hall/infoSuccess', payload: { info: { id } } });
-                    this.setState({ id, isEditingLogin: true });
-                  }}
-                >
-                  {' '}设置{' '}
-                </a>,
+            text ? (
+              text
+            ) : (
+              <a
+                onClick={() => {
+                  this.props.dispatch({ type: 'hall/hallLogin', payload: { id } });
+                  this.props.dispatch({ type: 'hall/infoSuccess', payload: { info: { id } } });
+                  this.setState({ id, isEditingLogin: true });
+                }}
+              >
+                {' '}
+                设置{' '}
+              </a>
+            ),
         },
         {
           title: '代理数/会员数',
@@ -100,15 +103,12 @@ class Hall extends BasePage<HallProps, any> {
         {
           title: '在线状态',
           dataIndex: 'online',
-          render: value =>
-            <span style={{ color: value === 1 ? '#87d068' : '#AAA' }}>
-              {value === 1 ? '在线' : '离线'}
-            </span>,
+          render: value => <span style={{ color: value === 1 ? '#87d068' : '#AAA' }}>{value === 1 ? '在线' : '离线'}</span>,
         },
         {
           title: '厅主后台',
           dataIndex: 'tz',
-          render: (text, record) =>
+          render: (text, record) => (
             <div
               className={styles.tzLink}
               onClick={() => {
@@ -116,15 +116,13 @@ class Hall extends BasePage<HallProps, any> {
               }}
             >
               <p>
-                {this.mainWidth > 1080 &&
-                  <span className={styles.tzName}>
-                    {record.company_name}
-                  </span>}
+                {this.mainWidth > 1080 && <span className={styles.tzName}>{record.company_name}</span>}
                 <span className={styles.txt}>
                   后台 <Icon type="export" />
                 </span>
               </p>
-            </div>,
+            </div>
+          ),
         },
       ],
       searchs: [
@@ -193,11 +191,11 @@ class Hall extends BasePage<HallProps, any> {
     this.state.editingItem = {};
     this.domainPromise = Promise.resolve()
       // .then(() => this.props.actions.noAssign({ promise: true }))
-      .then(() => ({noAssign: []}))
+      .then(() => ({ noAssign: [] }))
       .then(v => ({
-      list: v.noAssign.map((w: any) => ({ id: w.id, name: `${w.domain} (${w.name} ${w.threshold_number} 人)` })),
-    }));
-    this.footer = () =>
+        list: v.noAssign.map((w: any) => ({ id: w.id, name: `${w.domain} (${w.name} ${w.threshold_number} 人)` })),
+      }));
+    this.footer = () => (
       <div>
         <Button
           className="e2e-sendNews"
@@ -211,7 +209,8 @@ class Hall extends BasePage<HallProps, any> {
         >
           <Icon type="file" />批量发送消息
         </Button>
-      </div>;
+      </div>
+    );
     const aside = document.querySelector('aside');
     this.mainWidth = window.innerWidth - (aside ? aside.clientWidth : 0);
   }
@@ -360,9 +359,7 @@ class Hall extends BasePage<HallProps, any> {
 
 export default Form.create()(Hall);
 
-export interface HallProps extends BasePageProps {
-}
-
+export interface HallProps extends BasePageProps {}
 
 // 体育 视讯 电子游戏 体育
 export interface GameCategory {

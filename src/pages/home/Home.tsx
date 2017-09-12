@@ -14,6 +14,7 @@ import Hall from '../account/hall/Hall';
 import Subaccount from '../account/subaccount/Subaccount';
 import Webset from '../account/webset/Webset';
 import Role from '../account/role/Role';
+import Message from '../notice/Message';
 
 class Actions {
   onChangeFullSize = (p: any) => ({} as Action);
@@ -37,7 +38,6 @@ class States {
   },
 })
 export default class Home extends React.PureComponent<KeaProps<Actions, States>, {}> {
-
   public render() {
     const { isNavbar, collapsed, hasLoginBefore } = this.props;
     const fold = !isNavbar && collapsed ? 'fold' : '';
@@ -81,8 +81,8 @@ export default class Home extends React.PureComponent<KeaProps<Actions, States>,
                     <Route path="/account/webset" component={Webset} />
                     <Route path="/account/role" component={Role} />
                     {/*<Route path="/account/sub" component={router.subaccount} />*/}
-                    {/*<Route path="/thirdgame" component={router.thirdgame} />*/}
-                    {/*<Route path="/notice/message" component={router.message} />*/}
+                    <Route path="/thirdgame" component={router.thirdgame} />
+                    <Route path="/notice/message" component={Message} />
                     <Route path="/*" component={router.notFound} />
                   </Switch>
                 </div>

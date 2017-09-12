@@ -22,7 +22,7 @@ test('\u2665 role: 分页', async () => {
     lang,
     role: { list: [] as any, loading: true, page: 0, page_size: 0, total: 0 },
   };
-  const store = configureStore([thunkMiddleware()])(() => state);
+  const store = configureStore([thunkMiddleware])(() => state);
   store.subscribe(() => {
     const action = store.getActions().shift();
     if (action && action.type === 'role/query') {
@@ -43,10 +43,25 @@ test('\u2665 role: 分页', async () => {
       <Role />
     </Provider>
   );
-  expect(wrapper.find('.base-main').first().text()).toContain('Loading');
+  expect(
+    wrapper
+      .find('.base-main')
+      .first()
+      .text()
+  ).toContain('Loading');
   await new Promise(resolve => setTimeout(resolve, 10));
-  expect(wrapper.find('.ant-pagination-item a').first().text()).toBe('1');
-  expect(wrapper.find('.ant-pagination-item a').last().text()).toBe('10');
+  expect(
+    wrapper
+      .find('.ant-pagination-item a')
+      .first()
+      .text()
+  ).toBe('1');
+  expect(
+    wrapper
+      .find('.ant-pagination-item a')
+      .last()
+      .text()
+  ).toBe('10');
 });
 
 test('\u2665 role: 新增', async () => {
@@ -58,9 +73,9 @@ test('\u2665 role: 新增', async () => {
   const permission = require('../../../../build/routes.json').routes;
   let state = {
     lang,
-    role: { list: [] as any, loading: true, page: 0, page_size: 0, total: 0 },
+    role: { list: [] as any, permission: {}, permissionLoading: false, loading: true, page: 0, page_size: 0, total: 0 },
   };
-  const store = configureStore([thunkMiddleware()])(() => state);
+  const store = configureStore([thunkMiddleware])(() => state);
   store.subscribe(() => {
     const action = store.getActions().shift();
     if (action && action.type === 'role/save') {
@@ -73,7 +88,7 @@ test('\u2665 role: 新增', async () => {
       state = {
         ...state,
         role: { ...role, permission, permissionLoading: false },
-      };
+      } as any;
     }
     if (action && action.type === 'role/saveSuccess') {
       state = {
@@ -96,11 +111,7 @@ test('\u2665 role: 新增', async () => {
   expect(modal).toBeTruthy();
 
   // 填写表单
-  const wrapper2 = mount(
-    <Provider store={store}>
-      {findReactElement(modal)}
-    </Provider>
-  );
+  const wrapper2 = mount(<Provider store={store}>{findReactElement(modal)}</Provider>);
   const simpleEdit = wrapper2.find('RoleEdit');
   expect(simpleEdit.exists()).toBeTruthy();
   await new Promise(resolve => setTimeout(resolve, 0)); // Promise 需要异步刷新
@@ -133,7 +144,7 @@ test('\u2665 role: 删除', async () => {
     lang,
     role: { list: [role] as any, loading: false, page: 0, page_size: 0, total: 0 },
   };
-  const store = configureStore([thunkMiddleware()])(() => state);
+  const store = configureStore([thunkMiddleware])(() => state);
   store.subscribe(() => {
     const action = store.getActions().shift();
     if (action && action.type === 'role/remove') {
@@ -152,17 +163,16 @@ test('\u2665 role: 删除', async () => {
   );
   expect(wrapper.find('table').text()).toContain('删除');
   expect(wrapper.find('.ant-modal').exists()).toBeFalsy();
-  wrapper.find('a').findWhere(w => w && w.text() === '删除').simulate('click');
+  wrapper
+    .find('a')
+    .findWhere(w => w && w.text() === '删除')
+    .simulate('click');
   await new Promise(resolve => setTimeout(resolve, 0));
   const popover = Array.from(document.body.querySelectorAll('[data-reactroot]')).pop() as any;
   expect(popover).toBeTruthy();
 
   // 确认框
-  const wrapper2 = mount(
-    <Provider store={store}>
-      {findReactElement(popover)}
-    </Provider>
-  );
+  const wrapper2 = mount(<Provider store={store}>{findReactElement(popover)}</Provider>);
   expect(wrapper2.text()).toContain('确定');
   await new Promise(resolve => setTimeout(resolve, 200));
   wrapper2.find('.ant-btn-primary').simulate('click');

@@ -22,7 +22,7 @@ test('\u2665 subaccount: 分页', async () => {
     lang,
     subaccount: { list: [] as any, loading: true, page: 0, page_size: 0, total: 0 },
   };
-  const store = configureStore([thunkMiddleware()])(() => state);
+  const store = configureStore([thunkMiddleware])(() => state);
   store.subscribe(() => {
     const action = store.getActions().shift();
     if (action && action.type === 'subaccount/query') {
@@ -43,10 +43,25 @@ test('\u2665 subaccount: 分页', async () => {
       <Subaccount />
     </Provider>
   );
-  expect(wrapper.find('.base-main').first().text()).toContain('Loading');
+  expect(
+    wrapper
+      .find('.base-main')
+      .first()
+      .text()
+  ).toContain('Loading');
   await new Promise(resolve => setTimeout(resolve, 10));
-  expect(wrapper.find('.ant-pagination-item a').first().text()).toBe('1');
-  expect(wrapper.find('.ant-pagination-item a').last().text()).toBe('10');
+  expect(
+    wrapper
+      .find('.ant-pagination-item a')
+      .first()
+      .text()
+  ).toBe('1');
+  expect(
+    wrapper
+      .find('.ant-pagination-item a')
+      .last()
+      .text()
+  ).toBe('10');
 });
 
 test('\u2665 subaccount: 状态', async () => {
@@ -60,7 +75,7 @@ test('\u2665 subaccount: 状态', async () => {
     subaccount: { list: [account] as any, loading: false, page: 0, page_size: 0, total: 0 },
   };
   // tslint:disable-next-line
-  const store = configureStore([thunkMiddleware()])(() => state);
+  const store = configureStore([thunkMiddleware])(() => state);
   store.subscribe(() => {
     const action = store.getActions().shift();
     if (action && action.type === 'subaccount/status') {
@@ -107,7 +122,7 @@ test('\u2665 subaccount: 新增', async () => {
     lang,
     subaccount: { list: [] as any, loading: true, page: 0, page_size: 0, total: 0 },
   };
-  const store = configureStore([thunkMiddleware()])(() => state);
+  const store = configureStore([thunkMiddleware])(() => state);
   store.subscribe(() => {
     const action = store.getActions().shift();
     if (action && action.type === 'subaccount/save') {
@@ -151,11 +166,7 @@ test('\u2665 subaccount: 新增', async () => {
   expect(modal).toBeTruthy();
 
   // 填写表单
-  const wrapper2 = mount(
-    <Provider store={store}>
-      {findReactElement(modal)}
-    </Provider>
-  );
+  const wrapper2 = mount(<Provider store={store}>{findReactElement(modal)}</Provider>);
   const simpleEdit = wrapper2.find('SimpleEdit');
   expect(simpleEdit.exists()).toBeTruthy();
   await new Promise(resolve => setTimeout(resolve, 0)); // Promise 需要异步刷新
@@ -163,7 +174,10 @@ test('\u2665 subaccount: 新增', async () => {
   wrapper2.find('#truename').simulate('change', { target: { value: account.username } });
   wrapper2.find('#password').simulate('change', { target: { value: account.username } });
   wrapper2.find('#password2').simulate('change', { target: { value: account.username } });
-  wrapper2.find('input[type="radio"]').first().simulate('change', { target: { value: 1, checked: true } });
+  wrapper2
+    .find('input[type="radio"]')
+    .first()
+    .simulate('change', { target: { value: 1, checked: true } });
   await new Promise(resolve => setTimeout(resolve, 0)); // Promise 需要异步刷新
 
   // 表单验证
@@ -192,7 +206,7 @@ test('\u2665 subaccount: 删除', async () => {
     lang,
     subaccount: { list: [account] as any, loading: false, page: 0, page_size: 0, total: 0 },
   };
-  const store = configureStore([thunkMiddleware()])(() => state);
+  const store = configureStore([thunkMiddleware])(() => state);
   store.subscribe(() => {
     const action = store.getActions().shift();
     if (action && action.type === 'subaccount/remove') {
@@ -211,17 +225,16 @@ test('\u2665 subaccount: 删除', async () => {
   );
   expect(wrapper.find('table').text()).toContain('删除');
   expect(wrapper.find('.ant-modal').exists()).toBeFalsy();
-  wrapper.find('a').findWhere(w => w && w.text() === '删除').simulate('click');
+  wrapper
+    .find('a')
+    .findWhere(w => w && w.text() === '删除')
+    .simulate('click');
   await new Promise(resolve => setTimeout(resolve, 0));
   const popover = Array.from(document.body.querySelectorAll('[data-reactroot]')).pop() as any;
   expect(popover).toBeTruthy();
 
   // 确认框
-  const wrapper2 = mount(
-    <Provider store={store}>
-      {findReactElement(popover)}
-    </Provider>
-  );
+  const wrapper2 = mount(<Provider store={store}>{findReactElement(popover)}</Provider>);
   expect(wrapper2.text()).toContain('确定');
   await new Promise(resolve => setTimeout(resolve, 200));
   wrapper2.find('.ant-btn-primary').simulate('click');
@@ -246,7 +259,7 @@ test('\u2665 subaccount: 改密', async () => {
     lang,
     subaccount: { list: [account] as any, loading: false, page: 0, page_size: 0, total: 0 },
   };
-  const store = configureStore([thunkMiddleware()])(() => state);
+  const store = configureStore([thunkMiddleware])(() => state);
   store.subscribe(() => {
     const action = store.getActions().shift();
     if (action && action.type === 'subaccount/password') {
@@ -270,18 +283,17 @@ test('\u2665 subaccount: 改密', async () => {
     { attachTo: document.body }
   );
   expect(wrapper.find('table').text()).toContain('改密');
-  wrapper.find('a').findWhere(w => w && w.text() === '改密').simulate('click');
+  wrapper
+    .find('a')
+    .findWhere(w => w && w.text() === '改密')
+    .simulate('click');
   await new Promise(resolve => setTimeout(resolve, 0));
   expect(document.body.childNodes).toHaveLength(2);
   const modal = Array.from(document.body.querySelectorAll('[data-reactroot]')).pop() as any;
   expect(modal).toBeTruthy();
 
   // 填写表单
-  const wrapper2 = mount(
-    <Provider store={store}>
-      {findReactElement(modal)}
-    </Provider>
-  );
+  const wrapper2 = mount(<Provider store={store}>{findReactElement(modal)}</Provider>);
   await new Promise(resolve => setTimeout(resolve, 0)); // Promise 需要异步刷新
   const passwordEdit = wrapper2.find('PasswordEdit');
   expect(passwordEdit.exists()).toBeTruthy();
