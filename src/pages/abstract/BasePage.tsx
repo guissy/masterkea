@@ -478,7 +478,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
       });
       fieldsValue.page = page;
       fieldsValue.page_size = page_size;
-      this.props.dispatch({ type: `${this.ns}/query`, payload: fieldsValue });
+      this.props.actions.query(fieldsValue);
     });
   }
 
@@ -514,7 +514,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
   };
 
   // 解决问题：实现 jsx 属性中 onClick={()=>this.onShowEdit(editingItem)} 总是产生新函数
-  // 思路类似 html： onclick="行内脚本"
+  // 解决思路类似 html： onclick="行内脚本"
   // 使用方法 jsx：onClick={this.onShowEdit(editingItem)}
   @(function (t:any,pk:any,d:any){
     const originFn = d.value;

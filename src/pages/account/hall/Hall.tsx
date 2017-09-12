@@ -7,61 +7,21 @@ import * as styles from './Hall.less';
 import InfoEdit from './Info.edit';
 import LoginEdit from './Login.edit';
 import MessageEdit from './Message.edit';
-import { withLang } from '../../lang.model';
-import createWith from '../../../utils/buildKea';
-import BaseModel from '../../abstract/BaseModel';
-import * as service from './Hall.service';
-import { stringify } from 'querystring';
-import { call } from 'redux-saga/effects';
+import { withHall } from './Hall.model';
 
-const model = new BaseModel('result', { itemName: '' }, service);
-model.addEffect('simpleList');
-model.addEffect('hallInfo'); // 获取指定厅主的平台资料
-model.addEffect('hallGame'); // 获取指定厅主的游戏设置
-model.addEffect('hallLogin'); // 获取指定厅主的登录资料
-model.addEffect('exist'); // 指定厅主账号的同名检测
-model.addEffect('accountExist'); // 指定厅主登录账号的同名检测
-model.addEffect('prefixExist'); // 指定厅主前缀的同名检测
-model.addEffect('saveHallInfo', '保存资料', true);
-model.addEffect('saveHallGame', '设置游戏');
-model.addEffect('saveHallLogin', '设置账号', true);
-model.addEffect('sendMessage', '发送消息');
-model.addEffect('whitelist', 'IP白名单');
-
-const effects = {
-  *openBackend({ payload }: any) {
-    const windowObj = window.open('', '_blank');
-    windowObj.document.write('Loading...');
-    const result = yield call(service.openBackendAjax, payload);
-    if (result && result.state === 0) {
-      const { is_ssl, domain, ...query } = result.data;
-      const http = Boolean(Number(is_ssl)) ? 'https://' : 'http://';
-      const href = http + domain + `?path=index&` + stringify(query);
-      console.info('\u2714 Hall.model.ts openBackend 36', href);
-      windowObj.location.href = href;
-    }
-  },
-};
-export const withHall = createWith({
-  namespace: model.namespace,
-  state: { ...model.state, type: [] },
-  actions: model.actions,
-  effects: {...model.effects, ...effects},
-  props: {
-    site: withLang,
-  },
-});
 @withHall
 class Hall extends BasePage<HallProps, any> {
   private mainWidth: number;
   private domainPromise: Promise<any>;
   constructor(props: HallProps) {
-    const companyAccountPromise = props.dispatch({ type: 'hall/simpleList', promise: true }).then(data => ({
-      list: data.simpleList.map((item: HallSimpleItem) => ({
-        title: item.company_account,
-        value: item.company_account,
-      })),
-    }));
+    const companyAccountPromise = Promise.resolve()
+      .then(() => this.props.actions.simpleList({ promise: true }))
+      .then(data => ({
+        list: data.simpleList.map((item: HallSimpleItem) => ({
+          title: item.company_account,
+          value: item.company_account,
+        })),
+      }));
 
     const config: BasePageConfig = {
       ns: 'hall',
@@ -231,7 +191,10 @@ class Hall extends BasePage<HallProps, any> {
     this.afterComponent = this.getViewComponent.bind(this);
     this.state.id = 0;
     this.state.editingItem = {};
-    this.domainPromise = props.dispatch({ type: 'webset/noAssign', promise: true }).then(v => ({
+    this.domainPromise = Promise.resolve()
+      // .then(() => this.props.actions.noAssign({ promise: true }))
+      .then(() => ({noAssign: []}))
+      .then(v => ({
       list: v.noAssign.map((w: any) => ({ id: w.id, name: `${w.domain} (${w.name} ${w.threshold_number} 人)` })),
     }));
     this.footer = () =>
@@ -239,7 +202,7 @@ class Hall extends BasePage<HallProps, any> {
         <Button
           className="e2e-sendNews"
           type="primary"
-          loading={this.props.hall.loading}
+          loading={this.props.loading}
           disabled={!(this.state.selectedRowKeys.length > 0)}
           onClick={() => {
             this.setState({ id: Date.now(), isEditingMessage: true });
@@ -261,7 +224,7 @@ class Hall extends BasePage<HallProps, any> {
   }
 
   private getViewComponent() {
-    const { list } = this.props.hall as any;
+    const { list } = this.props as any;
     return (
       <div>
         <Modal
@@ -395,7 +358,7 @@ class Hall extends BasePage<HallProps, any> {
   }
 }
 
-export default Form.create()(Hall as any);
+export default Form.create()(Hall);
 
 export interface HallProps extends BasePageProps {
 }

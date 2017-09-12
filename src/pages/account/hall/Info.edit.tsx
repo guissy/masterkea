@@ -2,8 +2,8 @@ import { Button, Col, Form, Icon, Input, Row } from 'antd';
 import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import * as React from 'react';
 import * as styles from './Hall.less';
-import { withHall } from './Hall';
 import { kea } from 'kea';
+import { withHall } from './Hall.model';
 
 @kea({
   connect: {

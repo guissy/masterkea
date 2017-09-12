@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as styles from './Hall.less';
 import { BasePageProps } from '../../abstract/BasePage';
 import { kea } from 'kea';
-import { withHall } from './Hall';
+import { withHall } from './Hall.model';
 
 
 @kea({

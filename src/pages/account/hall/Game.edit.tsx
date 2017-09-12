@@ -3,14 +3,13 @@ import { WrappedFormUtils } from 'antd/es/form/Form';
 import * as React from 'react';
 import * as styles from './Hall.less';
 import SelectAll from './SelectAll';
-import { GameCategory, GameCategoryName, withHall } from './Hall';
-import { kea } from 'kea';
+import { GameCategory, GameCategoryName } from './Hall';
+import { connect, kea } from 'kea';
+import { withHall } from './Hall.model';
 
-@kea({
-  connect: {
+@connect({
     props: [withHall, ['hallGameLoading', 'hallGame', 'saving']],
-  },
-})
+  })
 class GameEdit extends React.PureComponent<GameFormProps, any> {
   constructor(props: GameFormProps) {
     super(props);

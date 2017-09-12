@@ -10,6 +10,10 @@ import router from '../../router';
 import { withLogin } from '../login/Login';
 import { Action } from 'kea';
 import Stage from '../lottery/Stage';
+import Hall from '../account/hall/Hall';
+import Subaccount from '../account/subaccount/Subaccount';
+import Webset from '../account/webset/Webset';
+import Role from '../account/role/Role';
 
 class Actions {
   onChangeFullSize = (p: any) => ({} as Action);
@@ -71,8 +75,14 @@ export default class Home extends React.PureComponent<KeaProps<Actions, States>,
                   <Switch>
                     <Route path="/lottery/stage" component={Stage} />
                     <Route path="/lottery/result" component={router.result} />
-                    <Route path="/thirdgame" component={router.thirdgame} />
-                    <Route path="/notice/message" component={router.message} />
+                    <Route path="/account/hall" component={Hall} />
+                    {/*<Route path="/account/hall" component={router.hall} />*/}
+                    <Route path="/account/sub" component={Subaccount} />
+                    <Route path="/account/webset" component={Webset} />
+                    <Route path="/account/role" component={Role} />
+                    {/*<Route path="/account/sub" component={router.subaccount} />*/}
+                    {/*<Route path="/thirdgame" component={router.thirdgame} />*/}
+                    {/*<Route path="/notice/message" component={router.message} />*/}
                     <Route path="/*" component={router.notFound} />
                   </Switch>
                 </div>

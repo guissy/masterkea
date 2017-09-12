@@ -10,7 +10,8 @@ import { withLang } from '../lang.model';
 import MessageView from './MessageView';
 import createWith from '../../utils/buildKea';
 import * as service from './Message.service';
-// import { withHall } from '../account/hall/Hall';
+import { withHall } from '../account/hall/Hall.model';
+// 虽然这里import了，但是组件没import呢？可以使用了懒加载的原因
 
 const model = new BaseModel('message', { itemName: '' }, service);
 model.addEffect('sender');
@@ -21,7 +22,7 @@ model.addEffect('sender');
   effects: model.effects,
   props: {
     site: withLang,
-    // simpleList: withHall,
+    simpleList: withHall,
   },
 })
 class Message extends BasePage<MessageProps, any> {
@@ -95,10 +96,10 @@ class Message extends BasePage<MessageProps, any> {
           dataIndex: 'recipient',
           formType: FormType.Select,
           initialValue: '全部',
-          // dataSource: Promise.resolve().then(() => this.actions.simpleList({ promise: true })
-          //   .then(v => ({
-          //     list: v.simpleList.map((w: any) => ({ name: w.company_account, id: w.id })),
-          //   }))),
+          dataSource: Promise.resolve().then(() => this.actions.simpleList({ promise: true })
+            .then(v => ({
+              list: v.simpleList.map((w: any) => ({ name: w.company_account, id: w.id })),
+            }))),
         },
       ],
       actions: [
