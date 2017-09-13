@@ -25,7 +25,7 @@ class InfoEdit extends React.PureComponent<InfoEditProps, any> {
       wrapperCol: { span: 18 },
     };
     const { getFieldDecorator } = this.props.form;
-    const { hallInfoLoading, hallInfo, saveHallInfoLoading } = this.props.hall;
+    const { hallInfoLoading, hallInfo, saveHallInfoLoading } = this.props;
     return (
       <div>
         {!hallInfoLoading && hallInfo
@@ -160,4 +160,7 @@ export default Form.create()(InfoEdit);
 export interface InfoEditProps extends ReduxProps, FormComponentProps {
   hall?: any;
   onSuccess: (p?: any) => void;
+  hallInfoLoading?: boolean;
+  hallInfo?: any;
+  saveHallInfoLoading?: boolean;
 }

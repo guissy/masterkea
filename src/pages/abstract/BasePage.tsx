@@ -188,10 +188,8 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
   public componentDidMount() {
     const query = this.props.location && this.props.location.query;
     if (query) {
-      this.props
-        .dispatch({
-          type: `${this.ns}/query`,
-          payload: query,
+      this.actions.query({
+          ...query,
           promise: true,
         })
         .then(v => {

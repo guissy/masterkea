@@ -21,14 +21,14 @@ class GameEdit extends React.PureComponent<GameFormProps, any> {
       wrapperCol: { span: 14 },
     };
     const { getFieldDecorator } = this.props.form;
-    const { hallGameLoading, hallGame, saving } = this.props.hall as any;
+    const { hallGameLoading, hallGame, saving } = this.props;
     const options: GameCategoryName = { lottery: [], live: [], game: [], sports: [] };
     const values: GameCategoryName = { lottery: [], live: [], game: [], sports: [] };
 
     if (hallGame) {
       ['lottery', 'live', 'game', 'sports'].forEach((key: keyof GameCategory) => {
-        options[key] = hallGame[key].map((item:any) => item.name);
-        values[key] = hallGame[key].filter((item:any) => item.checked).map((item:any) => item.name);
+        options[key] = hallGame[key] && hallGame[key].map((item:any) => item.name);
+        values[key] = hallGame[key] && hallGame[key].filter((item:any) => item.checked).map((item:any) => item.name);
       });
     }
     return (
@@ -105,4 +105,7 @@ interface GameFormProps extends ReduxProps {
   hall?: any;
   form?: WrappedFormUtils;
   onSuccess: () => void;
+  hallGameLoading?: boolean;
+  hallGame?: any;
+  saving?: boolean;
 }

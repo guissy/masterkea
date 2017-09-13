@@ -8,6 +8,7 @@ import InfoEdit from './Info.edit';
 import LoginEdit from './Login.edit';
 import MessageEdit from './Message.edit';
 import { withHall } from './Hall.model';
+import { push } from 'react-router-redux';
 
 @withHall
 class Hall extends BasePage<HallProps, any> {
@@ -156,22 +157,22 @@ class Hall extends BasePage<HallProps, any> {
         {
           label: '资料',
           onClick: ({ id }) => {
-            this.props.dispatch({ type: 'hall/hallInfo', payload: { id } });
+            this.actions.hallInfo({ id });
             this.setState({ id, isEditingInfo: true });
           },
         },
         {
           label: '游戏',
           onClick: ({ id }) => {
-            this.props.dispatch({ type: 'hall/hallGame', payload: { id } });
-            this.props.dispatch({ type: 'hall/infoSuccess', payload: { info: { id } } });
+            this.actions.hallGame({ id });
+            // this.props.dispatch({ type: 'hall/infoSuccess', payload: { info: { id } } });
             this.setState({ id, isEditingGame: true });
           },
         },
         {
           label: 'IP白名单',
           onClick: editingItem => {
-            this.props.dispatch({ type: 'hall/hallInfo', payload: { id: editingItem.id }, promise: true }).then(v => {
+            this.actions.hallInfo({ id: editingItem.id, promise: true }).then(v => {
               this.setState({ editingItem: v.hallInfo });
             });
             this.setState({ editingItem, isWhitelist: true });
@@ -180,7 +181,7 @@ class Hall extends BasePage<HallProps, any> {
         {
           label: '业务单元',
           onClick: ({ id }) => {
-            // this.props.dispatch(push({ pathname: '/account/webset', query: { hall_id: id } }));
+            this.props.dispatch(push({ pathname: '/account/webset', query: { hall_id: id } } as any));
           },
         },
       ],

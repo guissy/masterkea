@@ -7,7 +7,18 @@ import { call } from 'redux-saga/effects';
 import { withWebset } from '../webset/Webset.model';
 import { withHallList } from './Hall.model.pk';
 
-const model = new BaseModel('hall', { itemName: '' }, service);
+const model = new BaseModel('hall', {
+  itemName: '',
+  hallGameLoading: false,
+  hallGame: {},
+  hallLoginLoading: true,
+  hallLogin: {},
+  hallInfoLoading: true,
+  saveHallInfoLoading: false,
+  hallInfo: {},
+  sendMessageLoading: true,
+  simpleList: [],
+}, service);
 model.addEffect('hallInfo'); // 获取指定厅主的平台资料
 model.addEffect('hallGame'); // 获取指定厅主的游戏设置
 model.addEffect('hallLogin'); // 获取指定厅主的登录资料

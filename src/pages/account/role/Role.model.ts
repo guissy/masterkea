@@ -4,7 +4,13 @@ import * as service from './Role.service';
 import { withLang } from '../../lang.model';
 import createWith from '../../../utils/buildKea';
 
-const model = new BaseModel('role', { itemName: '' }, service);
+const model = new BaseModel('role', {
+  itemName: '',
+  detailLoading: true,
+  detail: {},
+  permission: {},
+  editingItem: {},
+}, service);
 model.addEffect('permission');
 model.addEffect('detail');
 export const withRole = createWith({

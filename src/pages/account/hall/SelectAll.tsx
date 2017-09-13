@@ -6,8 +6,7 @@ export default class SelectAll extends React.Component<SelectAllProps, any> {
     super(props);
 
     const value = this.props.value || [];
-    const plainOptions = this.props.options;
-
+    const plainOptions = this.props.options || [];
     this.state = {
       value,
       indeterminate: !!value.length && value.length < plainOptions.length,

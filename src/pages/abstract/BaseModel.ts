@@ -54,7 +54,7 @@ export default class BaseModel {
   public reducers: any;
   private service: any;
 
-  constructor(namespace: string, state: BaseState, service: BaseService) {
+  constructor(namespace: string, state: BaseState & {[x: string]: any}, service: BaseService) {
     this.namespace = namespace;
     this.service = service;
     this.state = { ...initState, ...state };
