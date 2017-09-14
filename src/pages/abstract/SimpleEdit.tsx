@@ -6,7 +6,7 @@ import * as moment from 'moment';
 import * as React from 'react';
 import { getImageOption } from '../../utils/upload';
 import { LangSiteState, withLang } from '../lang.model';
-import { Store } from './BaseModel';
+import IpList from '../components/iplist/IpList';
 import { Column, DataSource, FormType } from './BasePage';
 import getDataSourceMap from './getDataSourceMap';
 import { kea } from 'kea';
@@ -53,85 +53,132 @@ class SimpleEdit extends React.PureComponent<SimpleEditProps, any> {
     return (
       <Form onSubmit={this.onSubmit}>
         {this.props.children}
-        {fields.map(v => (
-          <Form.Item key={v.dataIndex} label={v.title} {...formItemLayout} className={v.formClassName || ''}>
-            {getFieldDecorator(v.dataIndex, this.getFieldOpt(editingItem, v))(
-              (() => {
-                if (v.formType === undefined) {
-                  return <Input type="text" placeholder={`${site.请输入}${v.title}`} />;
-                } else if (v.formType === FormType.InputNumber) {
-                  return <InputNumber min={1} placeholder={`${site.请输入}${v.title}`} />;
-                } else if (v.formType === FormType.TextArea) {
-                  return <Input type="textarea" placeholder={`${site.请输入}${v.title}`} />;
-                } else if (v.formType === FormType.Account) {
-                  return <Input type="text" placeholder={`${site.请输入}${v.title}`} />;
-                } else if (v.formType === FormType.Password) {
-                  return <Input type="password" placeholder={`${site.请输入}${v.title}`} />;
-                } else if (v.formType === FormType.Password2) {
-                  return <Input type="password" placeholder={site.请再输入一次密码} />;
-                } else if (v.formType === FormType.url) {
-                  return <Input type="text" placeholder="请输入地址" />;
-                } else if (v.formType === FormType.host) {
-                  return <Input type="text" placeholder="请输入域名" />;
-                } else if (v.formType === FormType.Checkbox) {
-                  return <Checkbox>{v.content}</Checkbox>;
-                } else if (v.formType === FormType.DatePicker) {
-                  return <DatePicker showTime={true} format="YYYY-MM-DD HH:mm:ss" placeholder="选择时间" />;
-                } else if (v.formType === FormType.Switch) {
-                  const [txt1, txt2] = v.labels || ['启用', '停用'];
-                  const checked = editingItem[v.dataIndex] === undefined ? true : Boolean(editingItem[v.dataIndex]);
-                  return <Switch checkedChildren={txt1} unCheckedChildren={txt2} defaultChecked={checked} />;
-                } else if (v.formType === FormType.UploadImage) {
-                  return (
-                    <Upload {...getImageOption(editingItem[v.dataIndex])}>
-                      <Button type="ghost">
-                        <Icon type="upload" />上传
-                      </Button>
-                    </Upload>
-                  );
-                } else if (v.formType === FormType.Radio) {
-                  return (
-                    <Radio.Group>
-                      {this.state.dataSourceMap.get(v.dataIndex).map((item: DataSource) => (
-                        <Radio key={item.id} value={item.id}>
-                          {item.title || item.name}
-                        </Radio>
-                      ))}
-                    </Radio.Group>
-                  );
-                } else if (v.formType === FormType.RadioButton) {
-                  return (
-                    <Radio.Group>
-                      {this.state.dataSourceMap.get(v.dataIndex).map((item: DataSource) => (
-                        <Radio.Button key={item.id} value={item.id}>
-                          {item.title || item.name}
-                        </Radio.Button>
-                      ))}
-                    </Radio.Group>
-                  );
-                } else if (v.formType === FormType.Select) {
-                  return (
-                    <Select placeholder={site.请选择}>
-                      {this.state.dataSourceMap
-                        .get(v.dataIndex)
-                        .filter((item: DataSource) => item.value !== '全部')
-                        .map((item: DataSource) => (
-                          <Select.Option
-                            key={item.id >= 0 ? String(item.id) : item.value}
-                            value={item.id >= 0 ? String(item.id) : item.value}
-                          >
-                            {item.title || item.name}
-                          </Select.Option>
-                        ))}
-                    </Select>
-                  );
-                } else {
-                  return <div>没有可用的</div>;
-                }
-              })()
-            )}
-          </Form.Item>
-        ))}
+        {fields.map(
+          v =>
+            v.formType !== FormType.checktype
+              ? <Form.Item key={v.dataIndex} label={v.title} {...formItemLayout} className={v.formClassName || ''}>
+                {getFieldDecorator(v.dataIndex, this.getFieldOpt(editingItem, v))(
+                  (() => {
+                    if (v.formType === undefined) {
+                      return <Input type="text" placeholder={`${site.请输入}${v.title}`} />;
+                    } else if (v.formType === FormType.InputNumber) {
+                      return <InputNumber min={1} placeholder={`${site.请输入}${v.title}`} />;
+                    } else if (v.formType === FormType.TextArea) {
+                      return <Input type="textarea" placeholder={`${site.请输入}${v.title}`} />;
+                    } else if (v.formType === FormType.Account) {
+                      return <Input type="text" placeholder={`${site.请输入}${v.title}`} />;
+                    } else if (v.formType === FormType.Password) {
+                      return <Input type="password" placeholder={`${site.请输入}${v.title}`} />;
+                    } else if (v.formType === FormType.Password2) {
+                      return <Input type="password" placeholder={site.请再输入一次密码} />;
+                    } else if (v.formType === FormType.url) {
+                      return <Input type="text" placeholder="请输入地址" />;
+                    } else if (v.formType === FormType.host) {
+                      return <Input type="text" placeholder="请输入域名" />;
+                    } else if (v.formType === FormType.Checkbox) {
+                      return (
+                        <Checkbox>
+                          {v.content}
+                        </Checkbox>
+                      );
+                    } else if (v.formType === FormType.DatePicker) {
+                      return <DatePicker showTime={true} format="YYYY-MM-DD HH:mm:ss" placeholder="选择时间" />;
+                    } else if (v.formType === FormType.Switch) {
+                      const [txt1, txt2] = v.labels || ['启用', '停用'];
+                      const checked =
+                        editingItem[v.dataIndex] === undefined ? true : Boolean(editingItem[v.dataIndex]);
+                      return <Switch checkedChildren={txt1} unCheckedChildren={txt2} defaultChecked={checked} />;
+                    } else if (v.formType === FormType.UploadImage) {
+                      return (
+                        <Upload {...getImageOption(editingItem[v.dataIndex])}>
+                          <Button type="ghost">
+                            <Icon type="upload" />上传
+                          </Button>
+                        </Upload>
+                      );
+                    } else if (v.formType === FormType.Radio) {
+                      return (
+                        <Radio.Group>
+                          {this.state.dataSourceMap.get(v.dataIndex).map((item: DataSource) =>
+                            <Radio key={item.id} value={item.id}>
+                              {item.title || item.name}
+                            </Radio>
+                          )}
+                        </Radio.Group>
+                      );
+                    } else if (v.formType === FormType.RadioButton) {
+                      return (
+                        <Radio.Group>
+                          {this.state.dataSourceMap.get(v.dataIndex).map((item: DataSource) =>
+                            <Radio.Button key={item.id} value={item.id}>
+                              {item.title || item.name}
+                            </Radio.Button>
+                          )}
+                        </Radio.Group>
+                      );
+                    } else if (v.formType === FormType.Select) {
+                      return (
+                        <Select
+                          placeholder={site.请选择}
+                          onChange={(val: any) => {
+                            const selected = this.state.dataSourceMap
+                              .get(v.dataIndex)
+                              .find((item: DataSource) => item.value === val || item.id == val);
+                            v.otherData
+                              ? this.setState({
+                                [v.otherData]: selected.title || selected.name,
+                              })
+                              : '';
+                          }}
+                        >
+                          {this.state.dataSourceMap
+                            .get(v.dataIndex)
+                            .filter((item: DataSource) => item.value !== '全部')
+                            .map((item: DataSource) =>
+                              <Select.Option
+                                key={item.id >= 0 ? String(item.id) : item.value}
+                                value={item.id >= 0 ? String(item.id) : item.value}
+                              >
+                                {item.title || item.name}
+                              </Select.Option>
+                            )}
+                        </Select>
+                      );
+                    } else if (v.formType === FormType.IpList) {
+                      return (
+                        <IpList
+                          name={v.dataIndex}
+                          lineHeight={32}
+                          width={244}
+                          form={this.props.form}
+                          dirty={true}
+                          rules={[
+                            {
+                              pattern: /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/,
+                              message: '正确填写IP地址',
+                            },
+                          ]}
+                        />
+                      );
+                    } else {
+                      // 只显示文字
+                      return <StaticText />;
+                    }
+                  })()
+                )}
+              </Form.Item>
+              : <Form.Item key={v.dataIndex} label={v.title} {...formItemLayout} className={v.formClassName || ''}>
+                <div>
+                  {v.dataIndex.split(',').map((w: any, i: any) =>
+                    getFieldDecorator(w)(
+                      <Checkbox key={i} defaultChecked={false}>
+                        {v.otherData[i]}
+                      </Checkbox>
+                    )
+                  )}
+                </div>
+              </Form.Item>
+        )}
         <Form.Item {...tailFormItemLayout}>
           <Button type="primary" htmlType="submit" size="large" disabled={saving || loading}>
             {saving && <Icon type="loading" />}
@@ -328,6 +375,13 @@ class SimpleEdit extends React.PureComponent<SimpleEditProps, any> {
 }
 
 export default Form.create()(SimpleEdit);
+
+// tslint:disable-next-line
+const StaticText = (({ value }: any) =>
+  <p>
+    {value}
+  </p>) as React.SFC<{ value?: string }>;
+
 export interface SimpleEditProps extends ReduxProps, LangSiteState, FormComponentProps {
   ns: string;
   effect: string; // 提交时 dispatch 的 type 名，

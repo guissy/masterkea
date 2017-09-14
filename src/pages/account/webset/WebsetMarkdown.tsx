@@ -3,18 +3,29 @@ import * as hightLight from 'highlight.js';
 import * as marked from 'marked';
 import * as React from 'react';
 import * as styles from './Webset.less';
+import { kea } from 'kea';
+import { withWebset } from './Webset.model';
 const LOADING_WORDS = 'loading...';
 
-
+@kea({
+  connect: {
+    props: [],
+    actions: [withWebset, ['manual']],
+  },
+})
 export default class WebsetMarkdown extends React.PureComponent<WebsetMarkdownProps, any> {
   private codes: NodeListOf<HTMLElement>;
+  private actions?: any;
 
   constructor(props: WebsetMarkdownProps) {
     super(props);
+    console.log('☞☞☞ 9527 WebsetMarkdown 20', props);
     this.state = {
       md: LOADING_WORDS,
     };
-    this.props.dispatch({ type: 'webset/manual', payload: { id: props.id }, promise: true }).then(v => {
+    Promise.resolve()
+      .then(() => this.actions.manual({ id: props.id, promise: true }))
+      .then(v => {
       this.setState({ md: v.manual });
     });
   }
@@ -87,6 +98,6 @@ export default class WebsetMarkdown extends React.PureComponent<WebsetMarkdownPr
 }
 
 interface WebsetMarkdownProps extends ReduxProps {
-  domain?: string;
+  domain: string;
   id?: number;
 }

@@ -1,0 +1,13 @@
+.link {
+  color: #108ee9;
+  i {
+    opacity: 0;
+    transition: all 0.3s;
+  }
+  &:hover i {
+    opacity: 1;
+  }
+}
+
+.iplist {
+}

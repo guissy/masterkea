@@ -3,12 +3,12 @@ import { FormComponentProps } from 'antd/es/form/Form';
 // import { connect } from 'dva';
 import * as React from 'react';
 // import { Store } from '../../abstract/BaseModel';
-import BasePage, { Actions, BasePageConfig } from '../abstract/BasePage';
+import BasePage, { Actions, BasePageConfig, BasePageProps } from '../abstract/BasePage';
 import SimpleEdit from '../abstract/SimpleEdit';
 import { LangSiteState, withLang } from '../lang.model';
 import './Stage.css';
 import createWith from '../../utils/buildKea';
-import BaseModel, { BaseModelState } from '../abstract/BaseModel';
+import BaseModel from '../abstract/BaseModel';
 import * as service from './Stage.service';
 
 const model = new BaseModel('stage', { itemName: '' }, service);
@@ -117,7 +117,7 @@ class Stage extends BasePage<StageProps, any> {
 
 export default Form.create()(Stage);
 
-export interface StageProps extends BaseModelState, ReduxProps, LangSiteState, FormComponentProps {
+export interface StageProps extends BasePageProps {
   // form?: WrappedFormUtils;
   // stage?: StageState;
 }

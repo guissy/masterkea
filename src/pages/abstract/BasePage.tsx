@@ -7,21 +7,14 @@ import buildRowKey from '../../utils/buildRowKey';
 import environment from '../../utils/environment';
 import RangePicker from '../components/RangePicker';
 import { LangSiteState } from '../lang.model';
-import { AllStore, AnyStore, BaseModelState } from './BaseModel';
-import './BasePage.scss';
+import { AllStore, AnyStore, BaseState } from './BaseModel';
+import './BasePage.css';
 import getDataSourceMap from './getDataSourceMap';
 import { FormComponentProps } from 'antd/es/form/Form';
 
 class DefaultComponent extends React.PureComponent<any, any> {
   public render(): null {
     return null;
-  }
-}
-
-class A extends React.PureComponent<any, any> {
-  render () {
-    console.log('☞☞☞ 9527 BasePage 23', this.props.id);
-    return <a onClick={this.props.onClick}>编辑</a>;
   }
 }
 
@@ -115,7 +108,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
           key: 'action',
           render: (text, record) => (
             <span className="actions">
-              {this.withEdit && <A id={record.id} onClick={this.onShowEdit(record)}>{site.编辑}</A>}
+              {this.withEdit && <a id={record.id} onClick={this.onShowEdit(record)}>{site.编辑}</a>}
               {this.tableActions.map(
                 action =>
                   action.render ? (
@@ -581,7 +574,7 @@ export class Actions {
 
   [k: string]: (p: any) => Promise<any>;
 }
-export interface BasePageProps extends FormComponentProps, BaseModelState, ReduxProps, LangSiteState, AnyStore {
+export interface BasePageProps extends FormComponentProps, BaseState, ReduxProps, LangSiteState, AnyStore {
   // form?: WrappedFormUtils;
   location?: { query: any; state: any };
   actions?: Actions;
@@ -607,6 +600,7 @@ export enum FormType {
   Switch,
   Static, // 静态文字
   IpList, // 批量文字
+  checktype,
 }
 
 export interface Column extends ColumnProps<any> {

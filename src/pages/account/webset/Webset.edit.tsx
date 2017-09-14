@@ -8,6 +8,8 @@ import { Store } from '../../abstract/BaseModel';
 import { LangSiteState } from '../../lang.model';
 import * as styles from './Webset.less';
 import WebsetTextarea from './Webset.textarea';
+import { kea } from 'kea';
+import { withWebset } from './Webset.model';
 
 const storageNames = 'core,games,data,common,main,logs,redis,mongodb,rabbitmq'.split(',');
 
@@ -36,9 +38,16 @@ function getHostFastProps(this:WebsetEdit, editing: string, name: string, record
   };
 }
 
+@kea({
+  connect: {
+    props: [],
+    actions: [withWebset, ['templates', 'threshold']],
+  },
+})
 class WebsetEdit extends React.PureComponent<WebsetEditProps, any> {
   protected storageColumn: SiteColumn[];
   private hostNode: Table<any>;
+  private actions: any;
   private hostWidths: number[] = [];
   private form: React.ReactInstance;
 
@@ -124,9 +133,11 @@ class WebsetEdit extends React.PureComponent<WebsetEditProps, any> {
       editingPassword: false,
       templates: [],
     };
-    props.dispatch({ type: 'webset/templates', promise: true }).then(v => {
-      this.setState({ templates: v.templates.db_template });
-    });
+    Promise.resolve()
+      .then( () => this.actions.templates({ promise: true }))
+      .then(v => {
+        this.setState({ templates: v.templates.db_template });
+      });
   }
 
   public componentDidMount(): void {
@@ -138,7 +149,7 @@ class WebsetEdit extends React.PureComponent<WebsetEditProps, any> {
         payload: { id: editingItem.id },
       });
     }
-    this.props.dispatch({ type: 'webset/threshold', promise: true }).then(v => {
+    this.actions.threshold({ promise: true }).then((v: any) => {
       this.setState({ threshold: v.threshold.site_threshold });
     });
   }

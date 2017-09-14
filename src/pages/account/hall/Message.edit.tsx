@@ -25,7 +25,7 @@ class MessageEdit extends React.Component<MessageEditProps, any> {
   public componentWillReceiveProps(nextProps: Readonly<MessageEditProps>, nextContext: any): void {
     this.setState({
       halls: nextProps.halls.filter((v: any) => nextProps.ids.includes(v.id) && !this.state.deleted.includes(v.id)),
-      isSending: nextProps.hall.sendMessageLoading,
+      isSending: nextProps.sendMessageLoading,
     });
   }
 
@@ -67,7 +67,7 @@ class MessageEdit extends React.Component<MessageEditProps, any> {
           })(<Input type="textarea" placeholder="内容必填，字数限800" className={styles.content} />)}
         </Form.Item>
         <Form.Item {...tailFormItemLayout}>
-          <Button loading={this.props.hall.sendMessageLoading} type="primary" onClick={this.sendMessage}>
+          <Button loading={this.props.sendMessageLoading} type="primary" onClick={this.sendMessage}>
             发送
           </Button>
         </Form.Item>
@@ -103,7 +103,7 @@ class MessageEdit extends React.Component<MessageEditProps, any> {
 export default Form.create()(MessageEdit);
 
 interface MessageEditProps extends ReduxProps, FormComponentProps {
-  hall?: any;
+  sendMessageLoading?: any;
   halls: HallSimpleItem[];
   onSuccess: () => void;
   ids: any;

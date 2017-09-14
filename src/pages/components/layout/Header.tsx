@@ -8,7 +8,7 @@ import createWith, { KeaProps } from '../../../utils/buildKea';
 import { MenuItem } from '../menu/Menus.model';
 import { Action } from 'kea';
 import { push } from 'react-router-redux';
-import PasswordEdit from '../../subaccount/PasswordEdit';
+import PasswordEdit from '../../account/subaccount/PasswordEdit';
 
 // tslint:disable-next-line
 const Header = ({
@@ -56,7 +56,7 @@ const Header = ({
     }
   };
 
-  const menusDataOk = menusData.reduce((s: any[], v: MenuItem) => s.concat(v.children.length ? v.children : [v]), []);
+  const menusDataOk = menusData.reduce((s: any[], v: MenuItem) => s.concat(v.children && v.children.length ? v.children : [v]), []);
   return (
     <div className="header">
       <div>

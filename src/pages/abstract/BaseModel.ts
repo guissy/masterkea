@@ -72,7 +72,7 @@ export default class BaseModel {
     const needMessage = ajaxMessage !== '';
     let ajaxMsg = ajaxMessage;
     const effects = {
-      *effect(this: { actions: Actions; props: BaseModelState }, { payload, resolve }: any) {
+      *effect(this: { actions: Actions; props: BaseState }, { payload, resolve }: any) {
         if (ajax) {
           if (needMessage) {
             if (typeof ajaxMessage === 'function') {
@@ -128,7 +128,7 @@ export default class BaseModel {
   private getEffects(namespace: string, itemName: string, service: any) {
     const { createAjax, deleteAjax, infoAjax, queryAjax, statusAjax, updateAjax } = service;
     return {
-      *query(this: { actions: Actions; props: BaseModelState }, { payload, resolve }: any) {
+      *query(this: { actions: Actions; props: BaseState }, { payload, resolve }: any) {
         if (!payload || (payload && !payload.noLoading)) {
           yield put({ type: 'changeLoading', payload: { loading: true } });
         }
@@ -367,14 +367,3 @@ export interface BaseService {
 }
 
 type getAjaxMessage = (payload: any) => string;
-
-export interface BaseModelState {
-  itemName: string; // 用于提示『创建xxx成功！』
-  loading: boolean;
-  saving: boolean;
-  total: number; // 翻页用
-  page: number;
-  list: any[];
-  info: any; // 正在编辑的
-  attributes: any;
-}
