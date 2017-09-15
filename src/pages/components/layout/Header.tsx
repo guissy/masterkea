@@ -42,7 +42,7 @@ const Header = ({
     let m: MenuItem;
     menusData.forEach((v: any) => {
       if (v.name === menuName) m = v;
-      v.children.forEach((w: any) => {
+      v.children && v.children.forEach((w: any) => {
         if (w.name === menuName) {
           m = w;
         }

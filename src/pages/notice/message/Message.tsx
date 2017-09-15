@@ -1,16 +1,16 @@
 import { Alert, Form, Modal } from 'antd';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { datetime } from '../../utils/date';
-import { default as BaseModel, Store } from '../abstract/BaseModel';
-import BasePage, { BasePageConfig, BasePageProps, FormType } from '../abstract/BasePage';
-import SimpleEdit from '../abstract/SimpleEdit';
-import { withLang } from '../lang.model';
+import { datetime } from '../../../utils/date';
+import { default as BaseModel } from '../../abstract/BaseModel';
+import BasePage, { BasePageConfig, BasePageProps, FormType } from '../../abstract/BasePage';
+import SimpleEdit from '../../abstract/SimpleEdit';
+import { withLang } from '../../lang.model';
 // import 'Message.css';
 import MessageView from './MessageView';
-import createWith from '../../utils/buildKea';
+import createWith from '../../../utils/buildKea';
 import * as service from './Message.service';
-import { withHallList } from '../account/hall/Hall.model.pk';
+import { withHallList } from '../../account/hall/Hall.model.pk';
 // 虽然这里import了，但是组件没import呢？可以使用了懒加载的原因
 
 const model = new BaseModel('message', { itemName: '' }, service);

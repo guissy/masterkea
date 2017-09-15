@@ -22,7 +22,7 @@ test('\u2665 mtoken: 分页', async () => {
     lang,
     mtoken: { list: [] as any, loading: true, page: 0, page_size: 0, total: 0 },
   };
-  const store = configureStore([thunkMiddleware()])(() => state);
+  const store = configureStore([thunkMiddleware])(() => state);
   store.subscribe(() => {
     const action = store.getActions().shift();
     if (action && action.type === 'mtoken/query') {
@@ -60,7 +60,7 @@ test('\u2665 mtoken: 状态', async () => {
     mtoken: { list: [mtoken] as any, loading: false, page: 0, page_size: 0, total: 0 },
   };
   // tslint:disable-next-line
-  const store = configureStore([thunkMiddleware()])(() => state);
+  const store = configureStore([thunkMiddleware])(() => state);
   store.subscribe(() => {
     const action = store.getActions().shift();
     if (action && action.type === 'mtoken/status') {
@@ -113,7 +113,7 @@ test('\u2665 mtoken: 新增', async () => {
     lang,
     mtoken: { list: [] as any, loading: true, page: 0, page_size: 0, total: 0 },
   };
-  const store = configureStore([thunkMiddleware()])(() => state);
+  const store = configureStore([thunkMiddleware])(() => state);
   store.subscribe(() => {
     const action = store.getActions().shift();
     if (action && action.type === 'mtoken/save') {

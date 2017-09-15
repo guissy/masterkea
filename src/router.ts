@@ -9,7 +9,7 @@ export default {
   result: asyncComponent('result', () => import(/* webpackChunkName: "Result" */ './pages/lottery/Result')),
   hall: asyncComponent('hall', () => import(/* webpackChunkName: "Hall" */ './pages/account/hall/Hall')),
   subaccount: asyncComponent('subaccount', () => import(/* webpackChunkName: "Hall" */ './pages/account/subaccount/Subaccount')),
-  message: asyncComponent('message', () => import(/* webpackChunkName: "Message" */ './pages/notice/Message')),
+  message: asyncComponent('message', () => import(/* webpackChunkName: "Message" */ './pages/notice/message/Message')),
   thirdgame: asyncComponent('thirdgame', () =>
     import(/* webpackChunkName: "thirdgame" */ './pages/thirdgame/Thirdgame')
   ),

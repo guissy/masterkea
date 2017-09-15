@@ -22,7 +22,7 @@ test('\u2665 logs: 分页', async () => {
     lang,
     logs: { list: [] as any, loading: true, page: 0, page_size: 0, total: 0 },
   };
-  const store = configureStore([thunkMiddleware()])(() => state);
+  const store = configureStore([thunkMiddleware])(() => state);
   store.subscribe(() => {
     const action = store.getActions().shift();
     if (action && action.type === 'logs/query') {

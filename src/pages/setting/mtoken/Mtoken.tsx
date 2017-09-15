@@ -1,20 +1,16 @@
 import { Form, Switch } from 'antd';
-import { WrappedFormUtils } from 'antd/es/form/Form';
-import { connect } from 'dva';
 import * as React from 'react';
-import { Store } from '../../abstract/BaseModel';
-import BasePage, { BasePageConfig, FormType } from '../../abstract/BasePage';
+import BasePage, { BasePageConfig, BasePageProps, FormType } from '../../abstract/BasePage';
 import SimpleEdit from '../../abstract/SimpleEdit';
-import { HallSimpleItem } from '../../account/hall/Hall.model';
-import { LangSiteState } from '../../lang.model';
-import * as styles from './Mtoken.less';
-import { MtokenState } from './Mtoken.model';
+import { withMtoken } from './Mtoken.model';
+import { HallSimpleItem } from '../../account/hall/Hall';
 
-@connect(({ mtoken, lang }: Store) => ({ mtoken, site: lang.site }))
-@Form.create()
-export default class Mtoken extends BasePage<MtokenProps, any> {
+@withMtoken
+class Mtoken extends BasePage<MtokenProps, any> {
   constructor(props: MtokenProps) {
-    const companyAccountPromise = props.dispatch({ type: 'hall/simpleList', promise: true }).then(data => ({
+    const companyAccountPromise = Promise.resolve()
+      .then(() => this.actions.simpleList({ promise: true }))
+      .then(data => ({
       list: data.simpleList.map((item: HallSimpleItem) => ({
         title: item.company_account,
         value: item.company_account,
@@ -85,7 +81,7 @@ export default class Mtoken extends BasePage<MtokenProps, any> {
   }
 }
 
-export interface MtokenProps extends ReduxProps, LangSiteState {
-  form?: WrappedFormUtils;
-  mtoken?: MtokenState;
+export default Form.create()(Mtoken);
+
+export interface MtokenProps extends BasePageProps {
 }

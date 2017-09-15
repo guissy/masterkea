@@ -1,18 +1,12 @@
 import { Button, Form, Icon, Popconfirm, Switch } from 'antd';
-import { WrappedFormUtils } from 'antd/es/form/Form';
-import { connect } from 'dva';
 import * as React from 'react';
 import { datetime } from '../../../utils/date';
-import { Store } from '../../abstract/BaseModel';
-import BasePage, { BasePageConfig, FormType } from '../../abstract/BasePage';
+import BasePage, { BasePageConfig, BasePageProps, FormType } from '../../abstract/BasePage';
 import SimpleEdit from '../../abstract/SimpleEdit';
-import { LangSiteState } from '../../lang.model';
-import * as styles from './Ipblacks.less';
-import { IpblacksState } from './Ipblacks.model';
+import { withIpblacks } from './Ipblacks.model';
 
-@connect(({ ipblacks, lang }: Store) => ({ ipblacks, site: lang.site }))
-@Form.create()
-export default class Ipblacks extends BasePage<IpblacksProps, any> {
+@withIpblacks
+class Ipblacks extends BasePage<IpblacksProps, any> {
   constructor(props: IpblacksProps) {
     const config: BasePageConfig = {
       ns: 'ipblacks',
@@ -38,10 +32,7 @@ export default class Ipblacks extends BasePage<IpblacksProps, any> {
                   checkedChildren="限制"
                   unCheckedChildren="允许"
                   onChange={checked => {
-                    this.props.dispatch({
-                      type: 'ipblacks/select',
-                      payload: { ids: [record.id], op: checked ? '1' : '0' },
-                    });
+                    this.actions.save({ ids: [record.id], op: checked ? '1' : '0' });
                   }}
                   defaultChecked={Boolean(Number(text))}
                 />
@@ -132,7 +123,7 @@ export default class Ipblacks extends BasePage<IpblacksProps, any> {
         >
           <Button
             type="primary"
-            loading={this.props.ipblacks.loading}
+            loading={this.props.loading}
             disabled={!(this.state.selectedRowKeys.length > 0)}
             style={{ marginRight: 15 }}
           >
@@ -141,7 +132,7 @@ export default class Ipblacks extends BasePage<IpblacksProps, any> {
         </Popconfirm>
         <Button
           type="primary"
-          loading={this.props.ipblacks.loading}
+          loading={this.props.loading}
           disabled={!(this.state.selectedRowKeys.length > 0)}
           onClick={this.rowSlecallow}
           style={{ marginRight: 15 }}
@@ -150,7 +141,7 @@ export default class Ipblacks extends BasePage<IpblacksProps, any> {
         </Button>
         <Button
           type="primary"
-          loading={this.props.ipblacks.loading}
+          loading={this.props.loading}
           disabled={!(this.state.selectedRowKeys.length > 0)}
           onClick={this.rowSlecdeny}
           style={{ marginRight: 15 }}
@@ -160,7 +151,9 @@ export default class Ipblacks extends BasePage<IpblacksProps, any> {
       </div>;
   }
 }
-export interface IpblacksProps extends ReduxProps, LangSiteState {
-  form?: WrappedFormUtils;
-  ipblacks?: IpblacksState;
+
+export default Form.create()(Ipblacks)
+
+
+export interface IpblacksProps extends BasePageProps {
 }

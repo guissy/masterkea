@@ -1,13 +1,15 @@
 // import * as appLocaleDataZh from 'react-intl/locale-data/zh';
-// import { EffectsCommandMap, SubscriptionAPI } from 'dva';
 import * as queryString from 'querystring';
-// import { DvaAction } from '../../typings/dva';
 import { IntlXlz } from '../../typings/intl';
 import zh from '../locale/zh-CN';
-import { kea, KeaOption } from 'kea';
+import { kea, KeaOption, TakeLatestParam } from 'kea';
 import * as PropTypes from 'prop-types';
-// import { AjaxState, Result } from '../utils/Result';
-// import { langAjax, listAjax } from './lang.service';
+import { call, put } from 'redux-saga/effects';
+import { AjaxState, Result } from '../utils/Result';
+import { langListAjax } from './lang.service';
+import createWith from '../utils/buildKea';
+import BaseModel from './abstract/BaseModel';
+import * as service from './lang.service';
 
 const queryFirst: { locale: string } = queryString.parse(location.search) as any;
 // addLocaleData(appLocaleDataZh);
@@ -101,7 +103,7 @@ export default {
     },
   },
   effects: {
-    // *list({ payload }: DvaAction, { call, put, select }: EffectsCommandMap) {
+    // *langList({ payload }: DvaAction, { call, put, select }: EffectsCommandMap) {
     //   const result: Result = yield call(listAjax);
     //   if (result && result.state === AjaxState.成功) {
     //     yield put({ type: 'listSuccess', payload: { languageList: result.data } });
@@ -164,24 +166,62 @@ export interface LangSiteState {
   skin?: any;
 }
 
-export const withLang = kea({
-  path: (p: any) => ['scenes', 'lang'],
-  actions: () => ({
-    siteTo: (val: any) => val,
-  }),
-  reducers: ({ actions }) => ({
-    site: [
-      zh,
-      PropTypes.object,
-      {
-        [actions.siteTo as any]: (state: any, payload: any) => {
-          const { site } = payload;
-          return {
-            ...state,
-            site,
-          };
-        },
-      },
-    ],
-  }),
-} as KeaOption<{ siteTo: any }, null>);
+// export const withLang = kea({
+//   path: (p: any) => ['scenes', 'lang'],
+//   actions: () => ({
+//     siteTo: (val: any) => val,
+//     langList: (val: any) => val,
+//     listSuccess: (languageList: any) => ({ languageList } as any),
+//   }),
+//   takeEvery: ({ actions, workers }: TakeLatestParam) => ({
+//     [actions.langList]: workers.langList,
+//   }),
+//   workers: () => ({
+//     *langList({actions}: any) {
+//         const result: Result = yield call(langListAjax, {});
+//         if (result && result.state === AjaxState.成功) {
+//           yield put(actions.listSuccess({ languageList: result.data }));
+//         }
+//     }
+//   }),
+//   reducers: ({ actions }) => ({
+//     site: [
+//       zh,
+//       PropTypes.object,
+//       {
+//         [actions.siteTo as any]: (state: any, payload: any) => {
+//           const { site } = payload;
+//           return {
+//             ...state,
+//             site,
+//           };
+//         },
+//       },
+//     ],
+//     languageList: [
+//       [],
+//       PropTypes.array,
+//       {
+//         [actions.langList as any]: (state: any, payload: any) => {
+//           const { languageList } = payload;
+//           return {
+//             ...state,
+//             languageList,
+//           };
+//         },
+//       },
+//     ],
+//   }),
+// } as KeaOption<{ siteTo: any, langList: any, listSuccess: any }, null>);
+
+const model = new BaseModel('lang', {
+  site: zh,
+  langList: []
+} as any, service);
+model.addEffect('langList');
+export const withLang = createWith({
+  namespace: model.namespace,
+  state: { ...model.state, type: [] },
+  actions: model.actions,
+  effects: model.effects,
+});

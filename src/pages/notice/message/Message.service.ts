@@ -1,5 +1,5 @@
 import { stringify } from 'querystring';
-import request from '../../utils/request';
+import request from '../../../utils/request';
 
 export async function queryAjax(params: any) {
   return request(`/message/list?${stringify(params)}`);

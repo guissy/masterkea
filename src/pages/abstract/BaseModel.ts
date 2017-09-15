@@ -347,13 +347,19 @@ export interface AllStore {
   message?: BaseState;
   notice?: BaseState;
   operation?: BaseState;
+  order?: BaseState;
   review?: BaseState;
   periods?: BaseState;
+  summary?: BaseState;
+  gameReport?: BaseState;
   mtoken?: BaseState;
   game?: BaseState;
   ipblacks?: BaseState;
   logs?: BaseState;
   thirdgame?: BaseState;
+  gameid?: BaseState;
+  halluser?: BaseState;
+  lhc?: BaseState;
 }
 
 export type AnyStore = { [k in keyof AllStore]?: BaseState };

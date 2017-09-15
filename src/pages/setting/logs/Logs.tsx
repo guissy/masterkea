@@ -1,18 +1,12 @@
-import { Form } from 'antd';
-import { WrappedFormUtils } from 'antd/es/form/Form';
-import { connect } from 'dva';
 import * as React from 'react';
+import { Form } from 'antd';
 import { datetime } from '../../../utils/date';
-import BasePage, { BasePageConfig, FormType } from '../../abstract/BasePage';
+import BasePage, { BasePageConfig, BasePageProps, FormType } from '../../abstract/BasePage';
 import SimpleEdit from '../../abstract/SimpleEdit';
-import { LangSiteState } from '../../lang.model';
-import * as styles from './Logs.less';
-import { LogsState } from './Logs.model';
-import { Store } from '../../abstract/BaseModel';
+import { withLogs } from './Logs.model';
 
-@connect(({ logs, lang }: Store) => ({ logs, site: lang.site }))
-@Form.create()
-export default class Logs extends BasePage<LogsProps, any> {
+@withLogs
+class Logs extends BasePage<LogsProps, any> {
   constructor(props: LogsProps) {
     const config: BasePageConfig = {
       ns: 'logs',
@@ -120,7 +114,8 @@ export default class Logs extends BasePage<LogsProps, any> {
   }
 }
 
-export interface LogsProps extends ReduxProps, LangSiteState {
-  form?: WrappedFormUtils;
-  logs?: LogsState;
+export default Form.create()(Logs);
+
+export interface LogsProps extends BasePageProps {
+
 }

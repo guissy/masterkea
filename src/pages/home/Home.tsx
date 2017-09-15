@@ -14,8 +14,13 @@ import Hall from '../account/hall/Hall';
 import Subaccount from '../account/subaccount/Subaccount';
 import Webset from '../account/webset/Webset';
 import Role from '../account/role/Role';
-import Message from '../notice/Message';
+import Message from '../notice/message/Message';
 import Game from '../setting/game/Game';
+import Ipblacks from '../setting/ipblacks/Ipblacks';
+import Logs from '../setting/logs/Logs';
+import Mtoken from '../setting/mtoken/Mtoken';
+import Notice from '../notice/notice/Notice';
+import Order from '../risk/order/Order';
 
 class Actions {
   onChangeFullSize = (p: any) => ({} as Action);
@@ -74,7 +79,7 @@ export default class Home extends React.PureComponent<KeaProps<Actions, States>,
                 <div className={'content'}>
                   {/*<Route path="lottery/result" />*/}
                   <Switch>
-                    <Route path="/lottery/stage" component={Stage} />
+                    <Route path="/lottery/date" component={Stage} />
                     <Route path="/lottery/result" component={router.result} />
                     <Route path="/account/hall" component={Hall} />
                     {/*<Route path="/account/hall" component={router.hall} />*/}
@@ -83,8 +88,13 @@ export default class Home extends React.PureComponent<KeaProps<Actions, States>,
                     <Route path="/account/role" component={Role} />
                     {/*<Route path="/account/sub" component={router.subaccount} />*/}
                     <Route path="/setting/game" component={Game} />
+                    <Route path="/setting/ipblacks" component={Ipblacks} />
+                    <Route path="/setting/systemLog" component={Logs} />
+                    <Route path="/setting/mtoken" component={Mtoken} />
                     <Route path="/thirdgame" component={router.thirdgame} />
                     <Route path="/notice/message" component={Message} />
+                    <Route path="/notice/notice" component={Notice} />
+                    <Route path="/risk/order" component={Order} />
                     <Route path="/*" component={router.notFound} />
                   </Switch>
                 </div>
