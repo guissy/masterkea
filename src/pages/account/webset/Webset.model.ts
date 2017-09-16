@@ -21,7 +21,6 @@ export const withWebset: any = createWith({
   },
 });
 export interface WebsetState extends BaseState {
-  list: any[];
   noAssign: any[];
   template: any[];
 }

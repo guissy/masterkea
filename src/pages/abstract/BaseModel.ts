@@ -54,7 +54,7 @@ export default class BaseModel {
   public reducers: any;
   private service: any;
 
-  constructor(namespace: string, state: BaseState & {[x: string]: any}, service: BaseService) {
+  constructor(namespace: string, state: BaseState & { [x: string]: any }, service: BaseService) {
     this.namespace = namespace;
     this.service = service;
     this.state = { ...initState, ...state };
@@ -309,8 +309,9 @@ export default class BaseModel {
   }
 }
 
+// redux 状态在 props 中都是可选的
 export interface BaseState {
-  itemName: string;
+  itemName?: string;
   loading?: boolean;
   saving?: boolean;
   list?: AnyItem[]; // 从服务器返回的数据，通常为数组
@@ -372,4 +373,4 @@ export interface BaseService {
   updateAjax: (params: any) => Promise<any>;
 }
 
-type getAjaxMessage = (payload: any) => string;
+type getAjaxMessage = (payload: any, result?: Result) => string;

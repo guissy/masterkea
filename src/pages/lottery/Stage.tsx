@@ -1,6 +1,6 @@
 import { Form, Icon, Input, Switch } from 'antd';
 import { FormComponentProps } from 'antd/es/form/Form';
-// import { connect } from 'dva';
+//
 import * as React from 'react';
 // import { Store } from '../../abstract/BaseModel';
 import BasePage, { Actions, BasePageConfig, BasePageProps } from '../abstract/BasePage';

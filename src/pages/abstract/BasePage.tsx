@@ -10,7 +10,7 @@ import { LangSiteState } from '../lang.model';
 import { AllStore, AnyStore, BaseState } from './BaseModel';
 import './BasePage.css';
 import getDataSourceMap from './getDataSourceMap';
-import { FormComponentProps } from 'antd/es/form/Form';
+import { FormComponentProps } from '../../../typings/antd/index';
 
 class DefaultComponent extends React.PureComponent<any, any> {
   public render(): null {
@@ -44,6 +44,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
   protected hasFooter: boolean;
   protected switchId: string;
   protected modalWidth: number;
+  protected emptyText: string;
   protected onRowClick: (record: any, index?: number, event?: any) => void;
 
   constructor(props: T, context: BasePageConfig) {
@@ -77,6 +78,11 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
       this.rowSelection = context.rowSelection;
       this.onRowClick = context.onRowClick;
       this.modalWidth = context.modalWidth;
+      this.emptyText = context.emptyText;
+      if (!this.emptyText) {
+        this.emptyText = this.tableActions.length > 0 ? '暂无数据，请检查查询条件' : '暂无数据';
+      }
+      this.emptyText = context.emptyText;
       if (this.withStatus) {
         const index = this.columns.findIndex(v => v.dataIndex === 'status');
         const [status] = index >= 0 ? this.columns.splice(index, 1) : [null];
@@ -108,7 +114,11 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
           key: 'action',
           render: (text, record) => (
             <span className="actions">
-              {this.withEdit && <a id={record.id} onClick={this.onShowEdit(record)}>{site.编辑}</a>}
+              {this.withEdit && (
+                <a id={record.id} onClick={this.onShowEdit(record)}>
+                  {site.编辑}
+                </a>
+              )}
               {this.tableActions.map(
                 action =>
                   action.render ? (
@@ -147,7 +157,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
     this.onShowEdit = this.onShowEdit.bind(this);
   }
 
-  public componentWillReceiveProps(nextProps: T) {
+  public componentWillReceiveProps?(nextProps: T) {
     // 点击【提交】后，隐藏modal
     // if (nextProps.saving) {
     // 已改为 SimpleEdit 隐藏了
@@ -173,15 +183,16 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
     }
   }
 
-  public componentWillUnmount() {
+  public componentWillUnmount?() {
     const { form } = this.props;
     form.resetFields();
   }
 
-  public componentDidMount() {
+  public componentDidMount?() {
     const query = this.props.location && this.props.location.query;
     if (query) {
-      this.actions.query({
+      this.actions
+        .query({
           ...query,
           promise: true,
         })
@@ -200,8 +211,8 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
       // });
     }
     setInterval(() => {
-      this.setState({ok: Date.now()})
-    }, 1000)
+      this.setState({ ok: Date.now() });
+    }, 1000);
   }
 
   // Todo 会影响到 antd 的 Select ，怀疑 Select 使用了 document 之类的方法
@@ -209,7 +220,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
   //   return !isEqual(nextState, this.state) || !isEqual(nextProps, this.props);
   // }
 
-  public render() {
+  public render(): false | JSX.Element {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { selectedRowKeys } = this.state;
     const { site, list, loading, saving, page, total } = this.props;
@@ -327,6 +338,7 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
               rowSelection={this.rowSelection ? rowSelct : null}
               footer={this.footer as any}
               onRowClick={this.onRowClick}
+              locale={{ emptyText: this.emptyText }}
               pagination={
                 page > 0 ? (
                   {
@@ -507,20 +519,20 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
   // 解决问题：实现 jsx 属性中 onClick={()=>this.onShowEdit(editingItem)} 总是产生新函数
   // 解决思路类似 html： onclick="行内脚本"
   // 使用方法 jsx：onClick={this.onShowEdit(editingItem)}
-  @(function (t:any,pk:any,d:any){
+  @function(t: any, pk: any, d: any) {
     const originFn = d.value;
-    const getFn = function (this: any, val: any) {
+    const getFn = function(this: any, val: any) {
       return originFn.bind(this, val);
     };
-    d.value=memoize(getFn);
+    d.value = memoize(getFn);
     return d;
-  })
+  }
   protected onShowEdit(editingItem: any): any {
     this.setState({
       editingItem,
       isShowEdit: true,
     });
-  };
+  }
 
   protected onOkEdit = () => {
     this.setState({
@@ -673,5 +685,6 @@ export interface BasePageConfig {
   createBtnName?: string; // 新增按钮文字
   withOperator?: boolean; // 单元格操作
   rowSelection?: boolean; // 表格选择
+  emptyText?: string; // 表格选择
   onRowClick?: (record: any, index?: number, event?: any) => void; // 点击一行
 }

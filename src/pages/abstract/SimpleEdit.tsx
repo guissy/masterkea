@@ -1,7 +1,7 @@
 import { Button, Checkbox, DatePicker, Form, Icon, Input, InputNumber, Radio, Select, Switch, Upload } from 'antd';
 import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import { ValidationRule } from 'antd/lib/form/Form';
-// import { connect } from 'dva';
+//
 import * as moment from 'moment';
 import * as React from 'react';
 import { getImageOption } from '../../utils/upload';
@@ -10,7 +10,6 @@ import IpList from '../components/iplist/IpList';
 import { Column, DataSource, FormType } from './BasePage';
 import getDataSourceMap from './getDataSourceMap';
 import { kea } from 'kea';
-
 
 @kea({
   connect: {
@@ -55,8 +54,8 @@ class SimpleEdit extends React.PureComponent<SimpleEditProps, any> {
         {this.props.children}
         {fields.map(
           v =>
-            v.formType !== FormType.checktype
-              ? <Form.Item key={v.dataIndex} label={v.title} {...formItemLayout} className={v.formClassName || ''}>
+            v.formType !== FormType.checktype ? (
+              <Form.Item key={v.dataIndex} label={v.title} {...formItemLayout} className={v.formClassName || ''}>
                 {getFieldDecorator(v.dataIndex, this.getFieldOpt(editingItem, v))(
                   (() => {
                     if (v.formType === undefined) {
@@ -76,17 +75,12 @@ class SimpleEdit extends React.PureComponent<SimpleEditProps, any> {
                     } else if (v.formType === FormType.host) {
                       return <Input type="text" placeholder="请输入域名" />;
                     } else if (v.formType === FormType.Checkbox) {
-                      return (
-                        <Checkbox>
-                          {v.content}
-                        </Checkbox>
-                      );
+                      return <Checkbox>{v.content}</Checkbox>;
                     } else if (v.formType === FormType.DatePicker) {
                       return <DatePicker showTime={true} format="YYYY-MM-DD HH:mm:ss" placeholder="选择时间" />;
                     } else if (v.formType === FormType.Switch) {
                       const [txt1, txt2] = v.labels || ['启用', '停用'];
-                      const checked =
-                        editingItem[v.dataIndex] === undefined ? true : Boolean(editingItem[v.dataIndex]);
+                      const checked = editingItem[v.dataIndex] === undefined ? true : Boolean(editingItem[v.dataIndex]);
                       return <Switch checkedChildren={txt1} unCheckedChildren={txt2} defaultChecked={checked} />;
                     } else if (v.formType === FormType.UploadImage) {
                       return (
@@ -99,21 +93,21 @@ class SimpleEdit extends React.PureComponent<SimpleEditProps, any> {
                     } else if (v.formType === FormType.Radio) {
                       return (
                         <Radio.Group>
-                          {this.state.dataSourceMap.get(v.dataIndex).map((item: DataSource) =>
+                          {this.state.dataSourceMap.get(v.dataIndex).map((item: DataSource) => (
                             <Radio key={item.id} value={item.id}>
                               {item.title || item.name}
                             </Radio>
-                          )}
+                          ))}
                         </Radio.Group>
                       );
                     } else if (v.formType === FormType.RadioButton) {
                       return (
                         <Radio.Group>
-                          {this.state.dataSourceMap.get(v.dataIndex).map((item: DataSource) =>
+                          {this.state.dataSourceMap.get(v.dataIndex).map((item: DataSource) => (
                             <Radio.Button key={item.id} value={item.id}>
                               {item.title || item.name}
                             </Radio.Button>
-                          )}
+                          ))}
                         </Radio.Group>
                       );
                     } else if (v.formType === FormType.Select) {
@@ -126,22 +120,22 @@ class SimpleEdit extends React.PureComponent<SimpleEditProps, any> {
                               .find((item: DataSource) => item.value === val || item.id == val);
                             v.otherData
                               ? this.setState({
-                                [v.otherData]: selected.title || selected.name,
-                              })
+                                  [v.otherData]: selected.title || selected.name,
+                                })
                               : '';
                           }}
                         >
                           {this.state.dataSourceMap
                             .get(v.dataIndex)
                             .filter((item: DataSource) => item.value !== '全部')
-                            .map((item: DataSource) =>
+                            .map((item: DataSource) => (
                               <Select.Option
                                 key={item.id >= 0 ? String(item.id) : item.value}
                                 value={item.id >= 0 ? String(item.id) : item.value}
                               >
                                 {item.title || item.name}
                               </Select.Option>
-                            )}
+                            ))}
                         </Select>
                       );
                     } else if (v.formType === FormType.IpList) {
@@ -167,7 +161,8 @@ class SimpleEdit extends React.PureComponent<SimpleEditProps, any> {
                   })()
                 )}
               </Form.Item>
-              : <Form.Item key={v.dataIndex} label={v.title} {...formItemLayout} className={v.formClassName || ''}>
+            ) : (
+              <Form.Item key={v.dataIndex} label={v.title} {...formItemLayout} className={v.formClassName || ''}>
                 <div>
                   {v.dataIndex.split(',').map((w: any, i: any) =>
                     getFieldDecorator(w)(
@@ -178,6 +173,7 @@ class SimpleEdit extends React.PureComponent<SimpleEditProps, any> {
                   )}
                 </div>
               </Form.Item>
+            )
         )}
         <Form.Item {...tailFormItemLayout}>
           <Button type="primary" htmlType="submit" size="large" disabled={saving || loading}>
@@ -377,10 +373,7 @@ class SimpleEdit extends React.PureComponent<SimpleEditProps, any> {
 export default Form.create()(SimpleEdit);
 
 // tslint:disable-next-line
-const StaticText = (({ value }: any) =>
-  <p>
-    {value}
-  </p>) as React.SFC<{ value?: string }>;
+const StaticText = (({ value }: any) => <p>{value}</p>) as React.SFC<{ value?: string }>;
 
 export interface SimpleEditProps extends ReduxProps, LangSiteState, FormComponentProps {
   ns: string;

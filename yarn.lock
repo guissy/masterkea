@@ -6659,9 +6659,9 @@ type-is@~1.6.15:
     media-typer "0.3.0"
     mime-types "~2.1.15"
 
-typescript@next:
-  version "2.6.0-dev.20170902"
-  resolved "http://registry.npm.taobao.org/typescript/download/typescript-2.6.0-dev.20170902.tgz#039bb81ff445a3048564816b5496f4d43d839cb7"
+typescript@^2.6.0-dev.20170915:
+  version "2.6.0-dev.20170915"
+  resolved "http://registry.npm.taobao.org/typescript/download/typescript-2.6.0-dev.20170915.tgz#3d1bceac42f833af844e36dd9ca17c2d7d006d26"
 
 typescript@~2.4.0:
   version "2.4.2"

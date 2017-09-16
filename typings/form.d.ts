@@ -6,11 +6,11 @@ import { FormProps, FormCreateOption, WrappedFormUtils }
 declare module 'antd' {
   import { BasePageProps } from '../src/pages/abstract/BasePage';
   export interface FormComponentProps {
-    form: WrappedFormUtils;
+    form?: WrappedFormUtils;
   }
   interface ComponentDecorator<TOwnProps> {
     <P extends FormComponentProps>(component: React.ComponentClass<P>):
-      React.ComponentClass<BasePageProps>;
+      React.ComponentSpec<BasePageProps>;
   }
 
   export class Form extends React.Component<FormProps, any> {

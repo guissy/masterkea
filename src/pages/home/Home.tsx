@@ -21,6 +21,11 @@ import Logs from '../setting/logs/Logs';
 import Mtoken from '../setting/mtoken/Mtoken';
 import Notice from '../notice/notice/Notice';
 import Order from '../risk/order/Order';
+import Currency from '../cash/currency/Currency';
+import Pay from '../cash/pay/Pay';
+import Bank from '../cash/bank/Bank';
+import Gameid from '../account/gameid/gameid';
+import Build from '../account/build/Build';
 
 class Actions {
   onChangeFullSize = (p: any) => ({} as Action);
@@ -86,7 +91,12 @@ export default class Home extends React.PureComponent<KeaProps<Actions, States>,
                     <Route path="/account/sub" component={Subaccount} />
                     <Route path="/account/webset" component={Webset} />
                     <Route path="/account/role" component={Role} />
+                    <Route path="/account/Build" component={Build} />
+                    <Route path="/account/gameid" component={Gameid} />
                     {/*<Route path="/account/sub" component={router.subaccount} />*/}
+                    <Route path="/cash/bank" component={Bank} />
+                    <Route path="/cash/pay" component={Pay} />
+                    <Route path="/cash/currency" component={Currency} />
                     <Route path="/setting/game" component={Game} />
                     <Route path="/setting/ipblacks" component={Ipblacks} />
                     <Route path="/setting/systemLog" component={Logs} />
