@@ -15,6 +15,8 @@ import { withHallList } from '../../account/hall/Hall.model.pk';
 
 const model = new BaseModel('message', { itemName: '' }, service);
 model.addEffect('sender');
+
+@Form.create()
 @createWith({
   namespace: model.namespace,
   state: { ...model.state, type: [] },
@@ -25,7 +27,7 @@ model.addEffect('sender');
     simpleList: withHallList,
   },
 })
-class Message extends BasePage<MessageProps, any> {
+export default class Message extends BasePage<MessageProps, any> {
   constructor(props: MessageProps) {
     const config: BasePageConfig = {
       ns: 'message',
@@ -159,7 +161,5 @@ class Message extends BasePage<MessageProps, any> {
     });
   }
 }
-
-export default Form.create()(Message);
 
 export interface MessageProps extends BasePageProps {}

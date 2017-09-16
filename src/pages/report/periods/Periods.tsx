@@ -5,8 +5,8 @@ import SimpleEdit from '../../abstract/SimpleEdit';
 import { LangSiteState } from '../../lang.model';
 import { withPeriods } from './Periods.model';
 
-@withPeriods
 @Form.create()
+@withPeriods
 export default class Periods extends BasePage<PeriodsProps, any> {
   constructor(props: PeriodsProps) {
     const config: BasePageConfig = {

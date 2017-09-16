@@ -9,8 +9,8 @@ import * as styles from './GameReport.less';
 import { GameReportState, withGameReport } from './GameReport.model';
 import { HallSimpleItem } from '../../account/hall/Hall';
 
-@withGameReport
 @Form.create()
+@withGameReport
 export default class GameReport extends BasePage<GameReportProps, any> {
   constructor(props: GameReportProps) {
     const config: BasePageConfig = {
@@ -95,12 +95,14 @@ export default class GameReport extends BasePage<GameReportProps, any> {
           dataIndex: 't_id',
           formType: FormType.Select,
           initialValue: '全部',
-          dataSource: props.dispatch({ type: 'hall/simpleList', promise: true }).then(data => ({
-            list: data.simpleList.map((item: HallSimpleItem) => ({
-              title: item.company_account,
-              value: item.company_account,
+          dataSource: Promise.resolve()
+            .then(() => this.actions.simpleList({ promise: true }))
+            .then(data => ({
+              list: data.simpleList.map((item: HallSimpleItem) => ({
+                title: item.company_account,
+                value: item.company_account,
+              })),
             })),
-          })),
         },
         {
           title: '开始时间',

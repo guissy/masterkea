@@ -8,30 +8,15 @@ import buildRowKey from '../../utils/buildRowKey';
 import { Store } from '../abstract/BaseModel';
 import * as style from './singleWinLose.less';
 import { HallCostState, withHallCost } from './hallCost.model';
-import { BasePageProps } from '../abstract/BasePage';
+import { default as BasePage, BasePageProps } from '../abstract/BasePage';
 
-function form(func: any): any {
-  return (...args: any[]) => {
-    const result = new func(...args);
-    const oriGetForm = result.getForm;
-    result.getForm = () => {
-      const oriResult = oriGetForm();
-      oriResult.fieldsStore = result.fieldsStore;
-      oriResult.saveRef = result.saveRef;
-      return oriResult;
-    };
-    return result;
-  };
-}
-
-@withHallCost
-@form
 @Form.create()
-export default class HallCost extends React.PureComponent<HallCostProps, any> {
-  private columns: any;
+@withHallCost
+export default class HallCost extends BasePage<HallCostProps, any> {
+  private columnsMy: any;
 
   constructor(props: HallCostProps) {
-    super(props);
+    super(props, {} as any);
     this.state = {
       dataSource: [],
       formId: 0,
@@ -47,34 +32,35 @@ export default class HallCost extends React.PureComponent<HallCostProps, any> {
 
   public componentWillReceiveProps(nextProps: HallCostProps) {
     // 只有服务器有新请求后才更新 dataSource
-    if (!isEqual(this.props.hallCost, nextProps.hallCost) || this.state.dataSource.length === 0) {
-      const b = nextProps.hallCost.game;
-
-      const list = [];
-      let row = 0;
-      for (let i = 0; i < b.length; i++) {
-        for (let j = 0; j < b[i].list.length; j++) {
-          const obj = {
-            row,
-            index: i,
-            listIndex: j,
-            name: b[i].name,
-            min: b[i].list[j].min,
-            max: b[i].list[j].max,
-            own: b[i].list[j].own,
-            length: b[i].list.length,
-            id:
-              '_' +
-              Math.random()
-                .toString(16)
-                .slice(2),
-            rowSpan: j === 0 ? b[i].list.length : 0,
-          };
-          row += 1;
-          list.push(obj);
+    if (!isEqual(this.props, nextProps) || this.state.dataSource.length === 0) {
+      const b = nextProps.game;
+      if (b) {
+        const list = [];
+        let row = 0;
+        for (let i = 0; i < b.length; i++) {
+          for (let j = 0; j < b[i].list.length; j++) {
+            const obj = {
+              row,
+              index: i,
+              listIndex: j,
+              name: b[i].name,
+              min: b[i].list[j].min,
+              max: b[i].list[j].max,
+              own: b[i].list[j].own,
+              length: b[i].list.length,
+              id:
+                '_' +
+                Math.random()
+                  .toString(16)
+                  .slice(2),
+              rowSpan: j === 0 ? b[i].list.length : 0,
+            };
+            row += 1;
+            list.push(obj);
+          }
         }
+        this.setState({ dataSource: list });
       }
-      this.setState({ dataSource: list });
     } else if (!isEqual(this.props.dataSource, nextProps.dataSource) || this.state.dataSource.length === 0) {
       this.setState({ dataSource: nextProps.dataSource });
     }
@@ -82,7 +68,7 @@ export default class HallCost extends React.PureComponent<HallCostProps, any> {
 
   public render() {
     // const { game } = this.props.hallcost;
-    const { hallCost } = this.props;
+    const { game, packet, recharge } = this.props;
     const { getFieldDecorator, setFieldsValue } = this.props.form;
     const formItemLayout = {
       labelCol: { span: 5 },
@@ -96,7 +82,7 @@ export default class HallCost extends React.PureComponent<HallCostProps, any> {
             <h2 className={style.h2}>游戏输赢分成设置</h2>
             <Form>
               <Table
-                columns={this.columns}
+                columns={this.columnsMy}
                 size="small"
                 dataSource={this.state.dataSource}
                 bordered={true}
@@ -108,17 +94,13 @@ export default class HallCost extends React.PureComponent<HallCostProps, any> {
               <Col offset={6} span={12}>
                 <h2 className={style.h2}>包网费用设置</h2>
                 <Form.Item label="线路费" {...formItemLayout}>
-                  {getFieldDecorator('line', { initialValue: hallCost.packet.line })(<InputNumber min={0} />)}
+                  {getFieldDecorator('line', { initialValue: packet.line })(<InputNumber min={0} />)}
                 </Form.Item>
                 <Form.Item label="维护费" {...formItemLayout}>
-                  {getFieldDecorator('packet.service', { initialValue: hallCost.packet.service })(
-                    <InputNumber min={0} />
-                  )}
+                  {getFieldDecorator('packet.service', { initialValue: packet.service })(<InputNumber min={0} />)}
                 </Form.Item>
                 <Form.Item label="包底" {...formItemLayout}>
-                  {getFieldDecorator('packet.mincost', { initialValue: hallCost.packet.mincost })(
-                    <InputNumber min={0} />
-                  )}
+                  {getFieldDecorator('packet.mincost', { initialValue: packet.mincost })(<InputNumber min={0} />)}
                 </Form.Item>
               </Col>
             </Row>
@@ -126,14 +108,10 @@ export default class HallCost extends React.PureComponent<HallCostProps, any> {
               <Col offset={6} span={12}>
                 <h2 className={style.h2}>会员存款分成</h2>
                 <Form.Item label="线下充值" {...formItemLayout}>
-                  {getFieldDecorator('recharge.offline', { initialValue: hallCost.recharge.offline })(
-                    <InputNumber min={0} />
-                  )}
+                  {getFieldDecorator('recharge.offline', { initialValue: recharge.offline })(<InputNumber min={0} />)}
                 </Form.Item>
                 <Form.Item label="线上充值" {...formItemLayout}>
-                  {getFieldDecorator('recharge.online', { initialValue: hallCost.recharge.online })(
-                    <InputNumber min={0} />
-                  )}
+                  {getFieldDecorator('recharge.online', { initialValue: recharge.online })(<InputNumber min={0} />)}
                 </Form.Item>
               </Col>
             </Row>
@@ -141,7 +119,7 @@ export default class HallCost extends React.PureComponent<HallCostProps, any> {
               <Button type="primary" style={{ marginRight: '20px' }} onClick={this.onSubmit}>
                 提交
               </Button>
-              <Button type="primary" onClick={this.onReset}>
+              <Button type="primary" onClick={this.onResetMy}>
                 重置
               </Button>
             </Row>
@@ -152,7 +130,7 @@ export default class HallCost extends React.PureComponent<HallCostProps, any> {
   }
 
   private updateColumn() {
-    this.columns = [
+    this.columnsMy = [
       {
         title: '游戏',
         dataIndex: 'name',
@@ -212,7 +190,7 @@ export default class HallCost extends React.PureComponent<HallCostProps, any> {
         render: (text: any, record: any, index: number) => {
           return (
             <div>
-              <Popconfirm title="确定要删除吗?" onConfirm={() => this.onDelete(record)}>
+              <Popconfirm title="确定要删除吗?" onConfirm={() => this.onDeleteMy(record)}>
                 <a href="#" className={record.listIndex === 0 ? style.disabled : ''}>
                   <Icon type="delete" /> 删除
                 </a>
@@ -255,7 +233,7 @@ export default class HallCost extends React.PureComponent<HallCostProps, any> {
   };
 
   // 删除
-  private onDelete = (record: any) => {
+  private onDeleteMy = (record: any) => {
     const len = record.length;
     // 排除要删除的
     const dataSource = this.state.dataSource.filter((item: any) => item.row !== record.row);
@@ -310,7 +288,7 @@ export default class HallCost extends React.PureComponent<HallCostProps, any> {
     });
   };
 
-  private onReset = () => {
+  private onResetMy = () => {
     this.setState({ dataSource: [] });
     this.props.dispatch({
       type: 'hallcost/resetHallCost',
@@ -318,22 +296,22 @@ export default class HallCost extends React.PureComponent<HallCostProps, any> {
   };
 
   private updateForm = (hallcost: any) => {
-    const { form } = this.props;
-    hallcost.game.forEach((element: any, index: number) => {
+    const { form, game, packet, recharge } = this.props;
+    game.forEach((element: any, index: number) => {
       const fieldName = `game.${index}`;
       form.setFieldsValue({ [fieldName]: element });
     });
 
     // tslint:disable-next-line
-    for (const key in hallcost.packet) {
+    for (const key in packet) {
       const fieldName = `packet.${key}`;
-      form.setFieldsValue({ [fieldName]: hallcost.packet[key] });
+      form.setFieldsValue({ [fieldName]: packet[key] });
     }
 
     // tslint:disable-next-line
-    for (const key in hallcost.recharge) {
+    for (const key in recharge) {
       const fieldName = `recharge.${key}`;
-      form.setFieldsValue({ [fieldName]: hallcost.recharge[key] });
+      form.setFieldsValue({ [fieldName]: recharge[key] });
     }
   };
 }

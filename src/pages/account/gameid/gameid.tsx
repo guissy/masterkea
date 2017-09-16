@@ -17,11 +17,12 @@ export default class Gameid extends React.PureComponent<GameidProps, any> {
         </div>
         <div>
           <Tabs>
-            {this.props.name.map((btn: any, i: number) => (
-              <TabPane tab={<span>{btn.name}</span>} key={i}>
-                <GameList value={btn.id} />;
-              </TabPane>
-            ))}
+            {this.props.names &&
+              this.props.names.map((btn: any, i: number) => (
+                <TabPane tab={<span>{btn.name}</span>} key={i}>
+                  <GameList value={btn.id} />
+                </TabPane>
+              ))}
           </Tabs>
         </div>
       </div>

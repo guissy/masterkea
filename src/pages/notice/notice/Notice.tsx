@@ -6,8 +6,9 @@ import SimpleEdit from '../../abstract/SimpleEdit';
 import NoticeDetail from './Notice.detail';
 import { withNotice } from './Notice.model';
 
+@Form.create()
 @withNotice
-class Notice extends BasePage<NoticeProps, any> {
+export default class Notice extends BasePage<NoticeProps, any> {
   constructor(props: NoticeProps) {
     const noticeTypePromise = Promise.resolve()
       .then(() => this.actions.type({ promise: true }))
@@ -148,7 +149,4 @@ class Notice extends BasePage<NoticeProps, any> {
   }
 }
 
-export default Form.create()(Notice);
-
-export interface NoticeProps extends BasePageProps {
-}
+export interface NoticeProps extends BasePageProps {}

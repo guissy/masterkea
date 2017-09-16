@@ -155,7 +155,5 @@ class LoginEdit extends React.PureComponent<LoginEditProps, any> {
 export default Form.create()(LoginEdit as any);
 
 interface LoginEditProps extends BasePageProps {
-  // hall?: any;
-  // form?: WrappedFormUtils;
   onSuccess: () => void;
 }

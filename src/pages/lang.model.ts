@@ -2,14 +2,9 @@
 import * as queryString from 'querystring';
 import { IntlXlz } from '../../typings/intl';
 import zh from '../locale/zh-CN';
-import { kea, KeaOption, TakeLatestParam } from 'kea';
-import * as PropTypes from 'prop-types';
-import { call, put } from 'redux-saga/effects';
-import { AjaxState, Result } from '../utils/Result';
-import { langListAjax } from './lang.service';
+import * as service from './lang.service';
 import createWith from '../utils/buildKea';
 import BaseModel from './abstract/BaseModel';
-import * as service from './lang.service';
 
 const queryFirst: { locale: string } = queryString.parse(location.search) as any;
 // addLocaleData(appLocaleDataZh);
@@ -214,10 +209,14 @@ export interface LangSiteState {
 //   }),
 // } as KeaOption<{ siteTo: any, langList: any, listSuccess: any }, null>);
 
-const model = new BaseModel('lang', {
-  site: zh,
-  langList: []
-} as any, service);
+const model = new BaseModel(
+  'lang',
+  {
+    site: zh,
+    langList: [],
+  } as any,
+  service
+);
 model.addEffect('langList');
 export const withLang = createWith({
   namespace: model.namespace,

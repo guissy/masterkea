@@ -6,11 +6,11 @@ import { withHallList } from '../hall/Hall.model.pk';
 
 const state = {
   itemName: '游戏账号管理',
-  name: [] as any,
+  names: [] as any,
 };
 
 const model = new BaseModel('gameid', state, service);
-model.addEffect('names', '更新');
+model.addEffect('names');
 export const withGameid = createWith({
   namespace: model.namespace,
   state: { ...model.state, type: [] },
@@ -22,5 +22,5 @@ export const withGameid = createWith({
   },
 });
 export interface GameidState extends BaseState {
-  name: any[];
+  names: any[];
 }

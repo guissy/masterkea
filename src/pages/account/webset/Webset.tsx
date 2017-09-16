@@ -7,8 +7,9 @@ import WebsetEdit from './Webset.edit';
 import WebsetMarkdown from './WebsetMarkdown';
 import { withWebset } from './Webset.model';
 
+@Form.create()
 @withWebset
-class Webset extends BasePage<WebsetProps, any> {
+export default class Webset extends BasePage<WebsetProps, any> {
   constructor(props: WebsetProps) {
     const companyAccountPromise = Promise.resolve()
       .then(() => this.actions.simpleList({ promise: true }))
@@ -150,7 +151,4 @@ class Webset extends BasePage<WebsetProps, any> {
   }
 }
 
-export default Form.create()(Webset)
-
-export interface WebsetProps extends BasePageProps {
-}
+export interface WebsetProps extends BasePageProps {}

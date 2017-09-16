@@ -1,7 +1,5 @@
 import { Button, Checkbox, DatePicker, Form, Icon, Input, InputNumber, Radio, Select, Switch, Upload } from 'antd';
-import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import { ValidationRule } from 'antd/lib/form/Form';
-//
 import * as moment from 'moment';
 import * as React from 'react';
 import { getImageOption } from '../../utils/upload';
@@ -10,13 +8,15 @@ import IpList from '../components/iplist/IpList';
 import { Column, DataSource, FormType } from './BasePage';
 import getDataSourceMap from './getDataSourceMap';
 import { kea } from 'kea';
+import { FormComponentProps } from '../../../typings/antd/index';
 
+@Form.create()
 @kea({
   connect: {
     props: [withLang, ['site']],
   },
 })
-class SimpleEdit extends React.PureComponent<SimpleEditProps, any> {
+export default class SimpleEdit extends React.PureComponent<SimpleEditProps, any> {
   protected ns: string;
 
   constructor(props: SimpleEditProps) {
@@ -41,7 +41,7 @@ class SimpleEdit extends React.PureComponent<SimpleEditProps, any> {
     }
   }
   public render() {
-    const { getFieldDecorator, setFieldsValue } = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     const { site, editingItem = {}, saving, loading, okText } = this.props;
     const formItemLayout = { labelCol: { span: 5 }, wrapperCol: { span: 15 } };
     const tailFormItemLayout = {
@@ -369,8 +369,6 @@ class SimpleEdit extends React.PureComponent<SimpleEditProps, any> {
     }
   };
 }
-
-export default Form.create()(SimpleEdit);
 
 // tslint:disable-next-line
 const StaticText = (({ value }: any) => <p>{value}</p>) as React.SFC<{ value?: string }>;

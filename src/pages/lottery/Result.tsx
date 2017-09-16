@@ -11,8 +11,7 @@ import * as service from './Result.service';
 const model = new BaseModel('result', { itemName: '' }, service);
 model.addEffect('type');
 
-let resolve: any;
-const promise = new Promise(r => (resolve = r));
+@Form.create()
 @createWith({
   namespace: model.namespace,
   state: { ...model.state, type: [] },
@@ -22,7 +21,7 @@ const promise = new Promise(r => (resolve = r));
     site: withLang,
   },
 })
-class Result extends BasePage<ResultProps, any> {
+export default class Result extends BasePage<ResultProps, any> {
   constructor(props: ResultProps) {
     const config: BasePageConfig = {
       ns: 'result',
@@ -127,7 +126,15 @@ class Result extends BasePage<ResultProps, any> {
           dataIndex: 'lottery_id',
           formType: FormType.Select,
           initialValue: '2',
-          dataSource: promise as any,
+          dataSource: Promise.resolve()
+            .then(() => this.props.actions.type({ promise: true }))
+            .then(v => {
+              const list = v.type.filter((w: any) => w.pid !== '0');
+              if (list.length > 0) {
+                this.props.actions.query({ lottery_id: list[0].id });
+              }
+              return { list };
+            }),
         },
         {
           title: '开奖状态',
@@ -156,21 +163,7 @@ class Result extends BasePage<ResultProps, any> {
     };
     super(props, config);
   }
-
-  componentDidMount(): void {
-    this.props.actions.type({ promise: true }).then(v => {
-      // console.log(v.type);
-      const list = v.type.filter((w: any) => w.pid !== '0');
-      if (list.length > 0) {
-        this.props.actions.query({ lottery_id: list[0].id });
-      }
-      resolve({ list });
-      return { list };
-    });
-  }
 }
-
-export default Form.create()(Result as any);
 
 export interface ResultProps extends BasePageProps {
   // form?: WrappedFormUtils;

@@ -2,6 +2,7 @@ import { BaseState, default as BaseModel } from '../../abstract/BaseModel';
 import * as service from './GameReport.service';
 import createWith from '../../../utils/buildKea';
 import { withLang } from '../../lang.model';
+import { withHallList } from '../../account/hall/Hall.model.pk';
 const state = {
   itemName: '',
 };
@@ -14,6 +15,7 @@ export const withGameReport = createWith({
   effects: model.effects,
   props: {
     site: withLang,
+    simpleList: withHallList,
   },
 });
 

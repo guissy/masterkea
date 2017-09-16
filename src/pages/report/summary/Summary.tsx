@@ -5,8 +5,8 @@ import SimpleEdit from '../../abstract/SimpleEdit';
 import { withSummary } from './Summary.model';
 import { HallSimpleItem } from '../../account/hall/Hall';
 
-@withSummary
 @Form.create()
+@withSummary
 export default class Summary extends BasePage<SummaryProps, any> {
   constructor(props: SummaryProps) {
     const config: BasePageConfig = {
@@ -59,12 +59,11 @@ export default class Summary extends BasePage<SummaryProps, any> {
           dataIndex: 't_id',
           formType: FormType.Select,
           initialValue: '全部',
-          dataSource: props.dispatch({ type: 'hall/simpleList', promise: true }).then(data => ({
-            list: data.simpleList.map((item: HallSimpleItem) => ({
-              title: item.company_account,
-              value: item.company_account,
+          dataSource: Promise.resolve()
+            .then(() => this.actions.simpleList({ promise: true }))
+            .then(data => ({
+              list: data.simpleList.map((item: HallSimpleItem) => ({ title: item.company_account, id: item.id })),
             })),
-          })),
         },
         {
           title: '时间',
@@ -77,5 +76,4 @@ export default class Summary extends BasePage<SummaryProps, any> {
   }
 }
 
-export interface SummaryProps extends BasePageProps {
-}
+export interface SummaryProps extends BasePageProps {}

@@ -10,9 +10,8 @@ import { GameCategory, GameCategoryName } from '../hall/Hall';
 import { Link } from 'react-router-dom';
 import { WebsetState } from '../webset/Webset.model';
 
-// @connect(({ build, hall, webset, lang }: Store) => ({ build, hall, webset, site: lang.site }))
-@withBuiuld
 @Form.create()
+@withBuiuld
 export default class Build extends BasePage<BuildProps, any> {
   constructor(props: BuildProps) {
     const config: BasePageConfig = {

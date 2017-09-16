@@ -50,11 +50,11 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
   constructor(props: T, context: BasePageConfig) {
     super(props);
     const { site } = props;
-    let fieldsForTable = [];
+    let fieldsForTable = [] as any;
     if (context == null) {
       throw new Error('第二个参数包含 ns 和 itemName 等的对象！');
     } else if (context.ns == null) {
-      throw new Error('命名空间 ns 不得为空！');
+      // throw new Error('命名空间 ns 不得为空！');
     } else {
       this.ns = context.ns;
       this.itemName = props.itemName;
@@ -82,7 +82,6 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
       if (!this.emptyText) {
         this.emptyText = this.tableActions.length > 0 ? '暂无数据，请检查查询条件' : '暂无数据';
       }
-      this.emptyText = context.emptyText;
       if (this.withStatus) {
         const index = this.columns.findIndex(v => v.dataIndex === 'status');
         const [status] = index >= 0 ? this.columns.splice(index, 1) : [null];

@@ -3,7 +3,9 @@ import * as service from './hallCost.service';
 import createWith from '../../utils/buildKea';
 import { withLang } from '../lang.model';
 const state = {
-  hallCost: {},
+  game: [] as any,
+  recharge: {},
+  packet: {},
   addFormVisible: false,
   maintainVisible: false,
   dataSource: [] as any[], // 暂存的表格数据，
@@ -21,10 +23,8 @@ export const withHallCost = createWith({
 });
 
 export interface HallCostState extends BaseState {
-  hallCost: {
-    recharge: { offline: any; online: any };
-    game: any[];
-    packet: { line: any; service: any; mincost: any[] };
-  };
+  recharge: { offline: any; online: any };
+  game: any[];
+  packet: { line: any; service: any; mincost: any[] };
   dataSource: any[];
 }

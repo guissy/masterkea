@@ -31,7 +31,7 @@ export default class GameList extends BasePage<GameListProps, any> {
           canForm: true,
           canShow: false,
           otherData: 'partner_name',
-          dataSource: props.name,
+          dataSource: props.names,
         },
         {
           title: '游戏',
@@ -108,6 +108,11 @@ export default class GameList extends BasePage<GameListProps, any> {
   public componentDidMount() {
     if (this.props.value) {
       this.actions.query({ partner_id: this.props.value });
+    }
+  }
+  public componentWillReceiveProps?(nextProps: GameListProps) {
+    if (this.props.value != null && this.props.value != nextProps.value) {
+      this.actions.query({ partner_id: nextProps.value });
     }
   }
 }

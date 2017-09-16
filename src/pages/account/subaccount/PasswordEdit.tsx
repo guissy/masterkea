@@ -4,10 +4,11 @@ import * as React from 'react';
 import { LangSiteState, withLang } from '../../lang.model';
 import { connect } from 'kea';
 
+@Form.create()
 @connect({
   props: [withLang, ['site']],
 })
-class PasswordEdit extends React.PureComponent<PasswordEditProps, any> {
+export default class PasswordEdit extends React.PureComponent<PasswordEditProps, any> {
   constructor(props: PasswordEditProps) {
     super(props);
     this.state = {};
@@ -71,8 +72,6 @@ class PasswordEdit extends React.PureComponent<PasswordEditProps, any> {
     }
   };
 }
-
-export default Form.create()(PasswordEdit as any)
 
 interface PasswordEditProps extends ReduxProps, LangSiteState {
   form?: WrappedFormUtils;

@@ -5,8 +5,9 @@ import BasePage, { BasePageConfig, BasePageProps, FormType } from '../../abstrac
 import SimpleEdit from '../../abstract/SimpleEdit';
 import { withLogs } from './Logs.model';
 
+@Form.create()
 @withLogs
-class Logs extends BasePage<LogsProps, any> {
+export default class Logs extends BasePage<LogsProps, any> {
   constructor(props: LogsProps) {
     const config: BasePageConfig = {
       ns: 'logs',
@@ -114,8 +115,4 @@ class Logs extends BasePage<LogsProps, any> {
   }
 }
 
-export default Form.create()(Logs);
-
-export interface LogsProps extends BasePageProps {
-
-}
+export interface LogsProps extends BasePageProps {}

@@ -107,9 +107,9 @@ export default class Home extends React.PureComponent<KeaProps<Actions, States>,
                     <Route path="/operation/operation" component={Operation} />
                     <Route path="/setting/game" component={Game} />
 
-                    <Route path="report/periods" component={Periods} />
-                    <Route path="report/summary" component={Summary} />
-                    <Route path="report/gameReport" component={GameReport} />
+                    <Route path="/report/periods" component={Periods} />
+                    <Route path="/report/summary" component={Summary} />
+                    <Route path="/report/gameReport" component={GameReport} />
 
                     <Route path="/cash/bank" component={Bank} />
                     <Route path="/cash/pay" component={Pay} />

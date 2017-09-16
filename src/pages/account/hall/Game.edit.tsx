@@ -7,10 +7,11 @@ import { GameCategory, GameCategoryName } from './Hall';
 import { connect, kea } from 'kea';
 import { withHall } from './Hall.model';
 
+@Form.create()
 @connect({
-    props: [withHall, ['hallGameLoading', 'hallGame', 'saving']],
-  })
-class GameEdit extends React.PureComponent<GameFormProps, any> {
+  props: [withHall, ['hallGameLoading', 'hallGame', 'saving']],
+})
+export default class GameEdit extends React.PureComponent<GameFormProps, any> {
   constructor(props: GameFormProps) {
     super(props);
   }
@@ -27,42 +28,44 @@ class GameEdit extends React.PureComponent<GameFormProps, any> {
 
     if (hallGame) {
       ['lottery', 'live', 'game', 'sports'].forEach((key: keyof GameCategory) => {
-        options[key] = hallGame[key] && hallGame[key].map((item:any) => item.name);
-        values[key] = hallGame[key] && hallGame[key].filter((item:any) => item.checked).map((item:any) => item.name);
+        options[key] = hallGame[key] && hallGame[key].map((item: any) => item.name);
+        values[key] = hallGame[key] && hallGame[key].filter((item: any) => item.checked).map((item: any) => item.name);
       });
     }
     return (
       <div>
-        {!hallGameLoading && hallGame
-          ? <Form layout="horizontal" onSubmit={this.onSubmit}>
-              <Form.Item label="彩票游戏" {...formItemLayout}>
-                {getFieldDecorator('lottery', {
-                  initialValue: values.lottery,
-                })(<SelectAll options={options.lottery} />)}
-              </Form.Item>
-              <Form.Item label="视讯平台" {...formItemLayout}>
-                {getFieldDecorator('live', {
-                  initialValue: values.live,
-                })(<SelectAll options={options.live} />)}
-              </Form.Item>
-              <Form.Item label="电子平台" {...formItemLayout}>
-                {getFieldDecorator('game', {
-                  initialValue: values.game,
-                })(<SelectAll options={options.game} />)}
-              </Form.Item>
-              <Form.Item label="体育" {...formItemLayout}>
-                {getFieldDecorator('sports', {
-                  initialValue: values.sports,
-                })(<SelectAll options={options.sports} />)}
-              </Form.Item>
-              <Form.Item className={styles.submit}>
-                <Button type="primary" htmlType="submit" size="large" disabled={saving}>
-                  {saving && <Icon type="loading" />}
-                  提交
-                </Button>
-              </Form.Item>
-            </Form>
-          : <div>loading</div>}
+        {!hallGameLoading && hallGame ? (
+          <Form layout="horizontal" onSubmit={this.onSubmit}>
+            <Form.Item label="彩票游戏" {...formItemLayout}>
+              {getFieldDecorator('lottery', {
+                initialValue: values.lottery,
+              })(<SelectAll options={options.lottery} />)}
+            </Form.Item>
+            <Form.Item label="视讯平台" {...formItemLayout}>
+              {getFieldDecorator('live', {
+                initialValue: values.live,
+              })(<SelectAll options={options.live} />)}
+            </Form.Item>
+            <Form.Item label="电子平台" {...formItemLayout}>
+              {getFieldDecorator('game', {
+                initialValue: values.game,
+              })(<SelectAll options={options.game} />)}
+            </Form.Item>
+            <Form.Item label="体育" {...formItemLayout}>
+              {getFieldDecorator('sports', {
+                initialValue: values.sports,
+              })(<SelectAll options={options.sports} />)}
+            </Form.Item>
+            <Form.Item className={styles.submit}>
+              <Button type="primary" htmlType="submit" size="large" disabled={saving}>
+                {saving && <Icon type="loading" />}
+                提交
+              </Button>
+            </Form.Item>
+          </Form>
+        ) : (
+          <div>loading</div>
+        )}
       </div>
     );
   }
@@ -98,8 +101,6 @@ class GameEdit extends React.PureComponent<GameFormProps, any> {
     });
   };
 }
-
-export default Form.create()(GameEdit as any);
 
 interface GameFormProps extends ReduxProps {
   hall?: any;

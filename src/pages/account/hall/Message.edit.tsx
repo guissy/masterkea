@@ -1,17 +1,18 @@
 import { Button, Form, Input, Tag, Tooltip } from 'antd';
-import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import * as React from 'react';
 import * as styles from './Hall.less';
 import { HallSimpleItem } from './Hall';
 import { kea } from 'kea';
 import { withHall } from './Hall.model';
+import { FormComponentProps } from '../../../../typings/antd/index';
 
+@Form.create()
 @kea({
   connect: {
     props: [withHall, ['sendMessageLoading', 'hallLogin']],
   },
 })
-class MessageEdit extends React.Component<MessageEditProps, any> {
+export default class MessageEdit extends React.Component<MessageEditProps, any> {
   constructor(props: MessageEditProps) {
     super(props);
 
@@ -47,11 +48,7 @@ class MessageEdit extends React.Component<MessageEditProps, any> {
                 {isLongTag ? `${tag.company_account.slice(0, 20)}...` : tag.company_account}
               </Tag>
             );
-            return isLongTag
-              ? <Tooltip title={tag}>
-                  {tagElem}
-                </Tooltip>
-              : tagElem;
+            return isLongTag ? <Tooltip title={tag}>{tagElem}</Tooltip> : tagElem;
           })}
         </Form.Item>
         <Form.Item label="标题" {...formItemLayout}>
@@ -99,8 +96,6 @@ class MessageEdit extends React.Component<MessageEditProps, any> {
     this.setState({ deleted, halls });
   };
 }
-
-export default Form.create()(MessageEdit);
 
 interface MessageEditProps extends ReduxProps, FormComponentProps {
   sendMessageLoading?: any;

@@ -3,14 +3,15 @@ import { WrappedFormUtils } from 'antd/es/form/Form';
 import * as React from 'react';
 import { LangSiteState } from '../../lang.model';
 import * as styles from './Role.less';
-import { RoleState, withRole } from './Role.model';
+import { withRole } from './Role.model';
 import RoleCheckboxRoot from './RoleCheckboxRoot';
 import { connect } from 'kea';
 
+@Form.create()
 @connect({
   props: [withRole, ['editingItem', 'permission', 'detail', 'detailLoading', 'saving']],
 })
-class RoleEdit extends React.PureComponent<RoleEditProps, any> {
+export default class RoleEdit extends React.PureComponent<RoleEditProps, any> {
   constructor(props: RoleEditProps) {
     super(props);
   }
@@ -54,30 +55,32 @@ class RoleEdit extends React.PureComponent<RoleEditProps, any> {
         loaded = true;
       }
     }
-    return loaded
-      ? <Form className={styles.page} onSubmit={this.onSubmit}>
-          <Form.Item label={site.角色名称} {...formItemLayout}>
-            {getFieldDecorator('name', {
-              initialValue: editingItem.role,
-              rules: [{ required: true, message: site.请输入 }],
-            })(<Input placeholder={site.请输入} />)}
-          </Form.Item>
-          <Form.Item label={site.选择平台权限} {...formItemLayout}>
-            {getFieldDecorator('roles', {
-              initialValue,
-              rules: [{ required: false }],
-            })(<RoleCheckboxRoot plainOptions={permissionRoot as any} />)}
-          </Form.Item>
-          <Form.Item {...tailFormItemLayout}>
-            <Button type="primary" htmlType="submit" size="large">
-              {this.props.saving && <Icon type="loading" />}
-              {site.提交}
-            </Button>
-          </Form.Item>
-        </Form>
-      : <div style={{ textAlign: 'center' }}>
-          <Spin />
-        </div>;
+    return loaded ? (
+      <Form className={styles.page} onSubmit={this.onSubmit}>
+        <Form.Item label={site.角色名称} {...formItemLayout}>
+          {getFieldDecorator('name', {
+            initialValue: editingItem.role,
+            rules: [{ required: true, message: site.请输入 }],
+          })(<Input placeholder={site.请输入} />)}
+        </Form.Item>
+        <Form.Item label={site.选择平台权限} {...formItemLayout}>
+          {getFieldDecorator('roles', {
+            initialValue,
+            rules: [{ required: false }],
+          })(<RoleCheckboxRoot plainOptions={permissionRoot as any} />)}
+        </Form.Item>
+        <Form.Item {...tailFormItemLayout}>
+          <Button type="primary" htmlType="submit" size="large">
+            {this.props.saving && <Icon type="loading" />}
+            {site.提交}
+          </Button>
+        </Form.Item>
+      </Form>
+    ) : (
+      <div style={{ textAlign: 'center' }}>
+        <Spin />
+      </div>
+    );
   }
 
   private onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -88,11 +91,12 @@ class RoleEdit extends React.PureComponent<RoleEditProps, any> {
         return;
       } else {
         subDate.role = fieldsValue.name;
-        subDate.auth = this.props.permission.filter((v: any) =>
-          fieldsValue.roles.has(v.id)).map((v: any) => {
+        subDate.auth = this.props.permission.filter((v: any) => fieldsValue.roles.has(v.id)).map((v: any) => {
           return {
             ...v,
-            children: v.children.filter((w: any) => fieldsValue.roles.get(v.id).some((ww: string) => Number(ww) === w.id)),
+            children: v.children.filter((w: any) =>
+              fieldsValue.roles.get(v.id).some((ww: string) => Number(ww) === w.id)
+            ),
           };
         });
       }
@@ -109,8 +113,6 @@ class RoleEdit extends React.PureComponent<RoleEditProps, any> {
     });
   };
 }
-
-export default Form.create()(RoleEdit as any)
 
 export interface RoleEditProps extends ReduxProps, LangSiteState {
   permission?: any;

@@ -10,8 +10,9 @@ import MessageEdit from './Message.edit';
 import { withHall } from './Hall.model';
 import { push } from 'react-router-redux';
 
+@Form.create()
 @withHall
-class Hall extends BasePage<HallProps, any> {
+export default class Hall extends BasePage<HallProps, any> {
   private mainWidth: number;
   private domainPromise: Promise<any>;
   constructor(props: HallProps) {
@@ -357,8 +358,6 @@ class Hall extends BasePage<HallProps, any> {
     });
   }
 }
-
-export default Form.create()(Hall);
 
 export interface HallProps extends BasePageProps {}
 

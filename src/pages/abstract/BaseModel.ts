@@ -2,6 +2,7 @@ import { message, Modal } from 'antd';
 // import { any, SubscriptionAPI } from 'dva';
 // import { any } from '../../../typings/dva';
 import { IntlXlz } from '../../../typings/intl';
+import zh from '../../locale/zh-CN';
 import environment from '../../utils/environment';
 import { AjaxState, Result } from '../../utils/Result';
 import { call, put, select } from 'redux-saga/effects';
@@ -83,20 +84,25 @@ export default class BaseModel {
               payload: { [loading]: true },
             });
           }
-          const { lang: { site } } = yield select((store: Store) => ['lang']);
+          const { lang } = yield select((store: Store) => ['lang']);
+          const site = lang ? lang.site : zh;
           const result = yield call(ajax, payload);
           if (result && result.state === 0) {
             const action = {
-              type: `${key}Success`,
+              type: `${namespace}/${key}Success`,
               payload: { [key]: result.data || [] },
             };
-            if (needMessage) {
-              action.payload[loading] = false;
-              yield put(this.actions[key](action.payload) as any);
-              message.info(`${ajaxMsg}${site.成功}`);
+            if (this.actions[action.type]) {
+              if (needMessage) {
+                action.payload[loading] = false;
+                yield put(this.actions[action.type](action.payload) as any);
+                message.info(`${ajaxMsg}${site.成功}`);
+              } else {
+                yield put(this.actions[action.type](action.payload) as any);
+                // yield put(action);
+              }
             } else {
-              yield put(this.actions[action.type](action.payload) as any);
-              // yield put(action);
+              console.warn('☞☞☞ \u2714 BaseModel 105 no exist: ', action.type);
             }
             if (resolve) {
               resolve(action.payload);
@@ -120,8 +126,9 @@ export default class BaseModel {
         }
       },
     };
+    this.state[key] = [];
     this.effects = { ...this.effects, [key]: effects.effect };
-    this.actions = { ...this.actions, [key + 'Success']: () => {} };
+    this.actions = { ...this.actions, [namespace + '/' + key + 'Success']: () => {} };
     // this.reducers = { ...this.reducers, ...reducers };
   }
 
@@ -145,15 +152,18 @@ export default class BaseModel {
           }
         }
         if (result && result.state === 0) {
-          let list = [];
+          let data = {};
           if (Array.isArray(result.data)) {
-            list = result.data;
+            data = { list: result.data };
+          } else if (typeof result.data === 'object') {
+            data = result.data;
+            console.warn('返回数据不是数组：', result.data);
           } else {
-            console.error('返回数据不是数组：', queryAjax.toString(), result.data);
+            console.warn('返回数据为空：', result.data);
           }
           yield put(
             this.actions.querySuccess({
-              list,
+              ...data,
               total: result.attributes ? result.attributes.total : 0,
               page: result.attributes ? result.attributes.number : 0,
               attributes: result.attributes,
@@ -161,7 +171,7 @@ export default class BaseModel {
             })
           );
           if (resolve) {
-            resolve({ list });
+            resolve(data);
           }
         } else {
           if (!payload || (payload && !payload.noLoading)) {

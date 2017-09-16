@@ -5,8 +5,9 @@ import BasePage, { BasePageConfig, BasePageProps, FormType } from '../../abstrac
 import SimpleEdit from '../../abstract/SimpleEdit';
 import { withIpblacks } from './Ipblacks.model';
 
+@Form.create()
 @withIpblacks
-class Ipblacks extends BasePage<IpblacksProps, any> {
+export default class Ipblacks extends BasePage<IpblacksProps, any> {
   constructor(props: IpblacksProps) {
     const config: BasePageConfig = {
       ns: 'ipblacks',
@@ -95,22 +96,21 @@ class Ipblacks extends BasePage<IpblacksProps, any> {
           onClick: record => {
             props.dispatch({ type: 'ipblacks/deleteBatch', payload: { ids: record.id } });
           },
-          render: record =>
+          render: record => (
             <Popconfirm
               title="确定要删除吗？"
               onConfirm={e => {
                 this.props.dispatch({ type: 'ipblacks/deleteBatch', payload: { ids: record.id } });
               }}
             >
-              <a>
-                {this.props.site.删除}
-              </a>
-            </Popconfirm>,
+              <a>{this.props.site.删除}</a>
+            </Popconfirm>
+          ),
         },
       ],
     };
     super(props, config);
-    this.footer = () =>
+    this.footer = () => (
       <div>
         <Popconfirm
           title="确定要批量删除吗？"
@@ -148,12 +148,9 @@ class Ipblacks extends BasePage<IpblacksProps, any> {
         >
           <Icon type="file" />批量禁止
         </Button>
-      </div>;
+      </div>
+    );
   }
 }
 
-export default Form.create()(Ipblacks)
-
-
-export interface IpblacksProps extends BasePageProps {
-}
+export interface IpblacksProps extends BasePageProps {}

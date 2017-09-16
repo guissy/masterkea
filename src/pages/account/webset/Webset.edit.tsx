@@ -13,7 +13,15 @@ import { withWebset } from './Webset.model';
 
 const storageNames = 'core,games,data,common,main,logs,redis,mongodb,rabbitmq'.split(',');
 
-function getHostFastProps(this:WebsetEdit, editing: string, name: string, record: any, index: number, rules: any[], width: number) {
+function getHostFastProps(
+  this: WebsetEdit,
+  editing: string,
+  name: string,
+  record: any,
+  index: number,
+  rules: any[],
+  width: number
+) {
   return {
     name,
     record,
@@ -38,13 +46,14 @@ function getHostFastProps(this:WebsetEdit, editing: string, name: string, record
   };
 }
 
+@Form.create()
 @kea({
   connect: {
     props: [],
     actions: [withWebset, ['templates', 'threshold']],
   },
 })
-class WebsetEdit extends React.PureComponent<WebsetEditProps, any> {
+export default class WebsetEdit extends React.PureComponent<WebsetEditProps, any> {
   protected storageColumn: SiteColumn[];
   private hostNode: Table<any>;
   private actions: any;
@@ -134,7 +143,7 @@ class WebsetEdit extends React.PureComponent<WebsetEditProps, any> {
       templates: [],
     };
     Promise.resolve()
-      .then( () => this.actions.templates({ promise: true }))
+      .then(() => this.actions.templates({ promise: true }))
       .then(v => {
         this.setState({ templates: v.templates.db_template });
       });
@@ -331,8 +340,6 @@ class WebsetEdit extends React.PureComponent<WebsetEditProps, any> {
     this.setState({ storage });
   };
 }
-
-export default Form.create()(WebsetEdit as any)
 
 export interface WebsetEditProps extends ReduxProps, LangSiteState {
   ns: string;

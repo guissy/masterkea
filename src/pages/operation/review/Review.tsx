@@ -7,8 +7,8 @@ import ReviewDetail from './Review.detail';
 import { withReview } from './Review.model';
 import ReviewTag from './Review.tag';
 
-@withReview
 @Form.create()
+@withReview
 export default class Review extends BasePage<ReviewProps, any> {
   private info: any; // 详情
   constructor(props: ReviewProps) {

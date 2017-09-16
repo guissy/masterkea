@@ -12,8 +12,9 @@ enum OrderType {
   取款单 = 3,
 }
 
+@Form.create()
 @withOrder
-class Order extends BasePage<OrderProps, any> {
+export default class Order extends BasePage<OrderProps, any> {
   constructor(props: OrderProps) {
     const config: BasePageConfig = {
       ns: 'order',
@@ -95,13 +96,14 @@ class Order extends BasePage<OrderProps, any> {
           dataIndex: 'company_account',
           formType: FormType.Select,
           initialValue: '全部',
-          dataSource: Promise.resolve().then(() => this.actions.simpleList({ promise: true }))
+          dataSource: Promise.resolve()
+            .then(() => this.actions.simpleList({ promise: true }))
             .then(data => ({
-            list: data.simpleList.map((item: HallSimpleItem) => ({
-              title: item.company_account,
-              id: item.id,
+              list: data.simpleList.map((item: HallSimpleItem) => ({
+                title: item.company_account,
+                id: item.id,
+              })),
             })),
-          })),
         },
         {
           title: '用户名',
@@ -143,7 +145,4 @@ class Order extends BasePage<OrderProps, any> {
   }
 }
 
-export default Form.create()(Order);
-
-export interface OrderProps extends BasePageProps {
-}
+export interface OrderProps extends BasePageProps {}

@@ -1,14 +1,11 @@
 import { Form } from 'antd';
-import { WrappedFormUtils } from 'antd/es/form/Form';
-
 import * as React from 'react';
 import BasePage, { BasePageConfig, BasePageProps, FormType } from '../../abstract/BasePage';
 import SimpleEdit from '../../abstract/SimpleEdit';
-import { LangSiteState } from '../../lang.model';
-import { HalluserState, withHalluser } from './Halluser.model';
+import { withHalluser } from './Halluser.model';
 
-@withHalluser
 @Form.create()
+@withHalluser
 export default class Halluser extends BasePage<HalluserProps, any> {
   constructor(props: HalluserProps) {
     const config: BasePageConfig = {

@@ -5,8 +5,9 @@ import SimpleEdit from '../../abstract/SimpleEdit';
 import { withMtoken } from './Mtoken.model';
 import { HallSimpleItem } from '../../account/hall/Hall';
 
+@Form.create()
 @withMtoken
-class Mtoken extends BasePage<MtokenProps, any> {
+export default class Mtoken extends BasePage<MtokenProps, any> {
   constructor(props: MtokenProps) {
     const companyAccountPromise = Promise.resolve()
       .then(() => this.actions.simpleList({ promise: true }))
@@ -80,8 +81,6 @@ class Mtoken extends BasePage<MtokenProps, any> {
     super(props, config);
   }
 }
-
-export default Form.create()(Mtoken);
 
 export interface MtokenProps extends BasePageProps {
 }

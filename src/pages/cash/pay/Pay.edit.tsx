@@ -8,8 +8,8 @@ import { LangSiteState } from '../../lang.model';
 import * as styles from './Pay.less';
 import { PayState, withPay } from './Pay.model';
 
-@withPay
 @Form.create()
+@withPay
 export default class Pay extends React.PureComponent<PayProps, any> {
   constructor(props: PayProps) {
     super(props);

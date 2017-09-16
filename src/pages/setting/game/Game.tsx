@@ -1,18 +1,15 @@
-import { Form, DatePicker, Switch } from 'antd';
-import { WrappedFormUtils } from 'antd/es/form/Form';
+import { DatePicker, Form, Switch } from 'antd';
 import * as moment from 'moment';
 import * as React from 'react';
 import { datetime } from '../../../utils/date';
-import { Store } from '../../abstract/BaseModel';
 import BasePage, { BasePageConfig, BasePageProps, FormType } from '../../abstract/BasePage';
 import SimpleEdit from '../../abstract/SimpleEdit';
-import { LangSiteState } from '../../lang.model';
-import * as styles from './Game.less';
 import { GameState, withGame } from './Game.model';
 import MaintainForm from './MaintainForm';
 
+@Form.create()
 @withGame
-class Game extends BasePage<GameProps, any> {
+export default class Game extends BasePage<GameProps, any> {
   constructor(props: GameProps) {
     const config: BasePageConfig = {
       ns: 'game',
@@ -59,27 +56,6 @@ class Game extends BasePage<GameProps, any> {
           canForm: true,
           formType: FormType.url,
         },
-        // {
-        //   title: 'API账户ID',
-        //   dataIndex: 'account',
-        //   canForm: true,
-        // },
-        // {
-        //   title: 'API账户key',
-        //   dataIndex: 'key',
-        //   canForm: true,
-        // },
-        // {
-        //   title: 'API URL',
-        //   dataIndex: 'url',
-        //   canForm: true,
-        //   formType: FormType.url,
-        // },
-        // {
-        //   title: '最后同步时间',
-        //   dataIndex: 'syntime',
-        //   render: (text, record) => datetime(text),
-        // },
         {
           title: '最后操作者',
           dataIndex: 'admin',
@@ -93,7 +69,7 @@ class Game extends BasePage<GameProps, any> {
           title: '维护状态',
           dataIndex: 'status',
           canForm: true,
-          render: (text, record) =>
+          render: (text, record) => (
             <span>
               <Switch
                 checkedChildren="开放中"
@@ -106,7 +82,8 @@ class Game extends BasePage<GameProps, any> {
                 }}
                 defaultChecked={Boolean(Number(text))}
               />
-            </span>,
+            </span>
+          ),
           formType: FormType.Switch,
           labels: ['开放中', '维护中'],
           values: ['1', '0'],
@@ -114,26 +91,28 @@ class Game extends BasePage<GameProps, any> {
         {
           title: '维护开始时间',
           dataIndex: 'maintain_start',
-          render: (text: any, record: any) =>
+          render: (text: any, record: any) => (
             <DatePicker
               onOk={Moment => this.onStrt(Moment, record)}
               showTime
               format="YYYY-MM-DD HH:mm:ss"
               placeholder="请选择时间"
               value={text == 0 ? null : moment(text * 1000)}
-            />,
+            />
+          ),
         },
         {
           title: '维护结束时间',
           dataIndex: 'maintain_end',
-          render: (text: any, record: any) =>
+          render: (text: any, record: any) => (
             <DatePicker
               onOk={Moment => this.onblur(Moment, record)}
               showTime
               format="YYYY-MM-DD HH:mm:ss"
               placeholder="请选择时间"
               value={text == 0 ? null : moment(text * 1000)}
-            />,
+            />
+          ),
         },
         /*   {
                  title: '状态',
@@ -142,29 +121,6 @@ class Game extends BasePage<GameProps, any> {
                  formType: FormType.Switch,
                  },*/
       ],
-      /*   searchs: [],
-             actions: [
-             // {
-             //   label: '同步',
-             //   onClick: ({ id }) => {
-             //     this.props.dispatch({ type: 'game/sync', payload: { id } });
-             //   },
-             // },
-             {
-             label: '维护',
-             onClick: record => {
-             this.setState({
-             id: record.id,
-             });
-             this.props.dispatch({
-             type: 'game/statusSuccess',
-             payload: {
-             maintainVisible: true,
-             },
-             });
-             },
-             },
-             ],*/
     };
     super(props, config);
     this.toggleStatus = this.toggleStatus.bind(this);
@@ -199,7 +155,4 @@ class Game extends BasePage<GameProps, any> {
   }
 }
 
-export default Form.create()(Game);
-
-export interface GameProps extends BasePageProps, GameState {
-}
+export interface GameProps extends Partial<GameState>, BasePageProps {}
