@@ -5,16 +5,19 @@ import { Store } from '../../abstract/BaseModel';
 import * as styles from './Review.less';
 import { ReviewState, withReview } from './Review.model';
 import ReviewTag from './Review.tag';
+import { connect } from 'kea';
 
-@withReview
+@connect({
+  props: [withReview, ['info']],
+})
 export default class ReviewDetail extends React.PureComponent<ReviewDetailProps, any> {
   constructor(props: ReviewDetailProps) {
     super(props);
     this.state = {};
   }
   public render() {
-    const { data, onStatus, review } = this.props;
-    const info = { ...data, ...review.info };
+    const { data, onStatus } = this.props;
+    const info = { ...data, ...this.props.info };
     return (
       <Modal
         title="内容审核"
@@ -56,6 +59,7 @@ export default class ReviewDetail extends React.PureComponent<ReviewDetailProps,
 }
 
 interface ReviewDetailProps extends ReduxProps {
+  info?: any;
   data: any;
   visibleDetail: boolean;
   onClose: () => void;

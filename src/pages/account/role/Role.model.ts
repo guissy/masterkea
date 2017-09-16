@@ -4,13 +4,17 @@ import * as service from './Role.service';
 import { withLang } from '../../lang.model';
 import createWith from '../../../utils/buildKea';
 
-const model = new BaseModel('role', {
-  itemName: '',
-  detailLoading: true,
-  detail: {},
-  permission: {},
-  editingItem: {},
-}, service);
+const model = new BaseModel(
+  'role',
+  {
+    itemName: '',
+    detailLoading: true,
+    detail: {},
+    permission: {},
+    editingItem: {},
+  },
+  service
+);
 model.addEffect('permission');
 model.addEffect('detail');
 export const withRole = createWith({
@@ -21,10 +25,10 @@ export const withRole = createWith({
   props: {
     site: withLang,
   },
-})
+});
 
 export interface RoleState extends BaseState {
-  list: RoleItem[];
+  // list: RoleItem[];
   permission: MenuItem[];
   detail: any;
   detailLoading: boolean;

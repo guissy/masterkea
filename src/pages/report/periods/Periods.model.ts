@@ -1,14 +1,14 @@
 import { BaseState, default as BaseModel } from '../../abstract/BaseModel';
-import * as service from './Bank.service';
-import createWith from '../../../utils/buildKea';
+import * as service from './Periods.service';
 import { withLang } from '../../lang.model';
-
+import createWith from '../../../utils/buildKea';
 const state = {
-  itemName: '银行',
+  itemName: '一年期数',
 };
 
-const model = new BaseModel('bank', state, service);
-export const withBank = createWith({
+const model = new BaseModel('periods', state, service);
+model.addEffect('periods');
+export const withPeriods = createWith({
   namespace: model.namespace,
   state: model.state,
   actions: model.actions,
@@ -18,6 +18,6 @@ export const withBank = createWith({
   },
 });
 
-export interface BankState extends BaseState {
+export interface PeriodsState extends BaseState {
   list: any[];
 }

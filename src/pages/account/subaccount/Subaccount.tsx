@@ -22,9 +22,11 @@ export const withSubaccount = createWith({
     site: withLang,
     query: withRole,
   },
-})
+});
+
+@Form.create()
 @withSubaccount
-class Subaccount extends BasePage<SubaccountProps, any> {
+export default class Subaccount extends BasePage<SubaccountProps, any> {
   constructor(props: SubaccountProps) {
     const config: BasePageConfig = {
       ns: 'subaccount',
@@ -123,7 +125,4 @@ class Subaccount extends BasePage<SubaccountProps, any> {
   }
 }
 
-export default Form.create()(Subaccount)
-
-export interface SubaccountProps extends BasePageProps {
-}
+export interface SubaccountProps extends BasePageProps {}

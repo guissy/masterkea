@@ -30,6 +30,6 @@ export async function deleteAjax(params: any) {
   });
 }
 //游戏名称
-export async function nameAjax(params: any) {
+export async function namesAjax(params: any) {
   return request(`/game/partner`);
 }

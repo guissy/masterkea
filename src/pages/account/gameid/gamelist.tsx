@@ -6,16 +6,15 @@ import SimpleEdit from '../../abstract/SimpleEdit';
 import { GameidState, withGameid } from './gameid.model';
 import { HallSimpleItem } from '../hall/Hall';
 
-@withGameid
 @Form.create()
+@withGameid
 export default class GameList extends BasePage<GameListProps, any> {
   constructor(props: GameListProps) {
-    const companyAccountPromise = props.dispatch({ type: 'hall/simpleList', promise: true }).then(data => ({
-      list: data.simpleList.map((item: HallSimpleItem) => ({
-        title: item.company_account,
-        value: item.id,
-      })),
-    }));
+    const companyAccountPromise = Promise.resolve()
+      .then(() => this.actions.simpleList({ promise: true }))
+      .then(data => ({
+        list: data.simpleList.map((item: HallSimpleItem) => ({ title: item.company_account, id: item.id })),
+      }));
 
     const config: BasePageConfig = {
       ns: 'gameid',
@@ -108,7 +107,7 @@ export default class GameList extends BasePage<GameListProps, any> {
   }
   public componentDidMount() {
     if (this.props.value) {
-      this.props.dispatch({ type: 'gameid/query', payload: { partner_id: this.props.value } });
+      this.actions.query({ partner_id: this.props.value });
     }
   }
 }

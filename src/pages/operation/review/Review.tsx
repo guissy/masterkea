@@ -20,9 +20,9 @@ export default class Review extends BasePage<ReviewProps, any> {
       canCreate: false,
       withEdit: false,
       withStatus: false,
-      afterComponent: () =>
+      afterComponent: () => (
         <ReviewDetail
-          data={{ ...this.info, ...this.props.review.info[0] }}
+          data={{ ...this.info, ...this.props.info[0] }}
           visibleDetail={this.state.visibleDetail}
           onStatus={(id, status) => {
             const labels = ['通过', '拒绝'];
@@ -32,7 +32,8 @@ export default class Review extends BasePage<ReviewProps, any> {
           onClose={() => {
             this.setState({ visibleDetail: false });
           }}
-        />,
+        />
+      ),
       columns: [
         {
           title: '厅主名称',
@@ -61,7 +62,7 @@ export default class Review extends BasePage<ReviewProps, any> {
         {
           title: '申请内容',
           dataIndex: 'contnet',
-          render: (text: any, { id, ...info }) =>
+          render: (text: any, { id, ...info }) => (
             <a
               onClick={() => {
                 this.info = info;
@@ -70,7 +71,8 @@ export default class Review extends BasePage<ReviewProps, any> {
               }}
             >
               详情
-            </a>,
+            </a>
+          ),
         },
         {
           title: '状态',
@@ -101,5 +103,4 @@ export default class Review extends BasePage<ReviewProps, any> {
   }
 }
 
-export interface ReviewProps extends BasePageProps {
-}
+export interface ReviewProps extends BasePageProps {}

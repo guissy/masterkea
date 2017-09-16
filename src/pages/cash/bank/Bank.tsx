@@ -1,15 +1,11 @@
 import { Form } from 'antd';
-import { WrappedFormUtils } from 'antd/es/form/Form';
-
 import * as React from 'react';
-import { Store } from '../../abstract/BaseModel';
 import BasePage, { BasePageConfig, BasePageProps, FormType } from '../../abstract/BasePage';
 import SimpleEdit from '../../abstract/SimpleEdit';
-import { LangSiteState } from '../../lang.model';
-import { BankState, withBank } from './Bank.model';
+import { withBank } from './Bank.model';
 
-@withBank
 @Form.create()
+@withBank
 export default class Bank extends BasePage<BankProps, any> {
   constructor(props: BankProps) {
     const config: BasePageConfig = {

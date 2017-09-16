@@ -26,6 +26,13 @@ import Pay from '../cash/pay/Pay';
 import Bank from '../cash/bank/Bank';
 import Gameid from '../account/gameid/gameid';
 import Build from '../account/build/Build';
+import Halluser from '../account/halluser/Halluser';
+import HallCost from '../market/hallCost';
+import Operation from '../operation/operation/Operation';
+import Review from '../operation/review/Review';
+import GameReport from '../report/gameReport/GameReport';
+import Summary from '../report/summary/Summary';
+import Periods from '../report/periods/Periods';
 
 class Actions {
   onChangeFullSize = (p: any) => ({} as Action);
@@ -92,11 +99,22 @@ export default class Home extends React.PureComponent<KeaProps<Actions, States>,
                     <Route path="/account/webset" component={Webset} />
                     <Route path="/account/role" component={Role} />
                     <Route path="/account/Build" component={Build} />
+                    <Route path="/account/halluser" component={Halluser} />
                     <Route path="/account/gameid" component={Gameid} />
                     {/*<Route path="/account/sub" component={router.subaccount} />*/}
+                    <Route path="/market/hallcost" component={HallCost} />
+                    <Route path="/operation/review" component={Review} />
+                    <Route path="/operation/operation" component={Operation} />
+                    <Route path="/setting/game" component={Game} />
+
+                    <Route path="report/periods" component={Periods} />
+                    <Route path="report/summary" component={Summary} />
+                    <Route path="report/gameReport" component={GameReport} />
+
                     <Route path="/cash/bank" component={Bank} />
                     <Route path="/cash/pay" component={Pay} />
                     <Route path="/cash/currency" component={Currency} />
+
                     <Route path="/setting/game" component={Game} />
                     <Route path="/setting/ipblacks" component={Ipblacks} />
                     <Route path="/setting/systemLog" component={Logs} />

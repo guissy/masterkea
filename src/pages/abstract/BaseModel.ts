@@ -83,7 +83,7 @@ export default class BaseModel {
               payload: { [loading]: true },
             });
           }
-          const { site } = yield select((store: Store) => ['lang']);
+          const { lang: { site } } = yield select((store: Store) => ['lang']);
           const result = yield call(ajax, payload);
           if (result && result.state === 0) {
             const action = {

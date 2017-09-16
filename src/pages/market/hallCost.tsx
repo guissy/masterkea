@@ -45,13 +45,6 @@ export default class HallCost extends React.PureComponent<HallCostProps, any> {
     this.setState({ dataSource });
   }
 
-  public componentWillMount() {
-    console.log('☞☞☞ hallCost componentWillMount 44', this);
-    this.props.dispatch({
-      type: 'hallcost/getHallCost',
-    });
-  }
-
   public componentWillReceiveProps(nextProps: HallCostProps) {
     // 只有服务器有新请求后才更新 dataSource
     if (!isEqual(this.props.hallCost, nextProps.hallCost) || this.state.dataSource.length === 0) {

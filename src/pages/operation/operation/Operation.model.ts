@@ -2,6 +2,8 @@ import { BaseState, default as BaseModel } from '../../abstract/BaseModel';
 import * as service from './Operation.service';
 import createWith from '../../../utils/buildKea';
 import { withLang } from '../../lang.model';
+import { withPeriods } from '../../report/periods/Periods.model';
+import { withHallList } from '../../account/hall/Hall.model.pk';
 
 const state = {
   itemName: '',
@@ -20,6 +22,8 @@ export const withOperation = createWith({
   effects: model.effects,
   props: {
     site: withLang,
+    periods: withPeriods,
+    simpleList: withHallList,
   },
 });
 

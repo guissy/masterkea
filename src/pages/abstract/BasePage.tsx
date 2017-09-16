@@ -210,9 +210,9 @@ export default class BasePage<T extends BasePageProps, S> extends React.PureComp
       //   payload: query,
       // });
     }
-    setInterval(() => {
-      this.setState({ ok: Date.now() });
-    }, 1000);
+    // setInterval(() => {
+    //   this.setState({ ok: Date.now() });
+    // }, 1000);
   }
 
   // Todo 会影响到 antd 的 Select ，怀疑 Select 使用了 document 之类的方法
@@ -586,7 +586,7 @@ export class Actions {
 
   [k: string]: (p: any) => Promise<any>;
 }
-export interface BasePageProps extends FormComponentProps, BaseState, ReduxProps, LangSiteState, AnyStore {
+export interface BasePageProps extends FormComponentProps, BaseState, ReduxProps, LangSiteState {
   // form?: WrappedFormUtils;
   location?: { query: any; state: any };
   actions?: Actions;

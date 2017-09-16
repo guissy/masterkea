@@ -1,7 +1,5 @@
 import { Tabs } from 'antd';
-
 import * as React from 'react';
-import { Dispatch } from 'react-redux';
 import * as style from '../gameid/gameid.less';
 import GameList from './gamelist';
 import { GameidState, withGameid } from './gameid.model';
@@ -21,7 +19,7 @@ export default class Gameid extends React.PureComponent<GameidProps, any> {
           <Tabs>
             {this.props.name.map((btn: any, i: number) => (
               <TabPane tab={<span>{btn.name}</span>} key={i}>
-                {this.content(btn.name, btn.id)}
+                <GameList value={btn.id} />;
               </TabPane>
             ))}
           </Tabs>
@@ -30,9 +28,6 @@ export default class Gameid extends React.PureComponent<GameidProps, any> {
     );
   }
 
-  private content = (name: any, id: any) => {
-    return <GameList value={id} />;
-  };
   public componentDidMount() {
     this.actions.names({});
   }

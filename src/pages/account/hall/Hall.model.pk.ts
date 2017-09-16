@@ -7,6 +7,6 @@ model.addEffect('simpleList');
 export const withHallList = createWith({
   namespace: model.namespace + 'List',
   state: { simpleList: [] },
-  actions: {},
+  actions: { simpleList: () => ({}) },
   effects: { simpleList: model.effects.simpleList },
 });

@@ -2,10 +2,11 @@ import { Form } from 'antd';
 import * as React from 'react';
 import BasePage, { BasePageConfig, BasePageProps } from '../../abstract/BasePage';
 import RoleEdit from './Role.edit';
-import { withRole } from './Role.model';
+import { RoleState, withRole } from './Role.model';
 
+@Form.create()
 @withRole
-class Role extends BasePage<RoleProps, any> {
+export default class Role extends BasePage<RoleProps, any> {
   constructor(props: RoleProps) {
     const config: BasePageConfig = {
       ns: 'role',
@@ -38,13 +39,6 @@ class Role extends BasePage<RoleProps, any> {
     this.updateComponent = this.getUpdateComponent.bind(this);
   }
 
-  public componentDidMount() {
-    super.componentDidMount();
-    this.props.dispatch({
-      type: 'role/query',
-    });
-  }
-
   protected getCreateComponent() {
     const { permissionLoading } = this.props;
     return <RoleEdit saving={permissionLoading} onSuccess={this.onOkAdd} />;
@@ -56,8 +50,4 @@ class Role extends BasePage<RoleProps, any> {
   }
 }
 
-export default Form.create()(Role);
-
-export interface RoleProps extends BasePageProps {
-  permissionLoading: boolean;
-}
+export interface RoleProps extends Partial<RoleState>, BasePageProps {}

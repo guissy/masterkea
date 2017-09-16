@@ -1,5 +1,4 @@
 import { Form, Switch } from 'antd';
-
 import * as React from 'react';
 import BasePage, { BasePageConfig, BasePageProps, FormType } from '../../abstract/BasePage';
 import SimpleEdit from '../../abstract/SimpleEdit';
@@ -8,8 +7,8 @@ import * as styles from './Operation.less';
 import { withOperation } from './Operation.model';
 import { HallSimpleItem } from '../../account/hall/Hall';
 
-@withOperation
 @Form.create()
+@withOperation
 export default class Operation extends BasePage<OperationProps, any> {
   constructor(props: OperationProps) {
     const config: BasePageConfig = {
@@ -19,7 +18,7 @@ export default class Operation extends BasePage<OperationProps, any> {
       withOperator: false,
       afterComponent: () => (
         <OperationDetail
-          data={this.props.operation.info}
+          data={this.props.info}
           visibleDetail={this.state.visibleDetail}
           onClose={() => {
             this.setState({ visibleDetail: false });
@@ -28,9 +27,9 @@ export default class Operation extends BasePage<OperationProps, any> {
       ),
       footer: () => (
         <p>
-          小计：{this.props.operation.attributes.page_sum}
+          小计：{this.props.attributes.page_sum}
           <span className={styles.splite} />
-          总计：{this.props.operation.attributes.total_sum}
+          总计：{this.props.attributes.total_sum}
         </p>
       ),
       withDelete: false,
@@ -55,7 +54,7 @@ export default class Operation extends BasePage<OperationProps, any> {
             <a
               onClick={() => {
                 this.setState({ visibleDetail: true });
-                this.props.dispatch({ type: 'operation/info', payload: { id } });
+                this.actions.info({ id });
               }}
             >
               {val}
@@ -92,21 +91,22 @@ export default class Operation extends BasePage<OperationProps, any> {
           dataIndex: 'period_number',
           formType: FormType.Select,
           initialValue: '全部',
-          dataSource: props.dispatch({ type: 'periods/periods', promise: true }).then(data => ({
-            list: data.periods.map((item: any) => ({ title: item as string, value: String(item) })),
-          })),
+          dataSource: Promise.resolve()
+            .then(() => this.actions.periods({ promise: true }))
+            .then(data => ({
+              list: data.periods.map((item: any) => ({ title: item as string, value: String(item) })),
+            })),
         },
         {
           title: '厅主账号',
           dataIndex: 'company_account',
           formType: FormType.Select,
           initialValue: '全部',
-          dataSource: props.dispatch({ type: 'hall/simpleList', promise: true }).then(data => ({
-            list: data.simpleList.map((item: HallSimpleItem) => ({
-              title: item.company_account,
-              value: item.company_account,
+          dataSource: Promise.resolve()
+            .then(() => this.actions.simpleList({ promise: true }))
+            .then(v => ({
+              list: v.simpleList.map((w: any) => ({ name: w.company_account, id: w.id })),
             })),
-          })),
         },
         {
           title: '付款状态',

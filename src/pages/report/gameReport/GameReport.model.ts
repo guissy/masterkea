@@ -1,14 +1,13 @@
 import { BaseState, default as BaseModel } from '../../abstract/BaseModel';
-import * as service from './Bank.service';
+import * as service from './GameReport.service';
 import createWith from '../../../utils/buildKea';
 import { withLang } from '../../lang.model';
-
 const state = {
-  itemName: '银行',
+  itemName: '',
 };
 
-const model = new BaseModel('bank', state, service);
-export const withBank = createWith({
+const model = new BaseModel('gameReport', state, service);
+export const withGameReport = createWith({
   namespace: model.namespace,
   state: model.state,
   actions: model.actions,
@@ -18,6 +17,6 @@ export const withBank = createWith({
   },
 });
 
-export interface BankState extends BaseState {
+export interface GameReportState extends BaseState {
   list: any[];
 }

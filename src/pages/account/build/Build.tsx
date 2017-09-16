@@ -73,7 +73,7 @@ export default class Build extends BasePage<BuildProps, any> {
       wrapperCol: { span: 16 },
     };
     const webset = this.state.webset;
-    const building = this.props.build.saving;
+    const building = this.props.saving;
     return (
       <div>
         <Form className={styles.form}>

@@ -1,14 +1,11 @@
 import { Form } from 'antd';
-import { WrappedFormUtils } from 'antd/es/form/Form';
-
 import * as React from 'react';
 import BasePage, { BasePageConfig, BasePageProps } from '../../abstract/BasePage';
 import SimpleEdit from '../../abstract/SimpleEdit';
-import { LangSiteState } from '../../lang.model';
-import { CurrencyState, withCurrency } from './Currency.model';
+import { withCurrency } from './Currency.model';
 
-@withCurrency
 @Form.create()
+@withCurrency
 export default class Currency extends BasePage<CurrencyProps, any> {
   constructor(props: CurrencyProps) {
     const config: BasePageConfig = {
